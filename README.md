@@ -1,2 +1,2 @@
 # smarthub
-integration with smartthings hub
+Designed for raspberry PI integration with smartthings hub
