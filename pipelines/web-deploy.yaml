@@ -34,7 +34,7 @@ parameters:
 
   - name: url
     type: string
-    default: http://109.168.0.140:5010
+    default: http://192.168.0.140:5010
     
   - name: configs
     type: object
@@ -58,7 +58,7 @@ variables:
 
       [Service]
       WorkingDirectory=${{ parameters.destDirectory }}
-      ExecStart=/usr/bin/dotnet ${{ parameters.destDirectory }}/${{ parameters.projectName }}.dll --urls ${{ parameters.url }}
+      ExecStart=/usr/bin/dotnet/dotnet ${{ parameters.destDirectory }}/${{ parameters.projectName }}.dll --urls ${{ parameters.url }}
       Restart=always
       # Restart service after 10 seconds if the dotnet service crashes:
       RestartSec=10
