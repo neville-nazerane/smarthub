@@ -55,9 +55,15 @@ namespace SmartHub.WebApp
 
                     var data = await context.RequestServices.GetService<SmartThingsClient>()
                                                             .GetScenesAsync();
-                    await context.Response.WriteAsJsonAsync(data);
+                    await context.Response.WriteAsJsonAsync(data.Select(s => new { s.SceneId, s.SceneName }));
                 });
 
+                endpoints.MapGet("/goScenes", async context => {
+
+                    await context.RequestServices.GetService<SmartThingsClient>()
+                                                            .ExeScene(context.Request.Query.First().Value);
+
+                });
 
 
                 endpoints.MapGet("/", async context =>

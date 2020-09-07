@@ -23,5 +23,10 @@ namespace SmartHub.WebApp.Services
             return result.Items;
         }
 
+        public async Task ExeScene(string id)
+        {
+            await _httpClient.PostAsync($"scenes/{id}/execute", null);
+        }
+
     }
 }
