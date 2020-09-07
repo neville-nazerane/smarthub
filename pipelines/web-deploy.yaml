@@ -40,7 +40,7 @@ parameters:
     type: object
     default: 
       ASPNETCORE_ENVIRONMENT: Production
-      smartthings__PAT: $(secrets:smartthingsPAT)
+      smartthings__PAT: $(PAT)
 
   - name: service
     type: object
