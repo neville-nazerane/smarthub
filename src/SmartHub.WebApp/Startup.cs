@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -58,12 +59,30 @@ namespace SmartHub.WebApp
                     await context.Response.WriteAsJsonAsync(data.Select(s => new { s.SceneId, s.SceneName }));
                 });
 
+                endpoints.MapPost("/triggered", async context =>
+                {
+                    string id = context.Request.Query.First().Value;
+                    await context.RequestServices.GetService<SmartThingsClient>()
+                                                ._httpClient
+                                                .PostAsJsonAsync($"/devices/{id}/commands",
+                                                                 new { 
+                                                                    commands = new object[] { 
+                                                                        new {
+                                                                            component = "main",
+                                                                            capability = "switch",
+                                                                            command = "on"
+                                                                        }
+                                                                    }
+                                                                 });
+                });
                 endpoints.MapGet("/goScenes", async context => {
 
                     await context.RequestServices.GetService<SmartThingsClient>()
                                                             .ExeScene(context.Request.Query.First().Value);
 
                 });
+
+                
 
 
                 endpoints.MapGet("/", async context =>

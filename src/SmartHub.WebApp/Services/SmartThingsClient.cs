@@ -10,7 +10,7 @@ namespace SmartHub.WebApp.Services
 {
     public class SmartThingsClient
     {
-        private readonly HttpClient _httpClient;
+        public readonly HttpClient _httpClient;
 
         public SmartThingsClient(HttpClient httpClient)
         {
