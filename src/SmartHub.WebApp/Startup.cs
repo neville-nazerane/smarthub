@@ -41,6 +41,7 @@ namespace SmartHub.WebApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -59,7 +60,7 @@ namespace SmartHub.WebApp
                     await context.Response.WriteAsJsonAsync(data.Select(s => new { s.SceneId, s.SceneName }));
                 });
 
-                endpoints.MapPost("/triggered", async context =>
+                endpoints.MapGet("/triggered", async context =>
                 {
                     string id = context.Request.Query.First().Value;
                     await context.RequestServices.GetService<SmartThingsClient>()
