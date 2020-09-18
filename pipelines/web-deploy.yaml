@@ -79,7 +79,7 @@ stages:
           inputs:
             packageType: sdk
             includePreviewVersions: true
-            version: 5.0.100-preview.8.20417.9
+            version: 5.0.100-rc.1
             installationPath: $(Agent.ToolsDirectory)/dotnet
         
         - ${{ each step in parameters.preBuildSteps  }}:
