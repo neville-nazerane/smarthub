@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 namespace SmartHub.WebApp.Models
 {
 
-
-
-
     public class SceneData
     {
         public SceneItem[] Items { get; set; }
