@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SmartHub.WebApp.Configs;
+using SmartHub.WebApp.Endpoints;
 using SmartHub.WebApp.Services;
 
 namespace SmartHub.WebApp
@@ -51,6 +52,13 @@ namespace SmartHub.WebApp
 
             app.UseEndpoints(endpoints =>
             {
+
+                // LIVE
+
+                endpoints.MapCrud("/mappedDevices", db => db.MappedDevices);
+
+                // --- End of Live
+
 
 
                 endpoints.MapGet("/scenes", async context => {

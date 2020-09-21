@@ -1,0 +1,16 @@
+﻿using Microsoft.EntityFrameworkCore;
+using SmartHub.WebApp.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace SmartHub.WebApp.Data
+{
+    public class AppDbContext : DbContext
+    {
+
+        public DbSet<MappedDevice> MappedDevices { get; set; }
+
+    }
+}

@@ -41,6 +41,7 @@ parameters:
     default: 
       ASPNETCORE_ENVIRONMENT: Production
       smartthings__PAT: $(PAT)
+      sql: $(sql)
 
   - name: service
     type: object
@@ -79,7 +80,7 @@ stages:
           inputs:
             packageType: sdk
             includePreviewVersions: true
-            version: 5.0.100-rc.1
+            version: 5.0.100-rc.1.20452.10
             installationPath: $(Agent.ToolsDirectory)/dotnet
         
         - ${{ each step in parameters.preBuildSteps  }}:
