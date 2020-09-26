@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SmartHub.WebApp.Models
+namespace SmartHub.Models
 {
     public class MappedDevice
     {

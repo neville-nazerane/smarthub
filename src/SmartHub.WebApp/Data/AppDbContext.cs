@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SmartHub.WebApp.Models;
+using SmartHub.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

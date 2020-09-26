@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using SmartHub.Models;
 using SmartHub.WebApp.Models;
 using SmartHub.WebApp.Services;
 using SmartHub.WebApp.Util;
