@@ -75,4 +75,11 @@
         public string DeviceId { get; set; }
     }
 
+    public class DeviceExecuteModel
+    {
+        public string Component { get; set; }
+        public string Capability { get; set; }
+        public string Command { get; set; }
+    }
+
 }

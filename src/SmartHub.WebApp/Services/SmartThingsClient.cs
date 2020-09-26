@@ -17,16 +17,31 @@ namespace SmartHub.WebApp.Services
             _httpClient = httpClient;
         }
 
+        #region scenes
+
         public async Task<IEnumerable<SceneItem>> GetScenesAsync()
         {
             var result = await _httpClient.GetFromJsonAsync<SceneData>("scenes");
             return result.Items;
         }
 
-        public async Task ExeScene(string id)
+        public Task ExecuteSceneAsync(string id) => _httpClient.PostAsync($"scenes/{id}/execute", null);
+
+        #endregion
+
+
+        #region devices
+
+        public async Task<IEnumerable<DeviceItem>> GetDevicesAsync()
         {
-            await _httpClient.PostAsync($"scenes/{id}/execute", null);
+            var data = await _httpClient.GetFromJsonAsync<DeviceData>("devices");
+            return data.Items;
         }
 
+        public Task ExecuteDeviceAsync(string deviceId, params DeviceExecuteModel[] models) 
+            => _httpClient.PostAsJsonAsync($"/devices/{deviceId}/commands", new { commands = models });
+ 
+        #endregion
     }
 }
+ 

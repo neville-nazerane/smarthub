@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SmartHub.WebApp.Configs;
+using SmartHub.WebApp.Data;
 using SmartHub.WebApp.Endpoints;
 using SmartHub.WebApp.Services;
 
@@ -25,8 +27,6 @@ namespace SmartHub.WebApp
             Configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             var smartThings = new SmartThingsConfig();
@@ -37,9 +37,10 @@ namespace SmartHub.WebApp
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", smartThings.PAT);
             });
 
+            services.AddDbContext<AppDbContext>(o => o.UseMySql(Configuration["sql"]));
+
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
@@ -53,51 +54,9 @@ namespace SmartHub.WebApp
             app.UseEndpoints(endpoints =>
             {
 
-                // LIVE
-
+                endpoints.MapGet("/", context => context.Response.WriteAsync("Hello form another Device"));
                 endpoints.MapCrud("/mappedDevices", db => db.MappedDevices);
-
-                // --- End of Live
-
-
-
-                endpoints.MapGet("/scenes", async context => {
-
-                    var data = await context.RequestServices.GetService<SmartThingsClient>()
-                                                            .GetScenesAsync();
-                    await context.Response.WriteAsJsonAsync(data.Select(s => new { s.SceneId, s.SceneName }));
-                });
-
-                endpoints.MapGet("/triggered", async context =>
-                {
-                    string id = context.Request.Query.First().Value;
-                    await context.RequestServices.GetService<SmartThingsClient>()
-                                                ._httpClient
-                                                .PostAsJsonAsync($"/devices/{id}/commands",
-                                                                 new { 
-                                                                    commands = new object[] { 
-                                                                        new {
-                                                                            component = "main",
-                                                                            capability = "switch",
-                                                                            command = "on"
-                                                                        }
-                                                                    }
-                                                                 });
-                });
-                endpoints.MapGet("/goScenes", async context => {
-
-                    await context.RequestServices.GetService<SmartThingsClient>()
-                                                            .ExeScene(context.Request.Query.First().Value);
-
-                });
-
-                
-
-
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello form another Device");
-                });
+                endpoints.MapDevices("/devices");
 
             });
         }
