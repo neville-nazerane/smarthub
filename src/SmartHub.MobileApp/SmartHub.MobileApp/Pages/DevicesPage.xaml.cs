@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SmartHub.MobileApp.Utils;
+using SmartHub.MobileApp.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +18,12 @@ namespace SmartHub.MobileApp.Pages
         {
             InitializeComponent();
         }
+
+        protected override async void OnAppearing()
+        {
+            await this.GetViewModel<DevicesViewModel>().InitAsync();
+            base.OnAppearing();
+        }
+
     }
 }

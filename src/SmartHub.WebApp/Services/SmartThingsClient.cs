@@ -1,6 +1,5 @@
 ﻿using SmartHub.Models;
 using SmartHub.Models.SmartThings;
-using SmartHub.WebApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

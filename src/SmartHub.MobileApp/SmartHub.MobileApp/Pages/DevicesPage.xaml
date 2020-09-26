@@ -2,18 +2,23 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:vm="clr-namespace:SmartHub.MobileApp.ViewModels" 
+             xmlns:sm="clr-namespace:SmartHub.Models.SmartThings;assembly=SmartHub.Models"
              x:DataType="vm:DevicesViewModel"
              BackgroundColor="White"
              x:Class="SmartHub.MobileApp.Pages.DevicesPage">
     <ContentPage.Content>
         <Grid RowDefinitions="40, auto" RowSpacing="10">
-            <Label Text="{Binding Batman}"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+            <ActivityIndicator IsVisible="{Binding IsLoading}"
+                               IsEnabled="{Binding IsLoading}"
+                               IsRunning="{Binding IsLoading}" />
 
-            <Button Text="Change"
-                    Grid.Row="1"
-                    Command="{Binding Changed}"/>
+            <CollectionView ItemsSource="{Binding Devices}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="sm:DeviceItem">
+                        <Label Text="{Binding Name}" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

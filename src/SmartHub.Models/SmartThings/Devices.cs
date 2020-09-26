@@ -1,4 +1,4 @@
-﻿namespace SmartHub.WebApp.Models
+﻿namespace SmartHub.Models.SmartThings
 {
 
     public class DeviceData

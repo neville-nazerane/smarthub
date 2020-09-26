@@ -18,9 +18,9 @@ namespace SmartHub.MobileApp
                 .SetInitialPage<DevicesPage>()
 
                 .AddHttpClient<RaspberryClient>(client => {
-                    client.BaseAddress = new Uri("https://localhost:44396/");
+                    client.BaseAddress = new Uri("http://192.168.0.140:5010/");
                 })
-                
+
                 .Build();
         }
 

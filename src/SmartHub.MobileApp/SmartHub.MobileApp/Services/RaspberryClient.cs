@@ -1,4 +1,4 @@
-﻿using SmartHub.WebApp.Models;
+﻿using SmartHub.Models.SmartThings;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;

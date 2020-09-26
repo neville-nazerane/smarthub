@@ -7,6 +7,6 @@
         <Style TargetType="Button">
             <Setter Property="Visual" Value="Material" />
         </Style>
-        
+
     </Application.Resources>
 </Application>
