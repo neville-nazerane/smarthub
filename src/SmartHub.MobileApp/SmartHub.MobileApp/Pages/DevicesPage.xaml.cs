@@ -19,11 +19,5 @@ namespace SmartHub.MobileApp.Pages
             InitializeComponent();
         }
 
-        protected override async void OnAppearing()
-        {
-            await this.GetViewModel<DevicesViewModel>().InitAsync();
-            base.OnAppearing();
-        }
-
     }
 }

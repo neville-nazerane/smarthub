@@ -12,13 +12,14 @@ namespace SmartHub.MobileApp.ViewModels
     public class DevicesViewModel : ViewModelBase
     {
         private readonly RaspberryClient _raspberryClient;
+        private IEnumerable<DeviceItem> _devices;
 
-        public IEnumerable<DeviceItem> Devices { get; set; }
+        public IEnumerable<DeviceItem> Devices { get => _devices; set => SetProperty(ref _devices, value); }
 
         public DevicesViewModel(RaspberryClient raspberryClient)
         {
             _raspberryClient = raspberryClient;
-            //Startup();
+            Startup();
         }
 
         public override async Task InitAsync()

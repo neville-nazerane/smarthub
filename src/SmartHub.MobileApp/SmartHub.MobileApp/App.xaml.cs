@@ -1,6 +1,7 @@
 ﻿using SmartHub.MobileApp.Pages;
 using SmartHub.MobileApp.Services;
 using System;
+using System.Threading.Tasks;
 using Xamarin.FluentInjector;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -9,19 +10,23 @@ namespace SmartHub.MobileApp
 {
     public partial class App : Application
     {
+
+        public IServiceProvider CurrentProvider { get; set; }
+
         public App()
         {
             InitializeComponent();
 
-            this.StartInjecting()
 
-                .SetInitialPage<DevicesPage>()
+            CurrentProvider = this.StartInjecting()
 
-                .AddHttpClient<RaspberryClient>(client => {
-                    client.BaseAddress = new Uri("http://192.168.0.140:5010/");
-                })
+                                    .SetInitialPage<DevicesPage>()
 
-                .Build();
+                                    .AddHttpClient<RaspberryClient>(client => {
+                                        client.BaseAddress = new Uri("http://192.168.0.140:5010/");
+                                    })
+
+                                    .Build();
         }
 
         protected override void OnStart()
