@@ -17,11 +17,15 @@ namespace SmartHub.MobileApp.ViewModels
         public IEnumerable<DeviceItem> Devices { get => _devices; set => SetProperty(ref _devices, value); }
 
         public ICommand DeviceSelected { get; set; }
+        public ICommand OnTest { get; set; }
+        public ICommand OffTest { get; set; }
 
         public DevicesViewModel(RaspberryClient raspberryClient, IInjectionControl injectionControl)
         {
             _raspberryClient = raspberryClient;
             _injectionControl = injectionControl;
+            OnTest = new Command<string>(async id => await TestExecute(id, "on"));
+            OffTest = new Command<string>(async id => await TestExecute(id, "off"));
             DeviceSelected = new Command<DeviceItem>(async d => await SelectedDeviceAsync(d));
             
             Startup();
@@ -39,6 +43,16 @@ namespace SmartHub.MobileApp.ViewModels
                 vm.DeviceLabel = device.Label;
                 vm.DeviceComponents = device.Components;
                 vm.DeviceId = device.DeviceId;
+            });
+        }
+
+        private async Task TestExecute(string deviceID, string cmd)
+        {
+            await _raspberryClient.ExecuteDeviceAsync(deviceID, new DeviceExecuteModel
+            {
+                Capability = "switch",
+                Command = cmd,
+                Component = "main"
             });
         }
 

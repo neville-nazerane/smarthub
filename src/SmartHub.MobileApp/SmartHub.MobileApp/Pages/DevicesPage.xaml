@@ -3,8 +3,55 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:sm="clr-namespace:SmartHub.Models.SmartThings;assembly=SmartHub.Models"
              xmlns:vm="clr-namespace:SmartHub.MobileApp.ViewModels" 
+             xmlns:control="clr-namespace:SmartHub.MobileApp.Controls"
              x:DataType="vm:DevicesViewModel"
              x:Class="SmartHub.MobileApp.Pages.DevicesPage">
+
+    <ContentPage.Resources>
+        
+        <DataTemplate x:Key="simpleTemplate"
+                      x:DataType="sm:DeviceItem">
+            <Button Text="{Binding Label}"
+                                HeightRequest="40"
+                                Command="{Binding DeviceSelected,
+                                                  Source={RelativeSource AncestorType={x:Type vm:DevicesViewModel}}}"
+                                CommandParameter="{Binding}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="switchTemplate"
+                      x:DataType="sm:DeviceItem">
+            <Frame Margin="20, 0"
+                           BorderColor="Black"
+                           CornerRadius="10"
+                           Padding="10">
+                <Grid ColumnDefinitions="*, 60, 60">
+                    <Button Text="{Binding Label}"
+                            Command="{Binding DeviceSelected,
+                                              Source={RelativeSource AncestorType={x:Type vm:DevicesViewModel}}}"
+                                              CommandParameter="{Binding}"
+                            Grid.ColumnSpan="3" />
+                    <Button BackgroundColor="Green"
+                                    Text="On"
+                                    Command="{Binding OnTest,
+                                                      Source={RelativeSource AncestorType={x:Type vm:DevicesViewModel}}}"
+                                    CommandParameter="{Binding DeviceId}"
+                                Grid.Row="1" Grid.Column="1" />
+                    <Button BackgroundColor="Red"
+                                    Text="Off"
+                                    Command="{Binding OffTest,
+                                                      Source={RelativeSource AncestorType={x:Type vm:DevicesViewModel}}}"
+                                    CommandParameter="{Binding DeviceId}"
+                                    Grid.Row="1" Grid.Column="2" />
+                </Grid>
+            </Frame>
+        </DataTemplate>
+
+        <control:DeviceToMapTemplateSelector x:Key="selector"
+                                             SimpleTemplate="{StaticResource simpleTemplate}"
+                                             WithSwitchTemplate="{StaticResource switchTemplate}" />
+
+    </ContentPage.Resources>
+    
     <ContentPage.Content>
         <Grid RowSpacing="10">
             <ActivityIndicator IsVisible="{Binding IsLoading}"
@@ -12,21 +59,12 @@
                                IsRunning="{Binding IsLoading}"
                                HeightRequest="10"/>
 
-            <CollectionView ItemsSource="{Binding Devices}">
+            <CollectionView ItemsSource="{Binding Devices}"
+                            ItemTemplate="{StaticResource selector}">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical"
                                        ItemSpacing="10" />
                 </CollectionView.ItemsLayout>
-                
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="sm:DeviceItem">
-                        <Button Text="{Binding Label}"
-                                HeightRequest="40"
-                                Command="{Binding DeviceSelected,
-                                                  Source={RelativeSource AncestorType={x:Type vm:DevicesViewModel}}}"
-                                CommandParameter="{Binding}" />
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
             </CollectionView>
         </Grid>
     </ContentPage.Content>
