@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:sm="clr-namespace:SmartHub.Models.SmartThings;assembly=SmartHub.Models"
+             xmlns:vm="clr-namespace:SmartHub.MobileApp.ViewModels" 
+             x:DataType="vm:DeviceComponentViewModel"
+             x:Class="SmartHub.MobileApp.Pages.DeviceComponentPage">
+    
+    <Grid Padding="20"
+          RowDefinitions="60, *"
+          RowSpacing="10">
+
+        <!-- Bread crumb -->
+        <Label FontSize="Medium">
+            <Label.FormattedText>
+                <FormattedString>
+                    <FormattedString.Spans>
+                        <Span Text="All Devices" Style="{StaticResource crumbText}" >
+                            <Span.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ToDevices}" />
+                            </Span.GestureRecognizers>
+                        </Span>
+                        <Span Text="/" />
+                        <Span Text="{Binding DeviceLabel}" Style="{StaticResource lastCrumbText}"  />
+                        
+                        
+                    </FormattedString.Spans>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+
+        <CollectionView ItemsSource="{Binding DeviceComponents}"
+                        Grid.Row="1" >
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical"
+                                   ItemSpacing="25" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="sm:DeviceComponent">
+                    <Button Text="{Binding Id}"
+                            Command="{Binding SelectedComponent,
+                                              Source={RelativeSource AncestorType={x:Type vm:DeviceComponentViewModel}}}"
+                            CommandParameter="{Binding}"/>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+    
+</ContentPage>

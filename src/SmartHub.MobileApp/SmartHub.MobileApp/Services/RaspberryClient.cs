@@ -20,5 +20,8 @@ namespace SmartHub.MobileApp.Services
         public Task<IEnumerable<DeviceItem>> GetDevicesAsync() 
             =>  _client.GetFromJsonAsync<IEnumerable<DeviceItem>>("devices");
 
+        public Task ExecuteDeviceAsync(string deviceId, DeviceExecuteModel model)
+            => _client.PostAsJsonAsync($"devices/{deviceId}/execute", model);
+
     }
 }

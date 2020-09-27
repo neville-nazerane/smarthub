@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"             
+             xmlns:sm="clr-namespace:SmartHub.Models.SmartThings;assembly=SmartHub.Models"
+             xmlns:vm="clr-namespace:SmartHub.MobileApp.ViewModels" 
+             x:DataType="vm:DeviceCapabilitiesViewModel"
+             x:Class="SmartHub.MobileApp.Pages.DeviceCapabilitiesPage">
+
+    <Grid Padding="20"
+          RowDefinitions="60, *"
+          RowSpacing="10">
+
+        <!-- Bread crumb -->
+        <Label FontSize="Medium">
+            <Label.FormattedText>
+                <FormattedString>
+                    <FormattedString.Spans>
+                        <Span Text="All Devices" Style="{StaticResource crumbText}" >
+                            <Span.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ToDevices}" />
+                            </Span.GestureRecognizers>
+                        </Span>
+                        <Span Text="/" />
+                        <Span Text="{Binding DeviceLabel}" Style="{StaticResource crumbText}"  >
+                            <Span.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ToDeviceComponent}" />
+                            </Span.GestureRecognizers>
+                        </Span>
+                        <Span Text="/" />
+                        <Span Text="{Binding ComponentLabel}" Style="{StaticResource lastCrumbText}"  />
+
+
+                    </FormattedString.Spans>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+
+        <CollectionView ItemsSource="{Binding DeviceCapabilities}"
+                        Grid.Row="1" >
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical"
+                                   ItemSpacing="25" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="sm:DeviceCapability">
+                    <Frame Margin="20, 0"
+                           BorderColor="Black"
+                           CornerRadius="10"
+                           Padding="10">
+                        <Grid ColumnDefinitions="*, 60, 60">
+                            <Button Text="{Binding Id}"
+                                Grid.ColumnSpan="3" />
+                            <Button BackgroundColor="Green"
+                                    Text="On"
+                                    Command="{Binding OnTest,
+                                                      Source={RelativeSource AncestorType={x:Type vm:DeviceCapabilitiesViewModel}}}"
+                                    CommandParameter="{Binding}"
+                                Grid.Row="1" Grid.Column="1" />
+                            <Button BackgroundColor="Red"
+                                    Text="Off"
+                                    Command="{Binding OffTest,
+                                                      Source={RelativeSource AncestorType={x:Type vm:DeviceCapabilitiesViewModel}}}"
+                                    CommandParameter="{Binding}"
+                                    Grid.Row="1" Grid.Column="2" />
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

@@ -7,6 +7,22 @@
         <Style TargetType="Button">
             <Setter Property="Visual" Value="Material" />
         </Style>
+        
+        <Style TargetType="Label">
+            <Setter Property="Visual" Value="Material" />
+        </Style>
+
+        
+        
+
+        <Style x:Key="crumbText" TargetType="Span" >
+            <Setter Property="TextColor" Value="{AppThemeBinding Dark=LightBlue, Light=Blue}" />
+            <Setter Property="TextDecorations" Value="Underline" />
+        </Style>
+
+        <Style x:Key="lastCrumbText" TargetType="Span" >
+            <Setter Property="TextColor" Value="{AppThemeBinding Dark=LightBlue, Light=Blue}" />
+        </Style>
 
     </Application.Resources>
 </Application>
