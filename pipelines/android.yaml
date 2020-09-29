@@ -83,6 +83,5 @@ stages:
             releaseNotesOption: 'input'
             releaseNotesInput: 'The lazy developer hasn''t added any actual release notes.'
             destinationType: 'groups'
-            distributionGroupId: 1d328f2f-3759-4b57-96ce-15bb309d347f
           
 
