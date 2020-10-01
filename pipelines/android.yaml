@@ -15,7 +15,8 @@ variables:
   outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
   apkPath: com.companyname.smarthub.mobileapp.apk
   solutionPath: 'src/Smart Hub.sln'
-  projectPath: src/SmartHub.MobileApp\SmartHub.MobileApp.Android
+  projectPath: src/SmartHub.MobileApp/SmartHub.MobileApp.Android
+  configPath: src/SmartHub.MobileApp/SmartHub.MobileApp/Config.nogit.cs
   artifactName: publishedApk
   appCenterSlug: live.neville-live.com/SmartHub-Control
   keyStoreFile: smarthub.jks
@@ -34,30 +35,51 @@ stages:
         displayName: Building xamarin android
 
         steps:
-        - task: NuGetToolInstaller@1
 
-        - task: NuGetCommand@2
-          inputs:
-            command: 'restore'
-            restoreSolution: '$(solutionPath)'
-            feedsToUse: 'config'
-        
-        - task: android-manifest-version@1
-          inputs:
-            sourcePath: $(projectPath)/Properties/AndroidManifest.xml
-            printFile: true
-            versionCode: $(Build.BuildId)
-            versionName: 1.0.$(Build.BuildId)
+          - task: file-creator@5
+            displayName: Create config file
+            inputs:
+              filepath: $(configPath)
+              fileoverwrite: true
+              filecontent: |
+                namespace SmartHub.MobileApp
+                {
+                    static partial class Config
+                    {
+                        static Config()
+                        {
+                            Endpoint = "$(secrets.endpoint)";
+                            AppCenter = "$(secrets.appCenter)";
+                        }
+                    }
+                }
 
-        - task: XamarinAndroid@1
-          inputs:
-            projectFile: $(projectPath)/*.csproj
-            outputDirectory: '$(outputDirectory)'
-            configuration: '$(buildConfiguration)'
-            msbuildVersionOption: 'latest'
 
-        - publish: $(outputDirectory)
-          artifact: $(artifactName)
+
+        # - task: NuGetToolInstaller@1
+
+          - task: NuGetCommand@2
+            inputs:
+              command: 'restore'
+              restoreSolution: '$(solutionPath)'
+              feedsToUse: 'config'
+          
+          - task: android-manifest-version@1
+            inputs:
+              sourcePath: $(projectPath)/Properties/AndroidManifest.xml
+              printFile: true
+              versionCode: $(Build.BuildId)
+              versionName: 1.0.$(Build.BuildId)
+
+          - task: XamarinAndroid@1
+            inputs:
+              projectFile: $(projectPath)/*.csproj
+              outputDirectory: '$(outputDirectory)'
+              configuration: '$(buildConfiguration)'
+              msbuildVersionOption: 'latest'
+
+          - publish: $(outputDirectory)
+            artifact: $(artifactName)
         
 
   - stage: AppCenterDeploy
