@@ -1,4 +1,6 @@
 ﻿using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 using SmartHub.MobileApp.Pages;
 using SmartHub.MobileApp.Services;
 using System;
@@ -18,7 +20,8 @@ namespace SmartHub.MobileApp
         {
             InitializeComponent();
 
-            AppCenter.Start(Config.AppCenter);
+            AppCenter.Start(Config.AppCenter,
+                                typeof(Analytics), typeof(Crashes));
 
             CurrentProvider = this.StartInjecting()
 
