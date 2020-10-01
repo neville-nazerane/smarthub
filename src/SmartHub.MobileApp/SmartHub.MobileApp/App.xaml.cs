@@ -1,4 +1,5 @@
-﻿using SmartHub.MobileApp.Pages;
+﻿using Microsoft.AppCenter;
+using SmartHub.MobileApp.Pages;
 using SmartHub.MobileApp.Services;
 using System;
 using System.Threading.Tasks;
@@ -17,13 +18,14 @@ namespace SmartHub.MobileApp
         {
             InitializeComponent();
 
+            AppCenter.Start(Config.AppCenter);
 
             CurrentProvider = this.StartInjecting()
 
                                     .SetInitialPage<DevicesPage>()
 
                                     .AddHttpClient<RaspberryClient>(client => {
-                                        client.BaseAddress = new Uri("http://192.168.0.140:5010/");
+                                        client.BaseAddress = new Uri(Config.Endpoint);
                                     })
 
                                     .Build();
