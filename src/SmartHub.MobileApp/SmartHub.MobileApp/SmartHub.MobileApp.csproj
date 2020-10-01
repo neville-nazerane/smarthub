@@ -15,9 +15,9 @@
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="3.4.3" />
     <PackageReference Include="System.Net.Http.Json" Version="6.0.0-alpha.1.20420.3" />
     <PackageReference Include="Xamarin.FluentInjector" Version="0.0.554-beta" />
-    <PackageReference Include="Xamarin.Forms" Version="5.0.1.1502-nightly" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.1.1528-nightly" />
     <PackageReference Include="Xamarin.Essentials" Version="1.6.0-pre2" />
-    <PackageReference Include="Xamarin.Forms.Visual.Material" Version="5.0.1.1502-nightly" />
+    <PackageReference Include="Xamarin.Forms.Visual.Material" Version="5.0.1.1528-nightly" />
   </ItemGroup>
 
   <ItemGroup>
