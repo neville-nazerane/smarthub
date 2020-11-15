@@ -37,8 +37,7 @@ namespace SmartHub.WebApp
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", smartThings.PAT);
             });
 
-            services.AddDbContext<AppDbContext>(o => o.UseMySql(Configuration["sql"]));
-
+            services.AddDbContext<AppDbContext>(o => o.UseMySql(Configuration["sql"], ServerVersion.AutoDetect(Configuration["sql"])));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
