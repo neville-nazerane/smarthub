@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SmartHub.Logic.Data;
 using SmartHub.WebApp.Configs;
-using SmartHub.WebApp.Data;
 using SmartHub.WebApp.Endpoints;
 using SmartHub.WebApp.Services;
 
@@ -54,7 +54,7 @@ namespace SmartHub.WebApp
             {
 
                 endpoints.MapGet("/", context => context.Response.WriteAsync("Hello form another Device"));
-                endpoints.MapCrud("/mappedDevices", db => db.MappedDevices);
+                //endpoints.MapCrud("/mappedDevices", db => db.MappedDevices);
                 endpoints.MapDevices("/devices");
 
             });

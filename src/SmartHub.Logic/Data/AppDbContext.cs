@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartHub.Models;
+using SmartHub.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SmartHub.WebApp.Data
+namespace SmartHub.Logic.Data
 {
     public class AppDbContext : DbContext
     {
@@ -13,7 +14,9 @@ namespace SmartHub.WebApp.Data
         {
         }
 
-        public DbSet<MappedDevice> MappedDevices { get; set; }
+        //public DbSet<MappedDevice> MappedDevices { get; set; }
+
+        public DbSet<DeviceAction> DeviceActions { get; set; }
 
     }
 }
