@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using SmartHub.Logic.Data;
 using SmartHub.Models.Entities;
+using SmartHub.Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,28 @@ namespace SmartHub.Logic
         private readonly AppDbContext _context;
         private readonly ILogger<ActionService> _logger;
 
+        enum ActionId 
+        {
+            turnOnBedroom
+        }
+
         public ActionService(AppDbContext context, ILogger<ActionService> logger)
         {
             _context = context;
             _logger = logger;
+        }
+
+        public async ValueTask<IEnumerable<ActionInfo>> GetActionsInfo()
+        {
+            var ids = Enum.GetValues<ActionId>().Select(i => i.ToString());
+            var actions = await _context.DeviceActions
+                                        .Where(d => ids.Contains(d.Id))
+                                        .Select(d => d.Id)
+                                        .ToArrayAsync();
+
+            var result = ids.Select(id => new ActionInfo { Id = id, IsSet = actions.Contains(id) });
+
+            return result;
         }
 
         public async Task SetAsync(DeviceAction action)
