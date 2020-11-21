@@ -28,8 +28,7 @@ namespace SmartHub.Logic
             _context = context;
             _logger = logger;
         }
-
-        public async ValueTask<IEnumerable<ActionInfo>> GetActionsInfo(CancellationToken cancellationToken = default)
+        public async ValueTask<IEnumerable<ActionInfo>> GetActionsInfoAsync(CancellationToken cancellationToken = default)
         {
             var ids = Enum.GetValues<ActionId>().Select(i => i.ToString());
             var actions = await _context.DeviceActions
@@ -41,7 +40,6 @@ namespace SmartHub.Logic
 
             return result;
         }
-
         public async Task SetAsync(DeviceAction action, CancellationToken cancellationToken = default)
         {
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
@@ -70,7 +68,6 @@ namespace SmartHub.Logic
             }
             await transaction.CommitAsync(cancellationToken);
         }
-
         public async Task RemoveAsync(string id, CancellationToken cancellationToken = default)
         {
             var record = await _context.DeviceActions.SingleOrDefaultAsync(d => d.Id == id, cancellationToken);

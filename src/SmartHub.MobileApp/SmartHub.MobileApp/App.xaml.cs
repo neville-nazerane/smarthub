@@ -34,16 +34,5 @@ namespace SmartHub.MobileApp
                                     .Build();
         }
 
-        protected override void OnStart()
-        {
-        }
-
-        protected override void OnSleep()
-        {
-        }
-
-        protected override void OnResume()
-        {
-        }
     }
 }

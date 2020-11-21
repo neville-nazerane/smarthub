@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using SmartHub.Models;
 using SmartHub.Models.SmartThings;
-using SmartHub.WebApp.Services;
 using SmartHub.WebApp.Util;
 using System;
 using System.Collections.Generic;

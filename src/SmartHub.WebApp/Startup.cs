@@ -47,6 +47,7 @@ namespace SmartHub.WebApp
                 endpoints.MapGet("/", context => context.Response.WriteAsync("Hello form another Device"));
                 //endpoints.MapCrud("/mappedDevices", db => db.MappedDevices);
                 endpoints.MapDevices("/devices");
+                endpoints.MapActions("/actions");
 
             });
         }

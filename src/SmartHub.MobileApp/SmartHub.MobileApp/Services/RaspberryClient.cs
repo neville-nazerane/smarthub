@@ -1,9 +1,12 @@
-﻿using SmartHub.Models.SmartThings;
+﻿using SmartHub.Models.Entities;
+using SmartHub.Models.Models;
+using SmartHub.Models.SmartThings;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SmartHub.MobileApp.Services
@@ -17,11 +20,29 @@ namespace SmartHub.MobileApp.Services
             _client = client;
         }
 
-        public Task<IEnumerable<DeviceItem>> GetDevicesAsync() 
-            =>  _client.GetFromJsonAsync<IEnumerable<DeviceItem>>("devices");
+        #region devices
+        public Task<IEnumerable<DeviceItem>> GetDevicesAsync(CancellationToken cancellationToken = default)
+            => _client.GetFromJsonAsync<IEnumerable<DeviceItem>>("devices", cancellationToken);
 
-        public Task ExecuteDeviceAsync(string deviceId, DeviceExecuteModel model)
-            => _client.PostAsJsonAsync($"devices/{deviceId}/execute", model);
+        public Task ExecuteDeviceAsync(string deviceId,
+                                       DeviceExecuteModel model,
+                                       CancellationToken cancellationToken = default)
+            => _client.PostAsJsonAsync($"devices/{deviceId}/execute", model, cancellationToken);
+
+        #endregion
+
+        #region actions
+
+        public Task<IEnumerable<ActionInfo>> GetActionsAsync(CancellationToken cancellationToken = default)
+                => _client.GetFromJsonAsync<IEnumerable<ActionInfo>>("actions", cancellationToken);
+
+        public Task SetActionAsync(DeviceAction action, CancellationToken cancellationToken = default)
+                => _client.PutAsJsonAsync("actions/device", action, cancellationToken);
+
+        public Task RemoveActionAsync(string id, CancellationToken cancellationToken = default)
+                => _client.DeleteAsync($"actions/{id}", cancellationToken);
+
+        #endregion
 
     }
 }
