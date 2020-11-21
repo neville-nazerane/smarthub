@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
-namespace SmartHub.WebApp.Services
+namespace SmartHub.Logic
 {
     public class SmartThingsClient
     {
@@ -39,10 +39,9 @@ namespace SmartHub.WebApp.Services
             return data.Items;
         }
 
-        public Task ExecuteDeviceAsync(string deviceId, params DeviceExecuteModel[] models) 
+        public Task ExecuteDeviceAsync(string deviceId, params DeviceExecuteModel[] models)
             => _httpClient.PostAsJsonAsync($"/devices/{deviceId}/commands", new { commands = models });
- 
+
         #endregion
     }
 }
- 

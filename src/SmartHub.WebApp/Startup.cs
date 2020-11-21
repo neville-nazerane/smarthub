@@ -11,10 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SmartHub.Logic;
 using SmartHub.Logic.Data;
-using SmartHub.WebApp.Configs;
 using SmartHub.WebApp.Endpoints;
-using SmartHub.WebApp.Services;
 
 namespace SmartHub.WebApp
 {
@@ -29,15 +28,7 @@ namespace SmartHub.WebApp
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var smartThings = new SmartThingsConfig();
-            Configuration.Bind("smartthings", smartThings);
-
-            services.AddHttpClient<SmartThingsClient>(client => {
-                client.BaseAddress = new Uri("https://api.smartthings.com/v1");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", smartThings.PAT);
-            });
-
-            services.AddDbContext<AppDbContext>(o => o.UseMySql(Configuration["sql"], ServerVersion.AutoDetect(Configuration["sql"])));
+            services.AddLogic(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
