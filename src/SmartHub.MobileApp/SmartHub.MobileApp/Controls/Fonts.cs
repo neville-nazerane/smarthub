@@ -8,7 +8,8 @@ namespace SmartHub.MobileApp.Controls
 
     public enum Icon
     {
-        None
+        None,
+        Link
     }
 
     public static class Fonts
@@ -32,7 +33,7 @@ namespace SmartHub.MobileApp.Controls
                 {
                     "solid", new Dictionary<Icon, string>
                     {
-
+                        { Icon.Link, "\uf6ff" }
                     }
                 }
 
@@ -78,6 +79,14 @@ namespace SmartHub.MobileApp.Controls
                 case Span span:
                     span.Text = text;
                     span.FontFamily = family;
+                    break;
+                case SwipeItem swipeItem:
+                    swipeItem.IconImageSource = new FontImageSource
+                    {
+                        Color = Color.White,
+                        FontFamily = family,
+                        Glyph = text
+                    };
                     break;
             }
 
