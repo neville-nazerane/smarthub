@@ -20,7 +20,7 @@ namespace SmartHub.Logic
 
         enum ActionId 
         {
-            turnOnBedroom
+            turnOnBedroom, alexaKnock, offFront
         }
 
         public ActionService(AppDbContext context, ILogger<ActionService> logger)

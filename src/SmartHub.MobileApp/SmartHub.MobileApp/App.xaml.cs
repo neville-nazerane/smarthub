@@ -5,6 +5,7 @@ using SmartHub.MobileApp.Pages;
 using SmartHub.MobileApp.Services;
 using System;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.FluentInjector;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -18,6 +19,13 @@ namespace SmartHub.MobileApp
 
         public App()
         {
+
+            ExperimentalFeatures.Enable(new string[] {
+                "SwipeView_Experimental",
+                "Shapes_Experimental"
+            });
+
+
             InitializeComponent();
 
             AppCenter.Start(Config.AppCenter,
@@ -25,7 +33,7 @@ namespace SmartHub.MobileApp
 
             CurrentProvider = this.StartInjecting()
 
-                                    .SetInitialPage<DevicesPage>()
+                                    .SetInitialPage<HomePage>()
 
                                     .AddHttpClient<RaspberryClient>(client => {
                                         client.BaseAddress = new Uri(Config.Endpoint);
