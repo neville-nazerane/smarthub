@@ -10,8 +10,12 @@ using Xamarin.FluentInjector;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
+[assembly: ExportFont("fa-solid-900.ttf", Alias = "solid")]
+//[assembly: ExportFont("fa-regular-400.ttf", Alias = "regular")]
+//[assembly: ExportFont("fa-brands-400.ttf", Alias = "brands")]
 namespace SmartHub.MobileApp
 {
+
     public partial class App : Application
     {
 

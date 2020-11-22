@@ -23,46 +23,52 @@
                                IsRunning="{Binding ActionsLoading.IsLoading}"
                                IsEnabled="{Binding ActionsLoading.IsLoading}"/>
 
-            <CollectionView Grid.Row="1"
-                            Grid.ColumnSpan="3"
+            <RefreshView Command="{Binding PullCmd}"
+                         Grid.Row="1"
+                         Grid.ColumnSpan="3"
+                         IsRefreshing="{Binding IsRefreshing}">
+                <CollectionView 
                             Margin="12, 0, 10, 0"
                             IsVisible="{Binding ActionsLoading.IsNotLoading}" 
                             ItemsSource="{Binding Actions}">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical"
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical"
                                        ItemSpacing="20" />
-                </CollectionView.ItemsLayout>
-                
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="m:ActionInfo">
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="m:ActionInfo">
                             <SwipeView>
 
                                 <SwipeView.RightItems>
                                     <SwipeItems Mode="Reveal"
                                                 SwipeBehaviorOnInvoked="Close">
                                         <SwipeItem Text="Set"
-                                               BackgroundColor="Green"/>
+                                                   BackgroundColor="Green"/>
                                     </SwipeItems>
                                 </SwipeView.RightItems>
 
-                            <Frame HeightRequest="20">
-                                <Grid ColumnDefinitions="*, auto">
-                                    <Label Text="{Binding Id}"/>
+                                <Frame HeightRequest="20"
+                                       CornerRadius="8">
+                                    <Grid ColumnDefinitions="*, auto">
 
-                                    <Ellipse Grid.Column="1"
-                                     HeightRequest="20"
-                                     WidthRequest="20"
-                                     HorizontalOptions="Start"
-                                     Fill="#46ff46"
-                                     IsVisible="{Binding IsSet}" />
-                                </Grid>
-                            </Frame>
+                                        <Label Text="{Binding Id}"/>
 
-                        </SwipeView>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-            
+                                        <Ellipse Grid.Column="1"
+                                                 HeightRequest="20"
+                                                 WidthRequest="20"
+                                                 HorizontalOptions="Start"
+                                                 Fill="#46ff46"
+                                                 IsVisible="{Binding IsSet}" />
+                                    </Grid>
+                                </Frame>
+
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+
         </Grid>
         
     </ContentPage.Content>
