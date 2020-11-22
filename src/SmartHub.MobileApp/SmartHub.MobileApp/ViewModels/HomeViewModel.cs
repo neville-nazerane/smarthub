@@ -36,7 +36,6 @@ namespace SmartHub.MobileApp.ViewModels
         async Task LoadActionsAsync()
         {
             Actions = new ObservableCollection<ActionInfo>(await _client.GetActionsAsync());
-            await Task.Delay(3000);
         }
 
         private async Task ActionsLoadFailed(Exception e)
