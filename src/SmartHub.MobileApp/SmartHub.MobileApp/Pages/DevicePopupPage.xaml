@@ -12,23 +12,14 @@
 
     <ContentPage.Resources>
 
+        <Style TargetType="Label" x:Key="titleStyle">
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="VerticalTextAlignment" Value="Center" />
+        </Style>
 
         <convert:ExpandedToPathData x:Key="expandedToPath" />
-        <convert:ToExpandable x:Key="toExpandable" />
 
-        <DataTemplate x:Key="expandableTemplate"
-                      x:DataType="control:ExpandableData">
-            <Grid>
-                <Label Text="{Binding Text}" />
-                <Path Data="{Binding LoadControl.IsExpanded, 
-                                     Converter={StaticResource expandedToPath}}" />
-                <component:ExpandableCollection LoadControl="{Binding LoadControl}"
-                                                ItemTemplate="{StaticResource templateSelector}" />
-            </Grid>
-        </DataTemplate>
-        
-        <selectors:ExpandableTemplateSelector x:Key="templateSelector"
-                                              ExpandableTemplate="{StaticResource expandableTemplate}" />
+       
         
     </ContentPage.Resources>
     
@@ -50,11 +41,58 @@
                 </Path.GestureRecognizers>
             </Path>
 
+            <ActivityIndicator AbsoluteLayout.LayoutBounds=".5, 60, .5, .5" 
+                               AbsoluteLayout.LayoutFlags="XProportional,SizeProportional" 
+                               IsVisible="{Binding LoadControl.IsLoading}" 
+                               IsRunning="{Binding LoadControl.IsLoading}"
+                               IsEnabled="{Binding LoadControl.IsLoading}"/>
+
             <CollectionView AbsoluteLayout.LayoutBounds="0, 60, 1, 1" 
                             AbsoluteLayout.LayoutFlags="SizeProportional"
-                            ItemsLayout="{Binding Devices}"
-                            ItemTemplate="{StaticResource templateSelector}" />
-
+                            ItemsSource="{Binding Devices}" >
+                <CollectionView.ItemTemplate>
+                    
+                    <DataTemplate x:DataType="control:ExpandableData">
+                        <Grid ColumnDefinitions="*, auto"
+                              RowDefinitions="*, auto"
+                              Padding="20, 0, 20, 0">
+                            <Label Text="{Binding Text}" 
+                                   Style="{StaticResource titleStyle}" />
+                            
+                            
+                            <Path Grid.Column="1"
+                                  Aspect="Uniform"
+                                  HeightRequest="30"
+                                  WidthRequest="20"
+                                  Data="{Binding LoadControl.IsExpanded, 
+                                                 Converter={StaticResource expandedToPath}}"
+                                  Fill="Blue">
+                                <Path.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding LoadControl.ExpandOrCollapseCmd}" />
+                                </Path.GestureRecognizers>
+                            </Path>
+                            <component:ExpandableCollection LoadControl="{Binding LoadControl}"
+                                                            Grid.Row="1" Grid.ColumnSpan="2">
+                                <component:ExpandableCollection.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid >
+                                            <Label Text="{Binding Text}" 
+                                                   Style="{StaticResource titleStyle}" />
+                                            <Path Data="{Binding LoadControl.IsExpanded, 
+                                                  Converter={StaticResource expandedToPath}}"
+                                                  >
+                                                <Path.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding LoadControl.ExpandOrCollapseCmd}" />
+                                                </Path.GestureRecognizers>
+                                            </Path>
+                                        </Grid>
+                                    </DataTemplate>
+                                </component:ExpandableCollection.ItemTemplate>
+                            </component:ExpandableCollection>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
 
         </AbsoluteLayout>

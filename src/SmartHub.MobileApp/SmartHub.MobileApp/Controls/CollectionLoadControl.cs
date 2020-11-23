@@ -17,16 +17,17 @@ namespace SmartHub.MobileApp.Controls
         public IEnumerable<object> Items { get => _items; private set => SetProperty(ref _items, value); }
 
         public Func<Task<IEnumerable<object>>> OnExecuteAsync;
+        private bool _isExpanded;
 
         public ICommand ExpandOrCollapseCmd { get; set; }
 
-        public bool IsExpanded { get; private set; }
+        public bool IsExpanded { get => _isExpanded; private set => SetProperty(ref _isExpanded, value); }
 
         public bool UseCache { get; set; }
 
         public CollectionLoadControl()
         {
-            ExpandOrCollapseCmd = new Command(async () => await ExecuteAndCacheAsync());
+            ExpandOrCollapseCmd = new Command(async () => await ExpandOrCollapseAsync());
         }
 
         private async Task ExecuteAndCacheAsync()
@@ -35,6 +36,13 @@ namespace SmartHub.MobileApp.Controls
             {
                 itemsCache = await ExecuteAsync(OnExecuteAsync);
             }
+        }
+
+        public async Task ExpandOrCollapseAsync()
+        {
+            if (IsExpanded)
+                Collapse();
+            else await ExpandAsync();
         }
 
         public async Task ExpandAsync()

@@ -36,8 +36,8 @@ namespace SmartHub.MobileApp.ViewModels
         {
             ToDevices = new Command(async () => await injectionControl.NavigateAsync<DevicesPage>());
             ToDeviceComponent = new Command(async () => await ToDeviceComponentAsync());
-            OnTest = new Command<DeviceCapability>(async c => await TestExecute(c, "on"));
-            OffTest = new Command<DeviceCapability>(async c => await TestExecute(c, "off"));
+            OnTest = new Command<DeviceCapability>(async c => await TestExecuteAsync(c, "on"));
+            OffTest = new Command<DeviceCapability>(async c => await TestExecuteAsync(c, "off"));
             _injectionControl = injectionControl;
             _raspberryClient = raspberryClient;
         }
@@ -52,7 +52,7 @@ namespace SmartHub.MobileApp.ViewModels
             });
         }
 
-        private async Task TestExecute(DeviceCapability deviceCapability, string cmd)
+        private async Task TestExecuteAsync(DeviceCapability deviceCapability, string cmd)
         {
             await _raspberryClient.ExecuteDeviceAsync(DeviceId, new DeviceExecuteModel { 
                 Capability = deviceCapability.Id,
