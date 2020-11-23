@@ -7,7 +7,6 @@
              x:DataType="viewmodels:HomeViewModel"
              x:Class="SmartHub.MobileApp.Pages.HomePage">
 
-    <!--svgs from https://fontawesome.com/license --> 
 
     <ContentPage.Content>
 

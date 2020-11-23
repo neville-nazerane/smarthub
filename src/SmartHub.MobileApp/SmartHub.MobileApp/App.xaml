@@ -4,6 +4,9 @@
              x:Class="SmartHub.MobileApp.App">
     <Application.Resources>
 
+        <!--svgs from https://fontawesome.com/license -->
+
+
         <Style TargetType="Button">
             <Setter Property="Visual" Value="Material" />
         </Style>
