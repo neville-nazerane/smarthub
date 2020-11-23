@@ -2,6 +2,7 @@
 using Microsoft.AppCenter.Crashes;
 using SmartHub.MobileApp.Controls;
 using SmartHub.MobileApp.Services;
+using SmartHub.MobileApp.Utils;
 using SmartHub.Models.Models;
 using System;
 using System.Collections.Generic;
@@ -48,11 +49,7 @@ namespace SmartHub.MobileApp.ViewModels
 
         async Task OpenActionPopupAsync()
         {
-            var completionSource = new TaskCompletionSource<int>();
-            var page = _injectionControl.ResolvePage<DevicePopupViewModel>(vm => vm.TaskCompletionSource = completionSource);
-            var currPage = _pageControl.Page as Page;
-            await currPage.Navigation.PushModalAsync(page);
-            int result = await completionSource.Task;
+            int result = await _pageControl.OpenPopupAsync<DevicePopupViewModel, int>();
             await _pageControl.DisplayAlert("Done", result.ToString(), "Ok");
         }
 

@@ -8,25 +8,13 @@ using Xamarin.Forms;
 
 namespace SmartHub.MobileApp.ViewModels
 {
-    public class DevicePopupViewModel : ViewModelBase
+    public class DevicePopupViewModel : PopupViewModelBase<int>
     {
-        private readonly IPageControl _pageControl;
 
-        public TaskCompletionSource<int> TaskCompletionSource { get; set; }
+        protected override int CancelResponse => 0;
 
-        public ICommand CloseCmd { get; set; }
-
-        public DevicePopupViewModel(IPageControl pageControl)
+        public DevicePopupViewModel(IPageControl pageControl) : base(pageControl)
         {
-            CloseCmd = new Command(async () => await CloseAsync());
-            _pageControl = pageControl;
-        }
-
-        async Task CloseAsync()
-        {
-            TaskCompletionSource.TrySetResult(23);
-            var currPage = _pageControl.Page as Page;
-            await currPage.Navigation.PopModalAsync();
         }
 
     }

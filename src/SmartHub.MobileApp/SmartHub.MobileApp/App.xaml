@@ -14,8 +14,6 @@
         <Style TargetType="Label">
             <Setter Property="Visual" Value="Material" />
         </Style>
-
-        
         
 
         <Style x:Key="crumbText" TargetType="Span" >
