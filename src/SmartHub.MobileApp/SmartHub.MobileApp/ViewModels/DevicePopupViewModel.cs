@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.FluentInjector.Utilities;
 using Xamarin.Forms;
+using Xamarin.Forms.Shapes;
 
 namespace SmartHub.MobileApp.ViewModels
 {
@@ -15,6 +16,7 @@ namespace SmartHub.MobileApp.ViewModels
 
         public DevicePopupViewModel(IPageControl pageControl) : base(pageControl)
         {
+
         }
 
     }

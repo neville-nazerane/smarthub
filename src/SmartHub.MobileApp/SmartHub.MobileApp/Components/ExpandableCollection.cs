@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Xml;
 using Xamarin.Forms;
 
 namespace SmartHub.MobileApp.Components
@@ -11,30 +12,29 @@ namespace SmartHub.MobileApp.Components
     public class ExpandableCollection : ContentView
     {
 
-        //public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create(nameof(ItemsSource),
-        //                                                                                     typeof(IEnumerable<object>),
-        //                                                                                     typeof(ExpandableCollection));
-
         public static readonly BindableProperty ItemTemplateProperty = BindableProperty.Create(nameof(ItemTemplate),
                                                                                                typeof(DataTemplate),
-                                                                                               typeof(ExpandableCollection));
+                                                                                               typeof(ExpandableCollection),
+                                                                                               propertyChanged: ItemTemplateSet);
 
-
-        //public IEnumerable<object> ItemsSource
-        //{
-        //    get => (IEnumerable<object>)GetValue(ItemsSourceProperty);
-        //    set => SetValue(ItemsSourceProperty, value);
-        //}
+        public static readonly BindableProperty LoadControlProperty = BindableProperty.Create(nameof(LoadControl),
+                                                                                              typeof(CollectionLoadControl),
+                                                                                              typeof(ExpandableCollection),
+                                                                                              propertyChanged: LoadControlSet);
 
         public DataTemplate ItemTemplate 
         { 
             get => (DataTemplate) GetValue(ItemTemplateProperty); 
             set => SetValue(ItemTemplateProperty, value); 
         }
+        
+        public CollectionLoadControl LoadControl 
+        { 
+            get => (CollectionLoadControl) GetValue(LoadControlProperty); 
+            set => SetValue(LoadControlProperty, value); }
 
-        private CollectionView collectionView;
+        private readonly CollectionView _collectionView;
         private readonly ActivityIndicator _loadingComponent;
-        private readonly CollectionLoadControl _loadControl;
 
         public ExpandableCollection()
         {
@@ -44,18 +44,26 @@ namespace SmartHub.MobileApp.Components
                 IsVisible = true,
                 IsRunning = true
             };
-            _loadControl = new CollectionLoadControl();
+            LoadControl = new CollectionLoadControl();
+            _collectionView = new CollectionView();
         }
 
         protected override void OnParentSet()
         {
             base.OnParentSet();
+            SetUpLoadControl(LoadControl);
+        }
 
+        void SetUpLoadControl(LoadControl newValue, LoadControl oldValue = null)
+        {
+            if (oldValue is not null)
+                oldValue.PropertyChanged -= LoadControl_PropertyChanged;
+
+            if (newValue is null) return;
             if (Parent is null)
-                _loadControl.PropertyChanged -= LoadControl_PropertyChanged;
+                newValue.PropertyChanged -= LoadControl_PropertyChanged;
             else
-                _loadControl.PropertyChanged += LoadControl_PropertyChanged;
-
+                newValue.PropertyChanged += LoadControl_PropertyChanged;
         }
 
         private void LoadControl_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -73,16 +81,26 @@ namespace SmartHub.MobileApp.Components
 
         private void SetupItems()
         {
-            if (_loadControl?.Items is null)
+            if (LoadControl?.Items is null)
             {
+                _collectionView.ItemsSource = null;
                 Content = null;
                 return;
             }
-            collectionView = new CollectionView();
             var source = new ObservableCollection<object>();
-            collectionView.ItemsSource = source;
-            Content = collectionView;
-            foreach (var item in _loadControl.Items) source.Add(item);
+            _collectionView.ItemsSource = source;
+            Content = _collectionView;
+            foreach (var item in LoadControl.Items) source.Add(item);
+        }
+
+        private static void LoadControlSet(BindableObject bindable, object oldValue, object newValue)
+        {
+            ((ExpandableCollection)bindable).SetUpLoadControl(newValue as LoadControl, oldValue as LoadControl);
+        }
+
+        private static void ItemTemplateSet(BindableObject bindable, object oldValue, object newValue)
+        {
+            ((ExpandableCollection)bindable)._collectionView.ItemTemplate = (DataTemplate) newValue;
         }
 
     }

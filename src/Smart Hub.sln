@@ -7,13 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHub.WebApp", "SmartHub
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHub.MobileApp.Android", "SmartHub.MobileApp\SmartHub.MobileApp.Android\SmartHub.MobileApp.Android.csproj", "{0ED494F0-B7A4-4BE2-9630-C1F351AEA139}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHub.MobileApp", "SmartHub.MobileApp\SmartHub.MobileApp\SmartHub.MobileApp.csproj", "{4E22ED01-A2EA-4273-BB34-E4A15E38BF5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHub.MobileApp", "SmartHub.MobileApp\SmartHub.MobileApp\SmartHub.MobileApp.csproj", "{4E22ED01-A2EA-4273-BB34-E4A15E38BF5B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mobile App", "Mobile App", "{593D0EFC-FAFA-4B73-A2C3-248BB3389D7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHub.Models", "SmartHub.Models\SmartHub.Models.csproj", "{B90BD784-8561-457C-9057-5BD9E8A6BF0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHub.Models", "SmartHub.Models\SmartHub.Models.csproj", "{B90BD784-8561-457C-9057-5BD9E8A6BF0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHub.Logic", "SmartHub.Logic\SmartHub.Logic.csproj", "{7E07E2F6-9B3D-49DB-A6FA-2D56DEDFCF03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHub.Logic", "SmartHub.Logic\SmartHub.Logic.csproj", "{7E07E2F6-9B3D-49DB-A6FA-2D56DEDFCF03}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

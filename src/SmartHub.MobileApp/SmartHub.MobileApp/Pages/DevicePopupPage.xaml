@@ -1,7 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:m="clr-namespace:SmartHub.Models.SmartThings;assembly=SmartHub.Models"
+             xmlns:component="clr-namespace:SmartHub.MobileApp.Components" 
+             xmlns:viewmodels="clr-namespace:SmartHub.MobileApp.ViewModels" 
+             xmlns:convert="clr-namespace:SmartHub.MobileApp.ValueConverters"
+             xmlns:control="clr-namespace:SmartHub.MobileApp.Controls"
+             xmlns:selectors="clr-namespace:SmartHub.MobileApp.TemplateSelectors"
+             x:DataType="viewmodels:DevicePopupViewModel"
              x:Class="SmartHub.MobileApp.Pages.DevicePopupPage">
+
+    <ContentPage.Resources>
+
+
+        <convert:ExpandedToPathData x:Key="expandedToPath" />
+        <convert:ToExpandable x:Key="toExpandable" />
+
+        <DataTemplate x:Key="expandableTemplate"
+                      x:DataType="control:ExpandableData">
+            <Grid>
+                <Label Text="{Binding Text}" />
+                <Path Data="{Binding LoadControl.IsExpanded, 
+                                     Converter={StaticResource expandedToPath}}" />
+                <component:ExpandableCollection LoadControl="{Binding LoadControl}"
+                                                ItemTemplate="{StaticResource templateSelector}" />
+            </Grid>
+        </DataTemplate>
+        
+        <selectors:ExpandableTemplateSelector x:Key="templateSelector"
+                                              ExpandableTemplate="{StaticResource expandableTemplate}" />
+        
+    </ContentPage.Resources>
+    
+    
     <ContentPage.Content>
 
 
@@ -18,6 +49,13 @@
                     <TapGestureRecognizer Command="{Binding CloseCmd}" />
                 </Path.GestureRecognizers>
             </Path>
+
+            <CollectionView AbsoluteLayout.LayoutBounds="0, 60, 1, 1" 
+                            AbsoluteLayout.LayoutFlags="SizeProportional"
+                            ItemsLayout="{Binding Devices}"
+                            ItemTemplate="{StaticResource templateSelector}" />
+
+
 
         </AbsoluteLayout>
         
