@@ -17,6 +17,19 @@
             <Setter Property="VerticalTextAlignment" Value="Center" />
         </Style>
 
+        <!--Aspect="Uniform"-->
+                                  <!--HeightRequest="30"
+                                  WidthRequest="20"
+                                  Fill="Blue"-->
+
+        <Style TargetType="Path" x:Key="dropStyle">
+            <Setter Property="Aspect" Value="Uniform" />
+            <Setter Property="HeightRequest" Value="30" />
+            <Setter Property="WidthRequest" Value="20" />
+            <Setter Property="Fill" Value="Blue" />
+        </Style>
+        
+        
         <convert:ExpandedToPathData x:Key="expandedToPath" />
 
        
@@ -58,29 +71,34 @@
                               Padding="20, 0, 20, 0">
                             <Label Text="{Binding Text}" 
                                    Style="{StaticResource titleStyle}" />
-                            
-                            
+
+                            <!--<Ellipse Grid.Column="1"
+                                     Stroke="Blue"
+                                     StrokeThickness="2"
+                                     HeightRequest="35"
+                                     WidthRequest="35"/>-->
                             <Path Grid.Column="1"
-                                  Aspect="Uniform"
-                                  HeightRequest="30"
-                                  WidthRequest="20"
+                                  Style="{StaticResource dropStyle}"
                                   Data="{Binding LoadControl.IsExpanded, 
                                                  Converter={StaticResource expandedToPath}}"
-                                  Fill="Blue">
+                                  >
                                 <Path.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding LoadControl.ExpandOrCollapseCmd}" />
                                 </Path.GestureRecognizers>
                             </Path>
                             <component:ExpandableCollection LoadControl="{Binding LoadControl}"
-                                                            Grid.Row="1" Grid.ColumnSpan="2">
+                                                            Grid.Row="1" Grid.ColumnSpan="2"
+                                                            Margin="30, 0, 0, 0">
                                 <component:ExpandableCollection.ItemTemplate>
                                     <DataTemplate>
-                                        <Grid >
+                                        <Grid ColumnDefinitions="*, auto"
+                                              RowDefinitions="*, auto">
                                             <Label Text="{Binding Text}" 
                                                    Style="{StaticResource titleStyle}" />
                                             <Path Data="{Binding LoadControl.IsExpanded, 
                                                   Converter={StaticResource expandedToPath}}"
-                                                  >
+                                                  Grid.Column="1"
+                                                  Style="{StaticResource dropStyle}">
                                                 <Path.GestureRecognizers>
                                                     <TapGestureRecognizer Command="{Binding LoadControl.ExpandOrCollapseCmd}" />
                                                 </Path.GestureRecognizers>
