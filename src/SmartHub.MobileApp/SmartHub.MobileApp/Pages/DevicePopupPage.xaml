@@ -103,6 +103,17 @@
                                                     <TapGestureRecognizer Command="{Binding LoadControl.ExpandOrCollapseCmd}" />
                                                 </Path.GestureRecognizers>
                                             </Path>
+                                            <component:ExpandableCollection LoadControl="{Binding LoadControl}">
+                                                <component:ExpandableCollection.ItemsLayout>
+                                                    <LinearItemsLayout ItemSpacing="20"
+                                                      Orientation="Horizontal" />
+                                                </component:ExpandableCollection.ItemsLayout>
+                                                <component:ExpandableCollection.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Label Text="{Binding Text}" />
+                                                    </DataTemplate>
+                                                </component:ExpandableCollection.ItemTemplate>
+                                            </component:ExpandableCollection>
                                         </Grid>
                                     </DataTemplate>
                                 </component:ExpandableCollection.ItemTemplate>

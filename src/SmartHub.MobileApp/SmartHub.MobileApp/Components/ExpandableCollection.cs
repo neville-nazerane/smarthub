@@ -22,6 +22,12 @@ namespace SmartHub.MobileApp.Components
                                                                                               typeof(ExpandableCollection),
                                                                                               propertyChanged: LoadControlSet);
 
+
+        private readonly CollectionView _collectionView;
+        private readonly ActivityIndicator _loadingComponent;
+
+        public IItemsLayout ItemsLayout { get => _collectionView.ItemsLayout; set => _collectionView.ItemsLayout = value; }
+
         public DataTemplate ItemTemplate 
         { 
             get => (DataTemplate) GetValue(ItemTemplateProperty); 
@@ -31,10 +37,10 @@ namespace SmartHub.MobileApp.Components
         public CollectionLoadControl LoadControl 
         { 
             get => (CollectionLoadControl) GetValue(LoadControlProperty); 
-            set => SetValue(LoadControlProperty, value); }
+            set => SetValue(LoadControlProperty, value); 
+        }
 
-        private readonly CollectionView _collectionView;
-        private readonly ActivityIndicator _loadingComponent;
+
 
         public ExpandableCollection()
         {

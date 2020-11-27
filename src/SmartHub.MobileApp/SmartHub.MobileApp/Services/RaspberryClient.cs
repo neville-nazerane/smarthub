@@ -29,7 +29,7 @@ namespace SmartHub.MobileApp.Services
                                        CancellationToken cancellationToken = default)
             => _client.PostAsJsonAsync($"devices/{deviceId}/execute", model, cancellationToken);
 
-        public Task<CapabilityData> GetCapability(string id,
+        public Task<CapabilityData> GetCapabilityAsync(string id,
                                   float version,
                                   CancellationToken cancellationToken = default)
             => _client.GetFromJsonAsync<CapabilityData>($"devices/capabilities/{id}/{version}", cancellationToken);
