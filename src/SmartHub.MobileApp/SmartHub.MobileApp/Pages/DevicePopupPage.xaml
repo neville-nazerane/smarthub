@@ -7,6 +7,7 @@
              xmlns:convert="clr-namespace:SmartHub.MobileApp.ValueConverters"
              xmlns:control="clr-namespace:SmartHub.MobileApp.Controls"
              xmlns:selectors="clr-namespace:SmartHub.MobileApp.TemplateSelectors"
+             xmlns:tools="clr-namespace:Xamarin.CommunityToolkit.UI.Views;assembly=Xamarin.CommunityToolkit"
              x:DataType="viewmodels:DevicePopupViewModel"
              x:Class="SmartHub.MobileApp.Pages.DevicePopupPage">
 
@@ -16,6 +17,9 @@
             <Setter Property="FontAttributes" Value="Bold" />
             <Setter Property="VerticalTextAlignment" Value="Center" />
         </Style>
+        
+        
+        
 
         <!--Aspect="Uniform"-->
                                   <!--HeightRequest="30"
@@ -40,12 +44,14 @@
     <ContentPage.Content>
 
 
-        <AbsoluteLayout>
+        <Grid ColumnDefinitions="*, 40"
+              RowDefinitions="45, *">
 
+            
+            
             <Path 
                 Data="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm101.8-262.2L295.6 256l62.2 62.2c4.7 4.7 4.7 12.3 0 17l-22.6 22.6c-4.7 4.7-12.3 4.7-17 0L256 295.6l-62.2 62.2c-4.7 4.7-12.3 4.7-17 0l-22.6-22.6c-4.7-4.7-4.7-12.3 0-17l62.2-62.2-62.2-62.2c-4.7-4.7-4.7-12.3 0-17l22.6-22.6c4.7-4.7 12.3-4.7 17 0l62.2 62.2 62.2-62.2c4.7-4.7 12.3-4.7 17 0l22.6 22.6c4.7 4.7 4.7 12.3 0 17z"
-                AbsoluteLayout.LayoutBounds="1, 10, 40, 40"
-                AbsoluteLayout.LayoutFlags="XProportional"
+                Grid.Column="1"
                 Margin="0, 0, 5, 0"
                 Aspect="Uniform"
                 Fill="Black">
@@ -54,77 +60,106 @@
                 </Path.GestureRecognizers>
             </Path>
 
-            <ActivityIndicator AbsoluteLayout.LayoutBounds=".5, 60, .5, .5" 
-                               AbsoluteLayout.LayoutFlags="XProportional,SizeProportional" 
+            <ActivityIndicator Grid.Row="1" Grid.ColumnSpan="2"
                                IsVisible="{Binding LoadControl.IsLoading}" 
                                IsRunning="{Binding LoadControl.IsLoading}"
                                IsEnabled="{Binding LoadControl.IsLoading}"/>
 
-            <CollectionView AbsoluteLayout.LayoutBounds="0, 60, 1, 1" 
-                            AbsoluteLayout.LayoutFlags="SizeProportional"
-                            ItemsSource="{Binding Devices}" >
+            <CollectionView Grid.Row="1" Grid.ColumnSpan="2"
+                            ItemsSource="{Binding Devices}"
+                            VerticalOptions="Start" 
+                            Margin="10, 0">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical"
+                                     VerticalItemSpacing="20" />
+                </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     
                     <DataTemplate x:DataType="control:ExpandableData">
-                        <Grid ColumnDefinitions="*, auto"
-                              RowDefinitions="*, auto"
-                              Padding="20, 0, 20, 0">
-                            <Label Text="{Binding Text}" 
+                        <Frame BorderColor="LightGray"
+                               CornerRadius="10"
+                               Padding="10">
+                            <Grid ColumnDefinitions="*, auto"
+                                  RowDefinitions="30, *"
+                                  Padding="20, 0, 20, 0">
+
+                                <!--#region row 1 -->
+                                <Label Text="{Binding Text}" 
                                    Style="{StaticResource titleStyle}" />
 
-                            <!--<Ellipse Grid.Column="1"
+                                <!--<Ellipse Grid.Column="1"
                                      Stroke="Blue"
                                      StrokeThickness="2"
                                      HeightRequest="35"
                                      WidthRequest="35"/>-->
-                            <Path Grid.Column="1"
+                                <Path Grid.Column="1"
                                   Style="{StaticResource dropStyle}"
                                   Data="{Binding LoadControl.IsExpanded, 
                                                  Converter={StaticResource expandedToPath}}"
                                   >
-                                <Path.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding LoadControl.ExpandOrCollapseCmd}" />
-                                </Path.GestureRecognizers>
-                            </Path>
-                            <component:ExpandableCollection LoadControl="{Binding LoadControl}"
-                                                            Grid.Row="1" Grid.ColumnSpan="2"
-                                                            Margin="30, 0, 0, 0">
-                                <component:ExpandableCollection.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid ColumnDefinitions="*, auto"
-                                              RowDefinitions="*, auto">
-                                            <Label Text="{Binding Text}" 
-                                                   Style="{StaticResource titleStyle}" />
-                                            <Path Data="{Binding LoadControl.IsExpanded, 
-                                                  Converter={StaticResource expandedToPath}}"
-                                                  Grid.Column="1"
-                                                  Style="{StaticResource dropStyle}">
-                                                <Path.GestureRecognizers>
-                                                    <TapGestureRecognizer Command="{Binding LoadControl.ExpandOrCollapseCmd}" />
-                                                </Path.GestureRecognizers>
-                                            </Path>
-                                            <component:ExpandableCollection LoadControl="{Binding LoadControl}">
-                                                <component:ExpandableCollection.ItemsLayout>
-                                                    <LinearItemsLayout ItemSpacing="20"
-                                                      Orientation="Horizontal" />
-                                                </component:ExpandableCollection.ItemsLayout>
-                                                <component:ExpandableCollection.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Label Text="{Binding Text}" />
-                                                    </DataTemplate>
-                                                </component:ExpandableCollection.ItemTemplate>
-                                            </component:ExpandableCollection>
-                                        </Grid>
-                                    </DataTemplate>
-                                </component:ExpandableCollection.ItemTemplate>
-                            </component:ExpandableCollection>
-                        </Grid>
+                                    <Path.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding LoadControl.ExpandOrCollapseCmd}" />
+                                    </Path.GestureRecognizers>
+                                </Path>
+                                <!--#endregion-->
+
+                                <!--device items-->
+                                <Grid Grid.Row="1" Grid.ColumnSpan="2">
+                                    <component:ExpandableCollection LoadControl="{Binding LoadControl}"
+                                                            
+                                                            Margin="30, 30, 0, 0">
+                                        <component:ExpandableCollection.ItemsLayout>
+                                            <GridItemsLayout Orientation="Vertical"
+                                                         VerticalItemSpacing="20" />
+                                        </component:ExpandableCollection.ItemsLayout>
+                                        <component:ExpandableCollection.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid ColumnDefinitions="*, auto"
+                                                      RowDefinitions="30, 1, auto">
+                                                    <Label Text="{Binding Text}" 
+                                                       Style="{StaticResource titleStyle}" />
+                                                    <Path Data="{Binding LoadControl.IsExpanded, 
+                                                      Converter={StaticResource expandedToPath}}"
+                                                      Grid.Column="1"
+                                                      Style="{StaticResource dropStyle}">
+                                                        <Path.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding LoadControl.ExpandOrCollapseCmd}" />
+                                                        </Path.GestureRecognizers>
+                                                    </Path>
+
+                                                    <Line Grid.Row="1" Grid.ColumnSpan="2"
+                                                      BackgroundColor="Red" />
+
+                                                    <!--commands-->
+                                                    <component:ExpandableCollection LoadControl="{Binding LoadControl}"
+                                                                                    Grid.Row="2">
+                                                        <component:ExpandableCollection.ItemsLayout>
+                                                            <GridItemsLayout Orientation="Horizontal"
+                                                                             HorizontalItemSpacing="10"/>
+                                                        </component:ExpandableCollection.ItemsLayout>
+                                                        <component:ExpandableCollection.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Grid RowDefinitions="40">
+                                                                    <Button Text="{Binding Text}"
+                                                                        HeightRequest="60"
+                                                                        BackgroundColor="GreenYellow"/>
+                                                                </Grid>
+                                                            </DataTemplate>
+                                                        </component:ExpandableCollection.ItemTemplate>
+                                                    </component:ExpandableCollection>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </component:ExpandableCollection.ItemTemplate>
+                                    </component:ExpandableCollection>
+                                </Grid>
+                            </Grid>
+                        </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
 
-        </AbsoluteLayout>
+        </Grid>
         
     </ContentPage.Content>
 </ContentPage>

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Xamarin.CommunityToolkit.UI.Views;
 
 namespace SmartHub.MobileApp.Utils
 {
@@ -53,7 +54,6 @@ namespace SmartHub.MobileApp.Utils
             }
             else
                 result = await completionSource.Task;
-
             return result;
         }
 

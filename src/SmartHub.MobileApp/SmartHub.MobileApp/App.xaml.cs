@@ -26,7 +26,8 @@ namespace SmartHub.MobileApp
 
             ExperimentalFeatures.Enable(new string[] {
                 "SwipeView_Experimental",
-                "Shapes_Experimental"
+                "Shapes_Experimental",
+                "Expander_Experimental"
             });
 
 
