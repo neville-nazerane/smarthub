@@ -25,6 +25,7 @@ namespace SmartHub.MobileApp.ViewModels
             PageControl = pageControl;
         }
 
+        public void Cancel() => TaskCompletionSource.TrySetResult(CancelResponse);
 
         protected async Task<bool> SetResultAsync(TResponse response)
         {

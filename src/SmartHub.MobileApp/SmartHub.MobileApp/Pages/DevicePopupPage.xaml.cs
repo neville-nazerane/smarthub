@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SmartHub.MobileApp.Utils;
+using SmartHub.MobileApp.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +17,12 @@ namespace SmartHub.MobileApp.Pages
         public DevicePopupPage()
         {
             InitializeComponent();
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            this.GetViewModel<DevicePopupViewModel>().Cancel();
+            return base.OnBackButtonPressed();
         }
     }
 }
