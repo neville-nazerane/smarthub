@@ -7,18 +7,28 @@
              xmlns:convert="clr-namespace:SmartHub.MobileApp.ValueConverters"
              xmlns:control="clr-namespace:SmartHub.MobileApp.Controls"
              xmlns:selectors="clr-namespace:SmartHub.MobileApp.TemplateSelectors"
+             xmlns:e="clr-namespace:SmartHub.Models.Entities;assembly=SmartHub.Models"
              xmlns:tools="clr-namespace:Xamarin.CommunityToolkit.UI.Views;assembly=Xamarin.CommunityToolkit"
              x:DataType="viewmodels:DevicePopupViewModel"
              x:Class="SmartHub.MobileApp.Pages.DevicePopupPage">
 
     <ContentPage.Resources>
 
+        <DataTemplate x:Key="footerTemplate" 
+                      x:DataType="viewmodels:DevicePopupViewModel">
+            <Button Text="Clear linking" 
+                    BackgroundColor="OrangeRed"
+                    Command="{Binding DeleteCmd}"/>
+        </DataTemplate>
+
         <Style TargetType="Label" x:Key="titleStyle">
             <Setter Property="FontAttributes" Value="Bold" />
             <Setter Property="VerticalTextAlignment" Value="Center" />
         </Style>
-        
-        
+
+        <Style TargetType="Button" x:Key="tabButton">
+            <Setter Property="BackgroundColor" Value="CadetBlue" />
+        </Style>
         
 
         <!--Aspect="Uniform"-->
@@ -45,9 +55,7 @@
 
 
         <Grid ColumnDefinitions="*, 40"
-              RowDefinitions="45, *">
-
-            
+              RowDefinitions="45, 60, *">
             
             <Path 
                 Data="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm101.8-262.2L295.6 256l62.2 62.2c4.7 4.7 4.7 12.3 0 17l-22.6 22.6c-4.7 4.7-12.3 4.7-17 0L256 295.6l-62.2 62.2c-4.7 4.7-12.3 4.7-17 0l-22.6-22.6c-4.7-4.7-4.7-12.3 0-17l62.2-62.2-62.2-62.2c-4.7-4.7-4.7-12.3 0-17l22.6-22.6c4.7-4.7 12.3-4.7 17 0l62.2 62.2 62.2-62.2c4.7-4.7 12.3-4.7 17 0l22.6 22.6c4.7 4.7 4.7 12.3 0 17z"
@@ -60,21 +68,57 @@
                 </Path.GestureRecognizers>
             </Path>
 
-            <ActivityIndicator Grid.Row="1" Grid.ColumnSpan="2"
+            <Grid ColumnDefinitions="*, *"
+                  Grid.Row="1" Grid.ColumnSpan="2"
+                  Padding="10">
+                <Button Text="Devices"
+                        Style="{StaticResource tabButton}" 
+                        Command="{Binding SwitchTabCmd}"
+                        CommandParameter="devices" />
+                <Button Text="Scenes"
+                        Grid.Column="1"
+                        Style="{StaticResource tabButton}"
+                        Command="{Binding SwitchTabCmd}"
+                        CommandParameter="scenes" />
+            </Grid>
+            
+            <ActivityIndicator Grid.Row="2" Grid.ColumnSpan="2"
                                IsVisible="{Binding LoadControl.IsLoading}" 
                                IsRunning="{Binding LoadControl.IsLoading}"
                                IsEnabled="{Binding LoadControl.IsLoading}"/>
 
-            <CollectionView Grid.Row="1" Grid.ColumnSpan="2"
-                            ItemsSource="{Binding Devices}"
-                            VerticalOptions="Start" 
+            <CollectionView Grid.Row="2" Grid.ColumnSpan="2"
+                            IsVisible="{Binding IsDevicesDisplayed, Converter={StaticResource inverseBoolConverter}}"
+                            ItemsSource="{Binding Scenes}"
+                            Footer="{Binding}"
+                            FooterTemplate="{StaticResource footerTemplate}"
                             Margin="10, 0">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical"
                                      VerticalItemSpacing="20" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
-                    
+                    <DataTemplate x:DataType="m:SceneItem">
+                        <Button Text="{Binding SceneName}"
+                                Command="{Binding SubmitScene, 
+                                                  Source={RelativeSource AncestorType={x:Type viewmodels:DevicePopupViewModel}}}"
+                                CommandParameter="{Binding SceneId}" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            
+            <CollectionView Grid.Row="2" Grid.ColumnSpan="2"
+                            IsVisible="{Binding IsDevicesDisplayed}"
+                            ItemsSource="{Binding Devices}"
+                            Footer="{Binding}"
+                            FooterTemplate="{StaticResource footerTemplate}"
+                            Margin="10, 0">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical"
+                                     VerticalItemSpacing="20" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+
                     <DataTemplate x:DataType="control:ExpandableData">
                         <Frame BorderColor="LightGray"
                                CornerRadius="10"
@@ -95,8 +139,7 @@
                                 <Path Grid.Column="1"
                                   Style="{StaticResource dropStyle}"
                                   Data="{Binding LoadControl.IsExpanded, 
-                                                 Converter={StaticResource expandedToPath}}"
-                                  >
+                                                 Converter={StaticResource expandedToPath}}" >
                                     <Path.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding LoadControl.ExpandOrCollapseCmd}" />
                                     </Path.GestureRecognizers>
@@ -138,11 +181,14 @@
                                                                              HorizontalItemSpacing="10"/>
                                                         </component:ExpandableCollection.ItemsLayout>
                                                         <component:ExpandableCollection.ItemTemplate>
-                                                            <DataTemplate>
+                                                            <DataTemplate x:DataType="e:DeviceAction">
                                                                 <Grid RowDefinitions="40">
-                                                                    <Button Text="{Binding Text}"
-                                                                        HeightRequest="60"
-                                                                        BackgroundColor="GreenYellow"/>
+                                                                    <Button Text="{Binding Command}"
+                                                                            Command="{Binding SubmitDevice, 
+                                                                                              Source={RelativeSource AncestorType={x:Type viewmodels:DevicePopupViewModel}}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            HeightRequest="60"
+                                                                            BackgroundColor="GreenYellow"/>
                                                                 </Grid>
                                                             </DataTemplate>
                                                         </component:ExpandableCollection.ItemTemplate>
@@ -156,6 +202,7 @@
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+
             </CollectionView>
 
 

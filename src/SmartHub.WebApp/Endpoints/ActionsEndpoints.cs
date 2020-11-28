@@ -34,7 +34,11 @@ namespace SmartHub.WebApp.Endpoints
 
                 endpoints.MapDelete($"{path}/{{id}}", context
                     => context.GetAction()
-                              .RemoveAsync(context.GetRouteString("id"), context.RequestAborted))
+                              .RemoveAsync(context.GetRouteString("id"), context.RequestAborted)),
+
+                endpoints.MapPost($"{path}/execute/{{id}}", context
+                    => context.GetAction()
+                              .ExecuteActionAsync(context.GetRouteString("id"), context.RequestAborted))
 
             };
 

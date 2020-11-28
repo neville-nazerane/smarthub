@@ -1,8 +1,10 @@
 ﻿using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using SmartHub.MobileApp.Controls;
+using SmartHub.MobileApp.Models;
 using SmartHub.MobileApp.Services;
 using SmartHub.MobileApp.Utils;
+using SmartHub.Models.Entities;
 using SmartHub.Models.Models;
 using System;
 using System.Collections.Generic;
@@ -28,6 +30,7 @@ namespace SmartHub.MobileApp.ViewModels
 
         public ICommand PullCmd { get; set; }
         public ICommand SetActionCmd { get; set; }
+        public ICommand ExecuteActionCmd { get; set; }
 
         public bool IsRefreshing { get => _isRefreshing; set => SetProperty(ref _isRefreshing, value); }
 
@@ -38,19 +41,39 @@ namespace SmartHub.MobileApp.ViewModels
             _injectionControl = injectionControl;
 
             PullCmd = new Command(Pulled);
-            SetActionCmd = new Command(async () => await OpenActionPopupAsync());
+            SetActionCmd = new Command<string>(async id => await OpenActionPopupAsync(id));
 
             ActionsLoading = new LoadControl
             {
                 OnFailAsync = ActionsLoadFailed
             };
             ActionsLoading.Execute(LoadActionsAsync);
+
+            ExecuteActionCmd = new Command<string>(async id => await _client.ExecuteActionAsync(id));
+
         }
 
-        async Task OpenActionPopupAsync()
+        async Task OpenActionPopupAsync(string id)
         {
-            int result = await _pageControl.OpenPopupAsync<DevicePopupViewModel, int>();
-            await _pageControl.DisplayAlert("Done", result.ToString(), "Ok");
+            var result = await _pageControl.OpenPopupAsync<DevicePopupViewModel, IActionSaveModel>();
+            if (result is null) return;
+            await ActionsLoading.ExecuteAsync(async () =>
+            {
+                switch (result)
+                {
+                    case DeviceActionSaveModel device:
+                        device.Data.Id = id;
+                        await _client.SetActionAsync(device.Data);
+                        break;
+                    case ActionDeleteModel:
+                        await _client.RemoveActionAsync(id);
+                        break;
+                    case SceneActionSaveModel:
+
+                        break;
+                }
+                await LoadActionsAsync();
+            });
         }
 
         async Task LoadActionsAsync()
@@ -61,7 +84,7 @@ namespace SmartHub.MobileApp.ViewModels
         void Pulled()
         {
             ActionsLoading.Execute(LoadActionsAsync);
-            IsRefreshing = false;
+            IsRefreshing = false;   
         }
 
         private async Task ActionsLoadFailed(Exception e)

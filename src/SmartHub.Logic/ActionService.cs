@@ -4,8 +4,10 @@ using Microsoft.VisualBasic;
 using SmartHub.Logic.Data;
 using SmartHub.Models.Entities;
 using SmartHub.Models.Models;
+using SmartHub.Models.SmartThings;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -17,16 +19,18 @@ namespace SmartHub.Logic
     {
         private readonly AppDbContext _context;
         private readonly ILogger<ActionService> _logger;
+        private readonly SmartThingsClient _smartThingsClient;
 
         enum ActionId 
         {
             turnOnBedroom, alexaKnock, offFront
         }
 
-        public ActionService(AppDbContext context, ILogger<ActionService> logger)
+        public ActionService(AppDbContext context, ILogger<ActionService> logger, SmartThingsClient smartThingsClient)
         {
             _context = context;
             _logger = logger;
+            _smartThingsClient = smartThingsClient;
         }
         public async ValueTask<IEnumerable<ActionInfo>> GetActionsInfoAsync(CancellationToken cancellationToken = default)
         {
@@ -68,6 +72,7 @@ namespace SmartHub.Logic
             }
             await transaction.CommitAsync(cancellationToken);
         }
+        
         public async Task RemoveAsync(string id, CancellationToken cancellationToken = default)
         {
             var record = await _context.DeviceActions.SingleOrDefaultAsync(d => d.Id == id, cancellationToken);
@@ -79,6 +84,20 @@ namespace SmartHub.Logic
             else
             {
                 _logger.LogWarning($"No record found to remove for '{id}'");
+            }
+        }
+
+        public async Task ExecuteActionAsync(string id, CancellationToken cancellationToken = default)
+        {
+            var deviceAction = await _context.DeviceActions.SingleOrDefaultAsync(d => d.Id == id, cancellationToken);
+            if (deviceAction is not null)
+            {
+                await _smartThingsClient.ExecuteDeviceAsync(deviceAction.DeviceId, new DeviceExecuteModel
+                { 
+                    Capability = deviceAction.Capability,
+                    Command = deviceAction.Command,
+                    Component = deviceAction.Component
+                }, cancellationToken);
             }
         }
 

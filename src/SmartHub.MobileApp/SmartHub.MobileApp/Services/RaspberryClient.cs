@@ -3,6 +3,7 @@ using SmartHub.Models.Models;
 using SmartHub.Models.SmartThings;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
@@ -19,6 +20,13 @@ namespace SmartHub.MobileApp.Services
         {
             _client = client;
         }
+
+        #region scenes
+
+        public Task<IEnumerable<SceneItem>> GetScenesAsync()
+            => _client.GetFromJsonAsync<IEnumerable<SceneItem>>("scenes");
+
+        #endregion
 
         #region devices
         public Task<IEnumerable<DeviceItem>> GetDevicesAsync(CancellationToken cancellationToken = default)
@@ -47,6 +55,9 @@ namespace SmartHub.MobileApp.Services
 
         public Task RemoveActionAsync(string id, CancellationToken cancellationToken = default)
                 => _client.DeleteAsync($"actions/{id}", cancellationToken);
+
+        public Task ExecuteActionAsync(string id, CancellationToken cancellationToken = default)
+            => _client.PostAsync($"actions/execute/{id}", null, cancellationToken);
 
         #endregion
 

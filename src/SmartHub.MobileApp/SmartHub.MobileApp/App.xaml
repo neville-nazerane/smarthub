@@ -1,11 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:SmartHub.MobileApp.ValueConverters"
              x:Class="SmartHub.MobileApp.App">
     <Application.Resources>
 
-        <!--svgs from https://fontawesome.com/license -->
+        <converters:InverseBool x:Key="inverseBoolConverter" />
 
+
+        <!--svgs from https://fontawesome.com/license -->
 
         <Style TargetType="Button">
             <Setter Property="Visual" Value="Material" />

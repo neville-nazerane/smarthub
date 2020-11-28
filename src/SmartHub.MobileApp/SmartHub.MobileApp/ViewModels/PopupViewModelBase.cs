@@ -17,11 +17,14 @@ namespace SmartHub.MobileApp.ViewModels
 
         public ICommand CloseCmd { get; set; }
 
+        public ICommand SubmitCmd { get; set; }
+
         protected abstract TResponse CancelResponse { get; }
 
         public PopupViewModelBase(IPageControl pageControl)
         {
             CloseCmd = new Command(async () => await SetResultAsync(CancelResponse));
+            SubmitCmd = new Command<TResponse>(async response => await SetResultAsync(response));
             PageControl = pageControl;
         }
 
