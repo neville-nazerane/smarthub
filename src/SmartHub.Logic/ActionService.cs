@@ -32,13 +32,20 @@ namespace SmartHub.Logic
             _logger = logger;
             _smartThingsClient = smartThingsClient;
         }
+
         public async ValueTask<IEnumerable<ActionInfo>> GetActionsInfoAsync(CancellationToken cancellationToken = default)
         {
             var ids = Enum.GetValues<ActionId>().Select(i => i.ToString());
-            var actions = await _context.DeviceActions
-                                        .Where(d => ids.Contains(d.Id))
-                                        .Select(d => d.Id)
-                                        .ToArrayAsync(cancellationToken);
+            var deviceActions = await _context.DeviceActions
+                                                .Where(d => ids.Contains(d.Id))
+                                                .Select(d => d.Id)
+                                                .ToArrayAsync(cancellationToken);
+            var sceneActions = await _context.SceneActions
+                                                .Where(d => ids.Contains(d.Id))
+                                                .Select(d => d.Id)
+                                                .ToArrayAsync(cancellationToken);
+
+            var actions = deviceActions.Union(sceneActions);
 
             var result = ids.Select(id => new ActionInfo { Id = id, IsSet = actions.Contains(id) });
 
@@ -72,22 +79,58 @@ namespace SmartHub.Logic
             }
             await transaction.CommitAsync(cancellationToken);
         }
-        
-        public async Task RemoveAsync(string id, CancellationToken cancellationToken = default)
+
+        public async Task SetAsync(SceneAction action, CancellationToken cancellationToken = default)
         {
-            var record = await _context.DeviceActions.SingleOrDefaultAsync(d => d.Id == id, cancellationToken);
-            if (record is not null)
+            await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+
+            try
             {
-                _context.Remove(record);
+                await RemoveAsync(action.Id, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                _logger.LogError(e, $"Failed to remove '{action.Id}'");
+                return;
+            }
+
+            await _context.SceneActions.AddAsync(action, cancellationToken);
+            try
+            {
                 await _context.SaveChangesAsync(cancellationToken);
             }
-            else
+            catch (Exception e)
             {
-                _logger.LogWarning($"No record found to remove for '{id}'");
+                await transaction.RollbackAsync(cancellationToken);
+                _logger.LogError(e, "Failed to add new action");
+                return;
             }
+            await transaction.CommitAsync(cancellationToken);
         }
 
-        public async Task ExecuteActionAsync(string id, CancellationToken cancellationToken = default)
+        public async Task RemoveAsync(string id, CancellationToken cancellationToken = default)
+        {
+            var device = await _context.DeviceActions.SingleOrDefaultAsync(d => d.Id == id, cancellationToken);
+            if (device is not null)
+                _context.DeviceActions.Remove(device);
+
+            else
+            {
+                var scene = await _context.SceneActions.SingleOrDefaultAsync(d => d.Id == id, cancellationToken);
+                if (scene is not null)
+                    _context.SceneActions.Remove(scene);
+                else
+                {
+                    _logger.LogWarning($"No record found to remove for '{id}'");
+                    return;
+                }
+            }
+            
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<bool> ExecuteActionAsync(string id, CancellationToken cancellationToken = default)
         {
             var deviceAction = await _context.DeviceActions.SingleOrDefaultAsync(d => d.Id == id, cancellationToken);
             if (deviceAction is not null)
@@ -98,7 +141,16 @@ namespace SmartHub.Logic
                     Command = deviceAction.Command,
                     Component = deviceAction.Component
                 }, cancellationToken);
+                return true;
             }
+
+            var sceneAction = await _context.SceneActions.SingleOrDefaultAsync(s => s.Id == id, cancellationToken);
+            if (sceneAction is not null)
+            {
+                await _smartThingsClient.ExecuteSceneAsync(sceneAction.SceneId, cancellationToken);
+                return true;
+            }
+            return false;
         }
 
     }

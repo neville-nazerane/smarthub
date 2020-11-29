@@ -21,16 +21,16 @@ namespace SmartHub.Logic
 
         #region scenes
 
-        public async Task<IEnumerable<SceneItem>> GetScenesAsync()
+        public async Task<IEnumerable<SceneItem>> GetScenesAsync(CancellationToken cancellationToken = default)
         {
-            var result = await _httpClient.GetFromJsonAsync<SceneData>("scenes");
+            var result = await _httpClient.GetFromJsonAsync<SceneData>("scenes", cancellationToken);
             return result.Items;
         }
 
-        public Task ExecuteSceneAsync(string id) => _httpClient.PostAsync($"scenes/{id}/execute", null);
+        public Task ExecuteSceneAsync(string id, CancellationToken cancellationToken = default) 
+            => _httpClient.PostAsync($"scenes/{id}/execute", null, cancellationToken);
 
         #endregion
-
 
         #region devices
 

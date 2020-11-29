@@ -10,13 +10,13 @@ namespace SmartHub.Logic.Data
 {
     public class AppDbContext : DbContext
     {
+        public DbSet<DeviceAction> DeviceActions { get; set; }
+
+        public DbSet<SceneAction> SceneActions { get; set; }
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
-
-        //public DbSet<MappedDevice> MappedDevices { get; set; }
-
-        public DbSet<DeviceAction> DeviceActions { get; set; }
 
     }
 }

@@ -48,13 +48,16 @@ namespace SmartHub.MobileApp.Services
         #region actions
 
         public Task<IEnumerable<ActionInfo>> GetActionsAsync(CancellationToken cancellationToken = default)
-                => _client.GetFromJsonAsync<IEnumerable<ActionInfo>>("actions", cancellationToken);
+            => _client.GetFromJsonAsync<IEnumerable<ActionInfo>>("actions", cancellationToken);
 
         public Task SetActionAsync(DeviceAction action, CancellationToken cancellationToken = default)
-                => _client.PutAsJsonAsync("actions/device", action, cancellationToken);
+            => _client.PutAsJsonAsync("actions/device", action, cancellationToken);
+
+        public Task SetActionAsync(SceneAction action, CancellationToken cancellationToken = default)
+            => _client.PutAsJsonAsync("actions/scene", action, cancellationToken);
 
         public Task RemoveActionAsync(string id, CancellationToken cancellationToken = default)
-                => _client.DeleteAsync($"actions/{id}", cancellationToken);
+            => _client.DeleteAsync($"actions/{id}", cancellationToken);
 
         public Task ExecuteActionAsync(string id, CancellationToken cancellationToken = default)
             => _client.PostAsync($"actions/execute/{id}", null, cancellationToken);

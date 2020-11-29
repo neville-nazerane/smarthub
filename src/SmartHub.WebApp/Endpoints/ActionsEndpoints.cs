@@ -32,6 +32,12 @@ namespace SmartHub.WebApp.Endpoints
                                                            .ReadFromJsonAsync<DeviceAction>(context.RequestAborted),
                                               context.RequestAborted)),
 
+                endpoints.MapPut($"{path}/scene", async context
+                    => await context.GetAction()
+                                    .SetAsync(await context.Request
+                                                           .ReadFromJsonAsync<SceneAction>(context.RequestAborted),
+                                              context.RequestAborted)),
+
                 endpoints.MapDelete($"{path}/{{id}}", context
                     => context.GetAction()
                               .RemoveAsync(context.GetRouteString("id"), context.RequestAborted)),

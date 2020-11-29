@@ -68,8 +68,11 @@ namespace SmartHub.MobileApp.ViewModels
                     case ActionDeleteModel:
                         await _client.RemoveActionAsync(id);
                         break;
-                    case SceneActionSaveModel:
-
+                    case SceneActionSaveModel scene:
+                        await _client.SetActionAsync(new SceneAction {
+                            Id = id,
+                            SceneId = scene.SceneId
+                        });
                         break;
                 }
                 await LoadActionsAsync();
