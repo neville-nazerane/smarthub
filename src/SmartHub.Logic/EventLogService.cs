@@ -29,10 +29,10 @@ namespace SmartHub.Logic
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public IAsyncEnumerable<EventLog> GetAsync(string eventId)
-            => _context.EventLogs
-                       .Where(l => l.EventId == eventId)
-                       .AsAsyncEnumerable();
+        public async Task<IEnumerable<EventLog>> GetAsync(string eventId, CancellationToken cancellationToken = default)
+            => await _context.EventLogs
+                                .Where(l => l.EventId == eventId)
+                                .ToArrayAsync(cancellationToken);
 
         public async Task ClearLogsAsync(TimeSpan timeSpan, CancellationToken cancellationToken = default)
         {
