@@ -15,7 +15,7 @@ namespace SmartHub.WebApp.Endpoints
         public static IEndpointConventionBuilder MapScenes(this IEndpointRouteBuilder endpoints, string path)
             => new MultiEndpointConventionBuilder { 
                 
-                endpoints.MapGet(path, async context
+                endpoints.MapPost(path, async context
                     => await context.Response
                                     .WriteAsJsonAsync(
                                             await context.GetSmartThingsClient()

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartHub.Logic.Data;
 
 namespace SmartHub.Logic.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201129233449_Logs")]
+    partial class Logs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,15 +54,12 @@ namespace SmartHub.Logic.Migrations
 
                     b.Property<string>("EventId")
                         .IsRequired()
-                        .HasMaxLength(90)
-                        .HasColumnType("varchar(90) CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EventId");
 
                     b.ToTable("EventLogs");
                 });
@@ -71,9 +70,7 @@ namespace SmartHub.Logic.Migrations
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("SceneId")
-                        .IsRequired()
-                        .HasMaxLength(90)
-                        .HasColumnType("varchar(90) CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 

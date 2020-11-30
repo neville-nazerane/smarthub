@@ -34,6 +34,9 @@ namespace SmartHub.WebApp
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
+            app.Use((c, next) => 
+            next());
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -49,6 +52,7 @@ namespace SmartHub.WebApp
                 endpoints.MapScenes("/scenes");
                 endpoints.MapDevices("/devices");
                 endpoints.MapActions("/actions");
+                endpoints.MapEventLogs("/logEvents");
             });
         }
     }

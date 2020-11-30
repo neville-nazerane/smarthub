@@ -14,6 +14,8 @@ namespace SmartHub.Logic.Data
 
         public DbSet<SceneAction> SceneActions { get; set; }
 
+        public DbSet<EventLog> EventLogs { get; set; }
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }

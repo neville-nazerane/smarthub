@@ -29,7 +29,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
                         .AddDbContext<AppDbContext>(o => o.UseMySql(configuration["sql"], ServerVersion.AutoDetect(configuration["sql"])))
 
-                        .AddTransient<ActionService>();
+                        .AddTransient<ActionService>()
+                        .AddTransient<EventLogService>();
         }
 
         public class SmartThingsConfig
