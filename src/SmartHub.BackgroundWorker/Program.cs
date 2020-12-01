@@ -20,7 +20,7 @@ namespace SmartHub.BackgroundWorker
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<Worker>();
-                    services.AddScoped<EventLogService>();
+                    services.AddLogic(hostContext.Configuration);
                 });
     }
 }

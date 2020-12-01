@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <UserSecretsId>dotnet-SmartHub.BackgroundWorker-DA1F0C82-474E-466A-8172-2600C3128350</UserSecretsId>
+    <UserSecretsId>smarthub</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

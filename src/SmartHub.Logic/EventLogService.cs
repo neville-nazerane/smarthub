@@ -37,9 +37,13 @@ namespace SmartHub.Logic
         public async Task ClearLogsAsync(TimeSpan timeSpan, CancellationToken cancellationToken = default)
         {
             var time = DateTime.UtcNow.Subtract(timeSpan);
-            await _context.Database.ExecuteSqlInterpolatedAsync(
-                            $"DELETE FROM {nameof(_context.EventLogs)} WHERE {nameof(EventLog.TimeStamp)} < {time}",
-                            cancellationToken);
+
+            string timeStr = time.ToString("yyyy-MM-dd HH:mm:ss");
+
+            await _context.Database.ExecuteSqlRawAsync(
+                            $"DELETE FROM {nameof(_context.EventLogs)} WHERE {nameof(EventLog.TimeStamp)} < '{timeStr}'",                           new object[] { time },
+                            cancellationToken: cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
     }

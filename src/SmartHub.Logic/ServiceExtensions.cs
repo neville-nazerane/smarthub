@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using SmartHub.Logic;
 using SmartHub.Logic.Automations;
 using SmartHub.Logic.Data;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
@@ -28,7 +30,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services
 
-                        .AddDbContext<AppDbContext>(o => o.UseMySql(configuration["sql"], ServerVersion.AutoDetect(configuration["sql"])))
+                        .AddDbContext<AppDbContext>(o => {
+                            o.UseMySql(configuration["sql"], ServerVersion.AutoDetect(configuration["sql"]));
+                            o.EnableSensitiveDataLogging();
+                            o.LogTo(ShowMe, Logging.LogLevel.Information, DbContextLoggerOptions.SingleLine);
+                        })
 
                         .AddTransient<ActionService>()
                         .AddTransient<EventLogService>()
@@ -43,6 +49,11 @@ namespace Microsoft.Extensions.DependencyInjection
         {
 
             public string PAT { get; set; }
+
+        }
+
+        public  static void ShowMe(string str)
+        {
 
         }
 
