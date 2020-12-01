@@ -32,10 +32,11 @@ namespace SmartHub.Logic.Automations
         {
             _logger.LogInformation("Triggered turn on automation");
 
-            bool hasBeenAWhile = await _context.EventLogs
+            bool hasNotBeenAWhile = await _context.EventLogs
                                                 .AnyAsync(e => e.EventId == EventTypes.BedroomMotion.ToString()
-                                                                && e.TimeStamp > DateTime.UtcNow.Subtract(aWhile));
-            if (hasBeenAWhile)
+                                                                && e.TimeStamp > DateTime.UtcNow.Subtract(aWhile), 
+                                                          cancellationToken: cancellationToken);
+            if (!hasNotBeenAWhile)
             {
                 await _actionService.ExecuteActionAsync(ActionService.ActionId.turnOnBedroom, cancellationToken);
             }
