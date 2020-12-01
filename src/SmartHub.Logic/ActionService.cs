@@ -21,7 +21,7 @@ namespace SmartHub.Logic
         private readonly ILogger<ActionService> _logger;
         private readonly SmartThingsClient _smartThingsClient;
 
-        enum ActionId 
+        public enum ActionId 
         {
             turnOnBedroom, alexaKnock, offFront
         }
@@ -129,6 +129,9 @@ namespace SmartHub.Logic
             
             await _context.SaveChangesAsync(cancellationToken);
         }
+
+        public Task<bool> ExecuteActionAsync(ActionId actionId, CancellationToken cancellationToken = default)
+            => ExecuteActionAsync(actionId.ToString(), cancellationToken);
 
         public async Task<bool> ExecuteActionAsync(string id, CancellationToken cancellationToken = default)
         {

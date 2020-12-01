@@ -7,7 +7,7 @@ using System.Text;
 namespace SmartHub.Models.Entities
 {
 
-    [Index(nameof(EventId), IsUnique = false)]
+    [Index(nameof(EventId), nameof(TimeStamp), IsUnique = false)]
     public class EventLog
     {
 

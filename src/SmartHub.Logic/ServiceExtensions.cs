@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SmartHub.Logic;
+using SmartHub.Logic.Automations;
 using SmartHub.Logic.Data;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,12 @@ namespace Microsoft.Extensions.DependencyInjection
                         .AddDbContext<AppDbContext>(o => o.UseMySql(configuration["sql"], ServerVersion.AutoDetect(configuration["sql"])))
 
                         .AddTransient<ActionService>()
-                        .AddTransient<EventLogService>();
+                        .AddTransient<EventLogService>()
+                        .AddSingleton<AutomationService>()
+                        .AddTransient<EventService>()
+                        
+                        //AUTOMATIONS
+                        .AddScoped<TurnOnBedroomAutomation>();
         }
 
         public class SmartThingsConfig

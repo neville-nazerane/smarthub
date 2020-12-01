@@ -23,12 +23,16 @@ namespace SmartHub.WebApp.Endpoints
                     => context.GetLogService().LogAsync(context.GetRouteString("event"), context.RequestAborted)),
 
                 endpoints.MapGet($"{path}/fetch/{{event}}", context
-                    => context.GetLogService().GetAsync(context.GetRouteString("event"), context.RequestAborted))
+                    => context.GetEventService().RecieveAsync(context.GetRouteString("event"), context.RequestAborted))
 
             };
 
         private static EventLogService GetLogService(this HttpContext context)
             => context.RequestServices.GetService<EventLogService>();
+
+        private static EventService GetEventService(this HttpContext context)
+            => context.RequestServices.GetService<EventService>();
+
 
     }
 }
