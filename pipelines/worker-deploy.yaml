@@ -47,7 +47,10 @@ parameters:
       name: kestrel-workerHub
 
 variables:
-    serviceTemplate: |
+  - group: smarthub
+
+  - name: serviceTemplate
+    value: |
       [Unit]
       Description=${{ parameters.service.description }}
 
