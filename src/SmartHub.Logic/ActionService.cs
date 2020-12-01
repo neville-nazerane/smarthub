@@ -131,7 +131,7 @@ namespace SmartHub.Logic
         }
 
         public Task<bool> ExecuteActionAsync(ActionId actionId, CancellationToken cancellationToken = default)
-            => ExecuteActionAsync(actionId.ToString(), cancellationToken);
+            => ExecuteActionAsync(actionId.ToString());
 
         public async Task<bool> ExecuteActionAsync(string id, CancellationToken cancellationToken = default)
         {

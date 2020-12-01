@@ -38,7 +38,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
                         .AddTransient<ActionService>()
                         .AddTransient<EventLogService>()
-                        .AddSingleton<AutomationService>()
+                        .AddScoped<AutomationService>()
                         .AddTransient<EventService>()
                         
                         //AUTOMATIONS
