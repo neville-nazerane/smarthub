@@ -9,7 +9,7 @@ namespace SmartHub.Logic.Automations
     internal class AutomationsCollection
     {
         internal enum EventTypes {
-            BedroomMotion
+            BedroomMotion, BedroomNoMotion
         }
 
         internal readonly Dictionary<string, ICollection<Type>> _automations;
