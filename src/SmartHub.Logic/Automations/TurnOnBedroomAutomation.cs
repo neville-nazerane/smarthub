@@ -32,18 +32,23 @@ namespace SmartHub.Logic.Automations
         {
             _logger.LogInformation("Triggered turn on automation");
 
+            string motion = EventTypes.BedroomMotion.ToString();
+            string noMotion = EventTypes.BedroomNoMotion.ToString();
+
             var verifyTime = DateTime.UtcNow.Subtract(aWhile);
             int recentCount = await _context.EventLogs
-                                                .CountAsync(e => e.EventId == EventTypes.BedroomMotion.ToString()
-                                                                && e.TimeStamp > verifyTime, 
+                                                .CountAsync(e => e.EventId == motion && e.TimeStamp > verifyTime, 
                                                           cancellationToken: cancellationToken);
 
-            bool isMotionless = await _context.EventLogs
-                                              .AnyAsync(e => e.EventId == EventTypes.BedroomNoMotion.ToString()
-                                                                && e.TimeStamp > verifyTime, 
-                                                        cancellationToken: cancellationToken);
+            var motions = new string[] { motion, noMotion };
 
-            if (recentCount < 2 && isMotionless)
+            var lastMotionEvent = await _context.EventLogs
+                                              .Where(e => motions.Contains(e.EventId))
+                                              .OrderByDescending(e => e.TimeStamp)
+                                              .Select(e => e.EventId)
+                                              .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+
+            if (recentCount < 2 && lastMotionEvent == noMotion)
             {
                 await _actionService.ExecuteActionAsync(ActionService.ActionId.turnOnBedroom, cancellationToken);
             }
