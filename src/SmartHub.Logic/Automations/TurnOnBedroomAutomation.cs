@@ -13,7 +13,13 @@ namespace SmartHub.Logic.Automations
 {
     public class TurnOnBedroomAutomation : IAutomation
     {
+        private const string startTimeStr = "8:00 AM";
+        private const string endTimeStr = "2:00 AM";
+        private const string timeFormat = "h:mm tt";
+
         private static readonly TimeSpan aWhile = TimeSpan.FromMinutes(5);
+        private static readonly DateTime startTime = DateTime.ParseExact(startTimeStr, timeFormat, null);
+        private static readonly DateTime endTime = DateTime.ParseExact(endTimeStr, timeFormat, null);
 
         private readonly ILogger<TurnOnBedroomAutomation> _logger;
         private readonly AppDbContext _context;
@@ -31,6 +37,8 @@ namespace SmartHub.Logic.Automations
         public async Task ExecuteAsync(CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Triggered turn on automation");
+            var current = DateTime.Now;
+            if (current < startTime || current > endTime) return;
 
             string motion = EventTypes.BedroomMotion.ToString();
             string noMotion = EventTypes.BedroomNoMotion.ToString();
