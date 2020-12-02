@@ -15,7 +15,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHub.Models", "SmartHub
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHub.Logic", "SmartHub.Logic\SmartHub.Logic.csproj", "{7E07E2F6-9B3D-49DB-A6FA-2D56DEDFCF03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHub.BackgroundWorker", "SmartHub.BackgroundWorker\SmartHub.BackgroundWorker.csproj", "{FB729DA0-266F-482B-8885-FFDA4CFD6D04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHub.BackgroundWorker", "SmartHub.BackgroundWorker\SmartHub.BackgroundWorker.csproj", "{FB729DA0-266F-482B-8885-FFDA4CFD6D04}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Others", "Others", "{9FB565C6-5190-446E-B5F3-5FF1F7F359A9}"
+	ProjectSection(SolutionItems) = preProject
+		TriggerToLan.groovy = TriggerToLan.groovy
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
