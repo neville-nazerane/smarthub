@@ -37,7 +37,13 @@ namespace SmartHub.Logic.Automations
                                                 .CountAsync(e => e.EventId == EventTypes.BedroomMotion.ToString()
                                                                 && e.TimeStamp > verifyTime, 
                                                           cancellationToken: cancellationToken);
-            if (recentCount < 2)
+
+            bool isMotionless = await _context.EventLogs
+                                              .AnyAsync(e => e.EventId == EventTypes.BedroomNoMotion.ToString()
+                                                                && e.TimeStamp > verifyTime, 
+                                                        cancellationToken: cancellationToken);
+
+            if (recentCount < 2 && isMotionless)
             {
                 await _actionService.ExecuteActionAsync(ActionService.ActionId.turnOnBedroom, cancellationToken);
             }
