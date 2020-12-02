@@ -42,13 +42,13 @@ namespace SmartHub.Logic.Automations
 
             var motions = new string[] { motion, noMotion };
 
-            var lastMotionEvent = await _context.EventLogs
-                                              .Where(e => motions.Contains(e.EventId))
-                                              .OrderByDescending(e => e.TimeStamp)
-                                              .Select(e => e.EventId)
-                                              .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+            //var lastMotionEvent = await _context.EventLogs
+            //                                  .Where(e => motions.Contains(e.EventId))
+            //                                  .OrderByDescending(e => e.TimeStamp)
+            //                                  .Select(e => e.EventId)
+            //                                  .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
-            if (recentCount < 2 && lastMotionEvent == noMotion)
+            if (recentCount < 2)
             {
                 await _actionService.ExecuteActionAsync(ActionService.ActionId.turnOnBedroom, cancellationToken);
             }
