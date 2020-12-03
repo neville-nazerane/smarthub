@@ -18,8 +18,8 @@ namespace SmartHub.Logic.Automations
         private const string timeFormat = "h:mm tt";
 
         private static readonly TimeSpan aWhile = TimeSpan.FromMinutes(5);
-        private static readonly DateTime startTime = DateTime.ParseExact(startTimeStr, timeFormat, null);
-        private static readonly DateTime endTime = DateTime.ParseExact(endTimeStr, timeFormat, null);
+        private static readonly TimeSpan startTime = DateTime.ParseExact(startTimeStr, timeFormat, null).TimeOfDay;
+        private static readonly TimeSpan endTime = DateTime.ParseExact(endTimeStr, timeFormat, null).TimeOfDay;
 
         private readonly ILogger<TurnOnBedroomAutomation> _logger;
         private readonly AppDbContext _context;
@@ -37,28 +37,21 @@ namespace SmartHub.Logic.Automations
         public async Task ExecuteAsync(CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Triggered turn on automation");
-            var current = DateTime.Now;
-            if (current < startTime || current > endTime) return;
-
-            string motion = EventTypes.BedroomMotion.ToString();
-            string noMotion = EventTypes.BedroomNoMotion.ToString();
-
-            var verifyTime = DateTime.UtcNow.Subtract(aWhile);
-            int recentCount = await _context.EventLogs
-                                                .CountAsync(e => e.EventId == motion && e.TimeStamp > verifyTime, 
-                                                          cancellationToken: cancellationToken);
-
-            var motions = new string[] { motion, noMotion };
-
-            //var lastMotionEvent = await _context.EventLogs
-            //                                  .Where(e => motions.Contains(e.EventId))
-            //                                  .OrderByDescending(e => e.TimeStamp)
-            //                                  .Select(e => e.EventId)
-            //                                  .FirstOrDefaultAsync(cancellationToken: cancellationToken);
-
-            if (recentCount < 2)
+            var current = DateTime.Now.TimeOfDay;
+            if (current > startTime && current < endTime)
             {
-                await _actionService.ExecuteActionAsync(ActionService.ActionId.turnOnBedroom, cancellationToken);
+                string motion = EventTypes.BedroomMotion.ToString();
+                string noMotion = EventTypes.BedroomNoMotion.ToString();
+
+                var verifyTime = DateTime.UtcNow.Subtract(aWhile);
+                int recentCount = await _context.EventLogs
+                                                    .CountAsync(e => e.EventId == motion && e.TimeStamp > verifyTime, 
+                                                              cancellationToken: cancellationToken);
+
+                var motions = new string[] { motion, noMotion };
+
+                if (recentCount < 2)
+                    await _actionService.ExecuteActionAsync(ActionService.ActionId.turnOnBedroom, cancellationToken);
             }
             _logger.LogInformation("Finished turn on automation");
         }
