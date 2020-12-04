@@ -19,6 +19,7 @@ namespace SmartHub.BackgroundWorker
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddApplicationInsightsTelemetryWorkerService(hostContext.Configuration["worker_insights"]);
                     services.AddHostedService<Worker>();
                     services.AddLogic(hostContext.Configuration);
                 });

@@ -42,6 +42,7 @@ parameters:
       ASPNETCORE_ENVIRONMENT: Production
       smartthings__PAT: $(PAT)
       sql: $(sql)
+      web_insights: $(web_insights)
 
   - name: service
     type: object

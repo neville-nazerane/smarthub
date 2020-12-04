@@ -28,14 +28,14 @@ namespace SmartHub.WebApp
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry(Configuration["web_insights"]);
             services.AddLogic(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
-            app.Use((c, next) => 
-            next());
+            //app.Use((c, next) => next());
 
             if (env.IsDevelopment())
             {
