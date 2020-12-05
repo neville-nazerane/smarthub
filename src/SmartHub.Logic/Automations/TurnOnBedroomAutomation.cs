@@ -38,7 +38,7 @@ namespace SmartHub.Logic.Automations
         {
             _logger.LogInformation("Triggered turn on automation");
             var current = DateTime.Now.TimeOfDay;
-            if (true)
+            if (current > startTime && current < endTime)
             {
                 string motion = EventTypes.BedroomMotion.ToString();
                 string noMotion = EventTypes.BedroomNoMotion.ToString();
