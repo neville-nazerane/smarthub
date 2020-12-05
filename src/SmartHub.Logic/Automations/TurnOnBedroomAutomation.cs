@@ -37,23 +37,22 @@ namespace SmartHub.Logic.Automations
         public async Task ExecuteAsync(CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Triggered turn on automation");
-            await _actionService.ExecuteActionAsync(ActionService.ActionId.turnOnBedroom, cancellationToken);
-            //var current = DateTime.Now.TimeOfDay;
-            //if (current > startTime && current < endTime)
-            //{
-            //    string motion = EventTypes.BedroomMotion.ToString();
-            //    string noMotion = EventTypes.BedroomNoMotion.ToString();
+            var current = DateTime.Now.TimeOfDay;
+            if (current > startTime && current < endTime)
+            {
+                string motion = EventTypes.BedroomMotion.ToString();
+                string noMotion = EventTypes.BedroomNoMotion.ToString();
 
-            //    var verifyTime = DateTime.UtcNow.Subtract(aWhile);
-            //    int recentCount = await _context.EventLogs
-            //                                        .CountAsync(e => e.EventId == motion && e.TimeStamp > verifyTime, 
-            //                                                  cancellationToken: cancellationToken);
+                var verifyTime = DateTime.UtcNow.Subtract(aWhile);
+                int recentCount = await _context.EventLogs
+                                                    .CountAsync(e => e.EventId == motion && e.TimeStamp > verifyTime, 
+                                                              cancellationToken: cancellationToken);
 
-            //    var motions = new string[] { motion, noMotion };
+                var motions = new string[] { motion, noMotion };
 
-            //    if (recentCount < 2)
-            //        await _actionService.ExecuteActionAsync(ActionService.ActionId.turnOnBedroom, cancellationToken);
-            //}
+                if (recentCount < 2)
+                    await _actionService.ExecuteActionAsync(ActionService.ActionId.turnOnBedroom, cancellationToken);
+            }
             _logger.LogInformation("Finished turn on automation");
         }
 
