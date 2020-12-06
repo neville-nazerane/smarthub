@@ -40,15 +40,14 @@ namespace SmartHub.Logic.Automations
             _logger.LogInformation("Triggered turn on automation");
             if (IsWithinTimeRange(DateTime.Now))
             {
+                _logger.LogInformation("Confirmed within time range");
                 string motion = EventTypes.BedroomMotion.ToString();
-                string noMotion = EventTypes.BedroomNoMotion.ToString();
 
                 var verifyTime = DateTime.UtcNow.Subtract(aWhile);
                 int recentCount = await _context.EventLogs
                                                     .CountAsync(e => e.EventId == motion && e.TimeStamp > verifyTime, 
                                                               cancellationToken: cancellationToken);
-
-                var motions = new string[] { motion, noMotion };
+                _logger.LogInformation($"Recent motion count : {recentCount} within past {aWhile}");
 
                 if (recentCount < 2)
                     await _actionService.ExecuteActionAsync(ActionService.ActionId.turnOnBedroom, cancellationToken);
