@@ -18,8 +18,8 @@ namespace SmartHub.Logic.Automations
         private const string timeFormat = "h:mm tt";
 
         private static readonly TimeSpan aWhile = TimeSpan.FromMinutes(5);
-        private static readonly TimeSpan startTime = DateTime.ParseExact(startTimeStr, timeFormat, null).TimeOfDay;
-        private static readonly TimeSpan endTime = DateTime.ParseExact(endTimeStr, timeFormat, null).TimeOfDay;
+        private static readonly double startTime = GetMilliseconds(startTimeStr);
+        private static readonly double endTime = GetMilliseconds(endTimeStr);
 
         private readonly ILogger<TurnOnBedroomAutomation> _logger;
         private readonly AppDbContext _context;
@@ -34,11 +34,13 @@ namespace SmartHub.Logic.Automations
             _actionService = actionService;
         }
 
+        static double GetMilliseconds(string timeStr)
+            => DateTime.ParseExact(timeStr, timeFormat, null).TimeOfDay.TotalMilliseconds;
+
         public async Task ExecuteAsync(CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Triggered turn on automation");
-            var current = DateTime.Now.TimeOfDay;
-            if (current > startTime && current < endTime)
+            if (IsWithinTimeRange(DateTime.Now))
             {
                 string motion = EventTypes.BedroomMotion.ToString();
                 string noMotion = EventTypes.BedroomNoMotion.ToString();
@@ -55,6 +57,16 @@ namespace SmartHub.Logic.Automations
             }
             _logger.LogInformation("Finished turn on automation");
         }
+
+        private static bool IsWithinTimeRange(DateTime time)
+        {
+            var count = time.TimeOfDay.TotalMilliseconds;
+            return startTime < endTime && count >= startTime && count <= endTime
+                // endtime is next day
+                   || (startTime > endTime && (count <= endTime || count >= startTime));
+        }
+            //=> (startTime.Hour < time.Hour || (startTime.Hour == time.Hour && startTime.Minute <= time.Minute))
+            //  && (endTime.Hour > time.Hour || (endTime.Hour == time.Hour && endTime.Minute >= time.Minute));
 
     }
 }
