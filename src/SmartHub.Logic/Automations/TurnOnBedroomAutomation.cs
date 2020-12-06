@@ -13,13 +13,11 @@ namespace SmartHub.Logic.Automations
 {
     public class TurnOnBedroomAutomation : IAutomation
     {
-        private const string startTimeStr = "8:00 AM";
-        private const string endTimeStr = "2:00 AM";
         private const string timeFormat = "h:mm tt";
 
         private static readonly TimeSpan aWhile = TimeSpan.FromMinutes(5);
-        private static readonly double startTime = GetMilliseconds(startTimeStr);
-        private static readonly double endTime = GetMilliseconds(endTimeStr);
+        private static readonly double startTime = GetMilliseconds("8:00 AM");
+        private static readonly double endTime = GetMilliseconds("2:00 AM");
 
         private readonly ILogger<TurnOnBedroomAutomation> _logger;
         private readonly AppDbContext _context;
