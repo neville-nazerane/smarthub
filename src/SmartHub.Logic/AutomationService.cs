@@ -33,7 +33,8 @@ namespace SmartHub.Logic
         public async Task ExecuteForAsync(string @event, CancellationToken cancellationToken = default)
         {
             var autos = _automations.Get(@event);
-            
+
+            _logger.LogInformation($"Found {autos.Count()} automations for event {@event}");
             if (autos is not null)
                 foreach (var auto in autos)
                 {
