@@ -20,18 +20,28 @@ namespace SmartHub.WebApp.Endpoints
             return new MultiEndpointConventionBuilder
             {
 
-                endpoints.MapGet(path, async context 
+                endpoints.MapGet(path, async context
                     => await context.Response.WriteAsJsonAsync(
                                                     await context.GetSmartThingsClient()
                                                                  .GetDevicesAsync(
-                                                                        context.RequestAborted), 
+                                                                        context.RequestAborted),
                                                                         context.RequestAborted)),
 
-                endpoints.MapPost($"{path}/{{deviceId}}/execute", async context 
+                endpoints.MapPost($"{path}/{{deviceId}}/execute", async context
                     => await context.GetSmartThingsClient()
                                     .ExecuteDeviceAsync(
                                             context.Request.RouteValues["deviceId"].ToString(),
                                             await context.Request.ReadFromJsonAsync<DeviceExecuteModel>(context.RequestAborted),
+                                            context.RequestAborted)),
+
+                endpoints.MapGet($"{path}/{{deviceId}}/components/{{componentId}}/capabilities/{{capabilityId}}/status", async context =>
+                        await context.Response.WriteAsJsonAsync(
+                                            await context.GetSmartThingsClient()
+                                                         .GetCapabilityStatusAsync(
+                                                                context.GetRouteString("deviceId"),
+                                                                context.GetRouteString("componentId"),
+                                                                context.GetRouteString("capabilityId"),
+                                                                context.RequestAborted),
                                             context.RequestAborted)),
 
                 endpoints.MapGet($"{path}/capabilities/{{id}}/{{version}}", async context => 

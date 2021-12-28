@@ -46,13 +46,15 @@ namespace SmartHub.Logic
         public Task ExecuteDeviceAsync(string deviceId, DeviceExecuteModel[] models, CancellationToken cancellationToken = default)
             => _httpClient.PostAsJsonAsync($"/devices/{deviceId}/commands", new { commands = models }, cancellationToken);
 
+        public Task<object> GetCapabilityStatusAsync(string deviceId, string componentId, string capabilityId, CancellationToken cancellationToken = default)
+            => _httpClient.GetFromJsonAsync<object>($"/devices/{deviceId}/components/{componentId}/capabilities/{capabilityId}/status", cancellationToken);
+
         #endregion
 
         #region capabilities
 
         public Task<CapabilityData> GetCapabilityAsync(string id, float version, CancellationToken cancellationToken = default)
             => _httpClient.GetFromJsonAsync<CapabilityData>($"/capabilities/{id}/{version}", cancellationToken);
-
         #endregion
 
     }

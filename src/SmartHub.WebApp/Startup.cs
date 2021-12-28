@@ -53,6 +53,16 @@ namespace SmartHub.WebApp
                 endpoints.MapDevices("/devices");
                 endpoints.MapActions("/actions");
                 endpoints.MapEventLogs("/logEvents");
+
+                endpoints.MapGet("/GO", c => c.RequestServices.GetService<SmartThingsClient>()
+                                    .ExecuteDeviceAsync("21b89395-01f3-49b4-b284-6530c0022b61", new Models.SmartThings.DeviceExecuteModel
+                                    {
+                                        Capability = "fanSpeed",
+                                        Component = "main",
+                                        Command = "value",
+                                        Arguments = new object[] { 3 }
+                                    }));
+
             });
         }
     }

@@ -12,13 +12,25 @@ definition(
 preferences {
 	section(){
 		input "bedroomMotionSensor", "capability.motionSensor"
+        input "computerLight", "capability.switch"
 	}
 }
 
 def setup(){
 	subscribe(bedroomMotionSensor, "motion.active", bedroomTrigger)
 	subscribe(bedroomMotionSensor, "motion.inactive", bedroomNoTrigger)
+	subscribe(computerLight, "switch.on", computerLightTrigger)
+	subscribe(computerLight, "switch.off", computerLightOffTrigger)
 }
+
+def computerLightTrigger(evt) {
+	logEvent(evt, "ComputerLightOn")
+}
+
+def computerLightOffTrigger(evt) {
+	logEvent(evt, "ComputerLightOff")
+}
+
 
 def bedroomTrigger(evt) {
 	logEvent(evt, "BedroomMotion")

@@ -1,4 +1,7 @@
-﻿namespace SmartHub.Models.SmartThings
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace SmartHub.Models.SmartThings
 {
 
     public class DeviceData
@@ -80,6 +83,7 @@
         public string Component { get; set; }
         public string Capability { get; set; }
         public string Command { get; set; }
+        public IEnumerable<object> Arguments { get; set; }
     }
 
 }
