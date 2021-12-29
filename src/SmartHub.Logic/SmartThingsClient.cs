@@ -43,8 +43,11 @@ namespace SmartHub.Logic
         public Task ExecuteDeviceAsync(string deviceId, DeviceExecuteModel model, CancellationToken cancellationToken = default)
             => ExecuteDeviceAsync(deviceId, new DeviceExecuteModel[] { model }, cancellationToken);
 
-        public Task ExecuteDeviceAsync(string deviceId, DeviceExecuteModel[] models, CancellationToken cancellationToken = default)
-            => _httpClient.PostAsJsonAsync($"/devices/{deviceId}/commands", new { commands = models }, cancellationToken);
+        public async Task ExecuteDeviceAsync(string deviceId, DeviceExecuteModel[] models, CancellationToken cancellationToken = default)
+        {
+            var res = await _httpClient.PostAsJsonAsync($"/devices/{deviceId}/commands", new { commands = models }, cancellationToken);
+            res.EnsureSuccessStatusCode();
+        }
 
         public Task<object> GetCapabilityStatusAsync(string deviceId, string componentId, string capabilityId, CancellationToken cancellationToken = default)
             => _httpClient.GetFromJsonAsync<object>($"/devices/{deviceId}/components/{componentId}/capabilities/{capabilityId}/status", cancellationToken);

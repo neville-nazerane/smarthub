@@ -8,8 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -23,10 +26,11 @@ namespace Microsoft.Extensions.DependencyInjection
             var smartThings = new SmartThingsConfig();
             configuration.Bind("smartthings", smartThings);
 
-            services.AddHttpClient<SmartThingsClient>(client => {
+            services.AddHttpClient<SmartThingsClient>(client =>
+            {
                 client.BaseAddress = new Uri("https://api.smartthings.com/v1");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", smartThings.PAT);
-            });
+            }) ;
 
             return services
 
@@ -50,6 +54,18 @@ namespace Microsoft.Extensions.DependencyInjection
 
             public string PAT { get; set; }
 
+        }
+
+        class Batman : System.Net.Http.DelegatingHandler
+        {
+            protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                if (request.Content is JsonContent json)
+                {
+                    var str = await json.ReadAsStringAsync(cancellationToken);
+                }
+                return await base.SendAsync(request, cancellationToken);
+            }
         }
 
         public  static void ShowMe(string str)

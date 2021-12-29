@@ -1,5 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SmartHub.Models.SmartThings
 {
@@ -82,8 +86,10 @@ namespace SmartHub.Models.SmartThings
     {
         public string Component { get; set; }
         public string Capability { get; set; }
+
         public string Command { get; set; }
-        public IEnumerable<object> Arguments { get; set; }
+        public object[] Arguments { get; set; }
+
     }
 
 }
