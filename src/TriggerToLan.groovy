@@ -11,16 +11,18 @@ definition(
 
 preferences {
 	section(){
-		input "bedroomMotionSensor", "capability.motionSensor"
-        input "computerLight", "capability.switch"
+		input "frontTemp", "capability.temperatureMeasurement"
+	//	input "bedroomMotionSensor", "capability.motionSensor"
+    //    input "computerLight", "capability.switch"
 	}
 }
 
 def setup(){
-	subscribe(bedroomMotionSensor, "motion.active", bedroomTrigger)
-	subscribe(bedroomMotionSensor, "motion.inactive", bedroomNoTrigger)
-	subscribe(computerLight, "switch.on", computerLightTrigger)
-	subscribe(computerLight, "switch.off", computerLightOffTrigger)
+
+//	subscribe(bedroomMotionSensor, "motion.active", bedroomTrigger)
+//	subscribe(bedroomMotionSensor, "motion.inactive", bedroomNoTrigger)
+//	subscribe(computerLight, "switch.on", computerLightTrigger)
+//	subscribe(computerLight, "switch.off", computerLightOffTrigger)
 }
 
 def computerLightTrigger(evt) {
@@ -60,7 +62,7 @@ def logEvent(evt, name) {
 
 def lanCall(path)
 {
-	def ip4 = "192.168.0.28:5000"
-    def ip = "192.168.0.140:5010"
+	def ip4 = "192.168.1.76:5000"
+    def ip = "192.168.1.9:5010"
 	sendHubCommand(new physicalgraph.device.HubAction("""GET $path HTTP/1.1\r\nHOST: $ip\r\n\r\n""", physicalgraph.device.Protocol.LAN))
 }

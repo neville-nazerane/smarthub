@@ -49,8 +49,8 @@ namespace SmartHub.Logic
             res.EnsureSuccessStatusCode();
         }
 
-        public Task<object> GetCapabilityStatusAsync(string deviceId, string componentId, string capabilityId, CancellationToken cancellationToken = default)
-            => _httpClient.GetFromJsonAsync<object>($"/devices/{deviceId}/components/{componentId}/capabilities/{capabilityId}/status", cancellationToken);
+        public Task<Status> GetCapabilityStatusAsync(string deviceId, string componentId, string capabilityId, CancellationToken cancellationToken = default)
+            => _httpClient.GetFromJsonAsync<Status>($"/devices/{deviceId}/components/{componentId}/capabilities/{capabilityId}/status", cancellationToken);
 
         #endregion
 

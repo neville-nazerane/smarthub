@@ -13,11 +13,14 @@ namespace SmartHub.Logic
         private readonly AutomationService _automationService;
         private readonly EventLogService _eventLogService;
 
-        static readonly ConcurrentDictionary<string, TaskCompletionSource> _eventLocker;
+        static readonly ConcurrentDictionary<string, ConcurrentQueue<TaskCompletionSource>> _lockers;
+
+        //static readonly ConcurrentDictionary<string, TaskCompletionSource> _eventLocker;
 
         static EventService()
         {
-            _eventLocker = new ConcurrentDictionary<string, TaskCompletionSource>();
+            //_eventLocker = new ConcurrentDictionary<string, TaskCompletionSource>();
+            _lockers = new ConcurrentDictionary<string, ConcurrentQueue<TaskCompletionSource>>();
         }
 
         public EventService(AutomationService automationService, EventLogService eventLogService)
@@ -46,20 +49,30 @@ namespace SmartHub.Logic
 
         private static Task WaitForEventAsync(string eventName)
         {
-            bool isCreated = false;
-            var completionSource = _eventLocker.GetOrAdd(eventName, key => {
-                                        isCreated = true;
-                                        return new TaskCompletionSource();
-                                    });
-            if (!isCreated)
-                return completionSource.Task;
-            else return Task.CompletedTask;
+            var sources = _lockers.GetOrAdd(eventName, k => new ConcurrentQueue<TaskCompletionSource>());
+            var tasks = sources.Select(s => s.Task).ToArray();
+            sources.Enqueue(new TaskCompletionSource());
+
+            return Task.WhenAll(tasks);
+
+            //bool isCreated = false;
+            //var completionSource = _eventLocker.GetOrAdd(eventName, key => {
+            //                            isCreated = true;
+            //                            return new TaskCompletionSource();
+            //                        });
+            //if (!isCreated)
+            //    return completionSource.Task;
+            //else return Task.CompletedTask;
         }
 
         private static void ReleaseEvent(string eventName)
         {
-            _eventLocker.TryGetValue(eventName, out var taskCompletionSource);
-            taskCompletionSource.TrySetResult();
+            if(_lockers.TryGetValue(eventName, out var sources) 
+                && sources.TryDequeue(out var completionSource))
+                completionSource.TrySetResult();
+
+            //_eventLocker.TryGetValue(eventName, out var taskCompletionSource);
+            //taskCompletionSource.TrySetResult();
         }
 
     }
