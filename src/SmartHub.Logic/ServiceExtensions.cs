@@ -26,18 +26,27 @@ namespace Microsoft.Extensions.DependencyInjection
             var smartThings = new SmartThingsConfig();
             configuration.Bind("smartthings", smartThings);
 
+            var backup = new BackUpFunctionConfig();
+            configuration.Bind("backup", backup);
+
             services.AddHttpClient<SmartThingsClient>(client =>
             {
                 client.BaseAddress = new Uri("https://api.smartthings.com/v1");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", smartThings.PAT);
-            }) ;
+            });
+
+            services.AddHttpClient<AzBackupClient>(client =>
+            {
+                client.BaseAddress = new Uri(backup.BaseUrl);
+                client.DefaultRequestHeaders.Add("x-functions-key", backup.Key);
+            });
 
             return services
 
                         .AddDbContext<AppDbContext>(o => {
                             o.UseMySql(configuration["sql"], ServerVersion.AutoDetect(configuration["sql"]));
                             o.EnableSensitiveDataLogging();
-                            o.LogTo(ShowMe, Logging.LogLevel.Information, DbContextLoggerOptions.SingleLine);
+                            //o.LogTo(ShowMe, Logging.LogLevel.Information, DbContextLoggerOptions.SingleLine);
                         })
 
                         .AddTransient<ActionService>()
@@ -56,22 +65,14 @@ namespace Microsoft.Extensions.DependencyInjection
 
         }
 
-        class Batman : System.Net.Http.DelegatingHandler
+        public class BackUpFunctionConfig
         {
-            protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-            {
-                if (request.Content is JsonContent json)
-                {
-                    var str = await json.ReadAsStringAsync(cancellationToken);
-                }
-                return await base.SendAsync(request, cancellationToken);
-            }
-        }
+            public string BaseUrl { get; set; }
 
-        public  static void ShowMe(string str)
-        {
+            public string Key { get; set; }
 
         }
+
 
     }
 }
