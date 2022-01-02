@@ -54,8 +54,9 @@ namespace Microsoft.Extensions.DependencyInjection
                             string dataPath = options.Value.DataPath
                                                            .TrimEnd('/')
                                                            .TrimEnd('\\');
+                            string personal = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
-                            o.UseSqlite($"Data Source={dataPath}{Path.DirectorySeparatorChar}smartstuffs.db", 
+                            o.UseSqlite($"Data Source={Path.Combine(personal, "data", "smartstuffs.db")}", 
                                             b => b.MigrationsAssembly("SmartHub.DbMigrator"));
                             //o.UseMySql(configuration["sql"], ServerVersion.AutoDetect(configuration["sql"]));
                             o.EnableSensitiveDataLogging();
