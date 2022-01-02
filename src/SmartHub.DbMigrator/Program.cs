@@ -10,15 +10,9 @@ Console.WriteLine("Migrating Db...");
 
 var app = builder.Build();
 
-//await using var scope = app.Services.CreateAsyncScope();
+await using var scope = app.Services.CreateAsyncScope();
 
-//var dbContext = scope.ServiceProvider.GetService<AppDbContext>();
-//await dbContext.Database.MigrateAsync();
+var dbContext = scope.ServiceProvider.GetService<AppDbContext>();
+await dbContext.Database.MigrateAsync();
 
 Console.WriteLine("DONE!");
-
-
-app.MapGet("/", c => c.Response.WriteAsync(Directory.GetCurrentDirectory(), c.RequestAborted));
-//app.MapGet("/", c => c.RequestServices.GetService<AppDbContext>().Database.MigrateAsync());
-
-await app.RunAsync();

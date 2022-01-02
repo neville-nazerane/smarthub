@@ -8,7 +8,7 @@ parameters:
     sql: $(sql)
     web_insights: $(web_insights)
     worker_insights: $(worker_insights)
-    global__dataPath: "/home/ubuntu/data"
+    global__dataPath: "data"
 
 steps:
 - ${{ each config in parameters.configs }}:
