@@ -48,7 +48,7 @@ variables:
 
       [Service]
       WorkingDirectory=${{ parameters.destDirectory }}
-      ExecStart=/home/ubuntu/dotnet/dotnet ${{ parameters.destDirectory }}/${{ parameters.projectName }}.dll
+      ExecStart=/home/ubuntu/dotnet/dotnet ${{ parameters.destDirectory }}/${{ parameters.projectName }}.dll --urls http://192.168.1.9:5020
       KillSignal=SIGINT
       SyslogIdentifier=${{ parameters.service.identifier }}
       User=www-data
