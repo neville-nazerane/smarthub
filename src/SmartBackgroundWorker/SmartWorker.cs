@@ -1,7 +1,7 @@
 using SmartHub.Logic;
 using System.Text.Json;
 
-namespace SmartBackgroundWorker
+namespace SmartHub.SmartBackgroundWorker
 {
     public class SmartWorker : BackgroundService
     {
@@ -55,7 +55,7 @@ namespace SmartBackgroundWorker
                 else if (fanSpeed == 1)
                     await SwitchFanAsync("off");
             }
-            else if (currentTemp > (frontReq + 1))
+            else if (currentTemp > frontReq + 1)
             {
                 if (fanSpeed == 0)
                     await SwitchFanAsync("on");
@@ -68,7 +68,7 @@ namespace SmartBackgroundWorker
 
             async Task IncreaseFanAsync()
             {
-                await client.ExecuteDeviceAsync("21b89395-01f3-49b4-b284-6530c0022b61", new SmartHub.Models.SmartThings.DeviceExecuteModel
+                await client.ExecuteDeviceAsync("21b89395-01f3-49b4-b284-6530c0022b61", new Models.SmartThings.DeviceExecuteModel
                 {
                     Component = "main",
                     Capability = "fanSpeed",
@@ -79,7 +79,7 @@ namespace SmartBackgroundWorker
 
             async Task SwitchFanAsync(string value)
             {
-                await client.ExecuteDeviceAsync("21b89395-01f3-49b4-b284-6530c0022b61", new SmartHub.Models.SmartThings.DeviceExecuteModel
+                await client.ExecuteDeviceAsync("21b89395-01f3-49b4-b284-6530c0022b61", new Models.SmartThings.DeviceExecuteModel
                 {
                     Component = "main",
                     Capability = "switch",

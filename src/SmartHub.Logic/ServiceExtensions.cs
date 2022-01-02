@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using SmartHub.Logic;
 using SmartHub.Logic.Automations;
 using SmartHub.Logic.Data;
+using SmartHub.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -25,16 +26,15 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var smartThings = new SmartThingsConfig();
             configuration.Bind("smartthings", smartThings);
-
-            var backup = new BackUpFunctionConfig();
-            configuration.Bind("backup", backup);
-
             services.AddHttpClient<SmartThingsClient>(client =>
             {
                 client.BaseAddress = new Uri("https://api.smartthings.com/v1");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", smartThings.PAT);
             });
 
+
+            var backup = new BackUpFunctionConfig();
+            configuration.Bind("backup", backup);
             services.AddHttpClient<AzBackupClient>(client =>
             {
                 client.BaseAddress = new Uri(backup.BaseUrl);
@@ -42,6 +42,8 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             return services
+
+                        .Configure<GlobalConfig>(configuration.GetSection("global"))
 
                         .AddDbContext<AppDbContext>(o => {
                             o.UseMySql(configuration["sql"], ServerVersion.AutoDetect(configuration["sql"]));

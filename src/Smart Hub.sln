@@ -22,7 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Others", "Others", "{9FB565
 		TriggerToLan.groovy = TriggerToLan.groovy
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartBackgroundWorker", "SmartBackgroundWorker\SmartBackgroundWorker.csproj", "{9C9E650B-CC58-43D3-A442-21FABDC67758}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHub.SmartBackgroundWorker", "SmartBackgroundWorker\SmartHub.SmartBackgroundWorker.csproj", "{9C9E650B-CC58-43D3-A442-21FABDC67758}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cloud", "Cloud", "{68AFD970-1469-4D76-BC52-037D5AD447D0}"
 EndProject
@@ -32,7 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{5DAFF2F5-08B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{90D01111-66C3-4955-B0E9-2BCD284D93EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackupAzureFunctions", "BackupAzureFunctions\BackupAzureFunctions.csproj", "{C727358D-5B5C-45BA-88B4-A42C6039788D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHub.BackupAzureFunctions", "BackupAzureFunctions\SmartHub.BackupAzureFunctions.csproj", "{C727358D-5B5C-45BA-88B4-A42C6039788D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

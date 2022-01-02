@@ -30,7 +30,8 @@ namespace SmartHub.BackgroundWorker
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 using var scope = _serviceProvider.CreateScope();
-                var service = scope.ServiceProvider.GetService<EventLogService>();
+                var service = scope.ServiceProvider.GetService<TimeyExecuter>();
+                await service.RunAsync(logClearInterval, stoppingToken);
 
                 await service.ClearLogsAsync(logClearInterval, stoppingToken);
 

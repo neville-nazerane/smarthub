@@ -1,5 +1,4 @@
-using SmartBackgroundWorker;
-
+using SmartHub.SmartBackgroundWorker;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>

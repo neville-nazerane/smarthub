@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace BackupAzureFunctions
+namespace SmartHub.BackupAzureFunctions
 {
     public static class UploadBackup
     {
@@ -17,7 +17,7 @@ namespace BackupAzureFunctions
         [FunctionName("UploadBackup")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "uploadBackup/{name}")] HttpRequest req,
-            [Blob("backups/{name}.zip", FileAccess.Write)]Stream stream,
+            [Blob("backups/{name}.zip", FileAccess.Write)] Stream stream,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
