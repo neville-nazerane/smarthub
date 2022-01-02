@@ -18,6 +18,7 @@ var app = builder.Build();
 Console.WriteLine("DONE!");
 
 
-app.MapGet("/", c => c.RequestServices.GetService<AppDbContext>().Database.MigrateAsync());
+app.MapGet("/", c => c.Response.WriteAsync(Directory.GetCurrentDirectory(), c.RequestAborted));
+//app.MapGet("/", c => c.RequestServices.GetService<AppDbContext>().Database.MigrateAsync());
 
 await app.RunAsync();
