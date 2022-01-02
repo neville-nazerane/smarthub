@@ -11,7 +11,6 @@ trigger:
       - src
 
 parameters:
-
   - name: preBuildSteps
     type: stepList
     default: []
@@ -117,10 +116,12 @@ stages:
 
                 - script: echo "$(serviceTemplate)" > $(Pipeline.Workspace)/drop/linux.service
                   displayName: Generate service file
+
+                - template: config-template.yml
                 
-                - ${{ each config in parameters.configs }}:
-                  - script: 'echo "Environment=${{ config.key }}=''${{ config.value }}''" >> $(Pipeline.Workspace)/drop/linux.service'
-                    displayName: Adding configuration for ${{ config.key }}
+                # - ${{ each config in parameters.configs }}:
+                #   - script: 'echo "Environment=${{ config.key }}=''${{ config.value }}''" >> $(Pipeline.Workspace)/drop/linux.service'
+                #     displayName: Adding configuration for ${{ config.key }}
 
                 - script: |
                     echo 'showing'
