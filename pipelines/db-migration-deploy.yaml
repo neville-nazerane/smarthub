@@ -8,7 +8,7 @@ trigger:
       - master
   paths:
     include:
-      - src
+      - src/SmartHub.DbMigrator
 
 parameters:
 - name: preBuildSteps

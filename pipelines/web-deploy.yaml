@@ -8,28 +8,9 @@ trigger:
       - master
   paths:
     include:
-      - src
-variables:
-  
-  - group: smarthub
-
-  - name: serviceTemplate
-    value:  |
-      [Unit]
-      Description=${{ parameters.service.description }}
-
-      [Install]
-      WantedBy=multi-user.target
-
-      [Service]
-      WorkingDirectory=${{ parameters.destDirectory }}
-      ExecStart=/home/ubuntu/dotnet/dotnet ${{ parameters.destDirectory }}/${{ parameters.projectName }}.dll --urls ${{ parameters.url }}
-      Restart=always
-      # Restart service after 10 seconds if the dotnet service crashes:
-      RestartSec=10
-      KillSignal=SIGINT
-      SyslogIdentifier=${{ parameters.service.identifier }}
-      User=www-data
+      - src/SmartHub.WebApp
+      - src/SmartHub.Models
+      - src/SmartHub.Logic
 
 
 parameters:
@@ -59,6 +40,30 @@ parameters:
     description: Web app for hub
     identifier: webHub
     name: kestrel-webHub
+
+    
+variables:
+  
+  - group: smarthub
+
+  - name: serviceTemplate
+    value:  |
+      [Unit]
+      Description=${{ parameters.service.description }}
+
+      [Install]
+      WantedBy=multi-user.target
+
+      [Service]
+      WorkingDirectory=${{ parameters.destDirectory }}
+      ExecStart=/home/ubuntu/dotnet/dotnet ${{ parameters.destDirectory }}/${{ parameters.projectName }}.dll --urls ${{ parameters.url }}
+      Restart=always
+      # Restart service after 10 seconds if the dotnet service crashes:
+      RestartSec=10
+      KillSignal=SIGINT
+      SyslogIdentifier=${{ parameters.service.identifier }}
+      User=www-data
+
 
 
 stages:
@@ -116,7 +121,7 @@ stages:
                   displayName: Generate service file
 
                 - template: config-template.yml
-                
+
                 - script: |
                     echo 'showing'
                     ls
