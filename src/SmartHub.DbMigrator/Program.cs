@@ -6,8 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddLogic(builder.Configuration);
 
-builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["web_insights"]);
-
 Console.WriteLine("Migrating Db...");
 
 var app = builder.Build();
