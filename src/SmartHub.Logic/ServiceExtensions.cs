@@ -54,9 +54,13 @@ namespace Microsoft.Extensions.DependencyInjection
                             string dataPath = options.Value.DataPath
                                                            .TrimEnd('/')
                                                            .TrimEnd('\\');
+
                             string personal = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
-                            string file = Path.Combine(personal, "data", "smartstuffs.db");
+                            if (!Directory.Exists(dataPath))
+                                Directory.CreateDirectory(dataPath);
+
+                            string file = Path.Combine(dataPath, "smartstuffs.db");
 
                             if (!File.Exists(file)) File.Create(file);
 
