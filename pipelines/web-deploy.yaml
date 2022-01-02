@@ -32,35 +32,33 @@ variables:
       User=www-data
 
 
-extends:
-  template: config-template.yml
-  parameters:
-  - name: preBuildSteps
-    type: stepList
-    default: []
+parameters:
+- name: preBuildSteps
+  type: stepList
+  default: []
 
-  - name: projectPath
-    type: string
-    default: 'src/SmartHub.WebApp'
+- name: projectPath
+  type: string
+  default: 'src/SmartHub.WebApp'
 
-  - name: projectName
-    type: string
-    default: SmartHub.WebApp
+- name: projectName
+  type: string
+  default: SmartHub.WebApp
 
-  - name: destDirectory
-    type: string 
-    default: /var/www/webHub
+- name: destDirectory
+  type: string 
+  default: /var/www/webHub
 
-  - name: url
-    type: string
-    default: http://192.168.1.9:5010
-    
-  - name: service
-    type: object
-    default:
-      description: Web app for hub
-      identifier: webHub
-      name: kestrel-webHub
+- name: url
+  type: string
+  default: http://192.168.1.9:5010
+  
+- name: service
+  type: object
+  default:
+    description: Web app for hub
+    identifier: webHub
+    name: kestrel-webHub
 
 
 stages:
@@ -116,10 +114,12 @@ stages:
 
                 - script: echo "$(serviceTemplate)" > $(Pipeline.Workspace)/drop/linux.service
                   displayName: Generate service file
+
+                - template: config-template.yml
                 
-                - ${{ each config in parameters.configs }}:
-                  - script: 'echo "Environment=${{ config.key }}=''${{ config.value }}''" >> $(Pipeline.Workspace)/drop/linux.service'
-                    displayName: Adding configuration for ${{ config.key }}
+                # - ${{ each config in parameters.configs }}:
+                #   - script: 'echo "Environment=${{ config.key }}=''${{ config.value }}''" >> $(Pipeline.Workspace)/drop/linux.service'
+                #     displayName: Adding configuration for ${{ config.key }}
 
                 - script: |
                     echo 'showing'

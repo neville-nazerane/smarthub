@@ -8,7 +8,6 @@ parameters:
     sql: $(sql)
     web_insights: $(web_insights)
 
-
 steps:
 - ${{ each config in parameters.configs }}:
   - script: 'echo "Environment=${{ config.key }}=''${{ config.value }}''" >> $(Pipeline.Workspace)/drop/linux.service'
