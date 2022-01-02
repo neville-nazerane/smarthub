@@ -12,10 +12,6 @@ trigger:
 
 parameters:
 
-  - name: usePreRelease
-    type: boolean
-    default: true
-
   - name: preBuildSteps
     type: stepList
     default: []
@@ -76,13 +72,12 @@ stages:
 
         - task: UseDotNet@2
           displayName: 'Use .NET Core sdk'
-          condition: ${{ parameters.usePreRelease }}
           inputs:
             packageType: sdk
             includePreviewVersions: true
-            version: 5.0.100
+            version: 6.0.101
             installationPath: $(Agent.ToolsDirectory)/dotnet
-        
+
         - ${{ each step in parameters.preBuildSteps  }}:
             - ${{ each pair in step }}:
                 ${{ pair.key }}: ${{ pair.value }}

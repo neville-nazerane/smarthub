@@ -10,12 +10,10 @@ trigger:
     include:
       - src
 
-parameters:
 
-  - name: usePreRelease
-    type: boolean
-    default: true
-
+extends:
+  template: config-template.yml
+  parameters:
   - name: preBuildSteps
     type: stepList
     default: []
@@ -36,14 +34,6 @@ parameters:
     type: string
     default: http://192.168.1.9:5010
     
-  - name: configs
-    type: object
-    default: 
-      ASPNETCORE_ENVIRONMENT: Production
-      smartthings__PAT: $(PAT)
-      sql: $(sql)
-      web_insights: $(web_insights)
-
   - name: service
     type: object
     default:
@@ -81,7 +71,6 @@ stages:
 
         - task: UseDotNet@2
           displayName: 'Use .NET Core sdk'
-          condition: ${{ parameters.usePreRelease }}
           inputs:
             packageType: sdk
             includePreviewVersions: true

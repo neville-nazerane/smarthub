@@ -1,12 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using SmartHub.Logic;
 using SmartHub.Logic.Automations;
 using SmartHub.Logic.Data;
+using SmartHub.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -25,19 +28,38 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var smartThings = new SmartThingsConfig();
             configuration.Bind("smartthings", smartThings);
-
             services.AddHttpClient<SmartThingsClient>(client =>
             {
                 client.BaseAddress = new Uri("https://api.smartthings.com/v1");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", smartThings.PAT);
-            }) ;
+            });
+
+
+            var backup = new BackUpFunctionConfig();
+            configuration.Bind("backup", backup);
+            services.AddHttpClient<AzBackupClient>(client =>
+            {
+                client.BaseAddress = new Uri(backup.BaseUrl);
+                client.DefaultRequestHeaders.Add("x-functions-key", backup.Key);
+            });
 
             return services
 
-                        .AddDbContext<AppDbContext>(o => {
-                            o.UseMySql(configuration["sql"], ServerVersion.AutoDetect(configuration["sql"]));
+                        .Configure<GlobalConfig>(configuration.GetSection("global"))
+
+                        .AddDbContext<AppDbContext>((provider, o) => {
+
+                            var options = provider.GetService<IOptions<GlobalConfig>>();
+                            
+                            string dataPath = options.Value.DataPath
+                                                           .TrimEnd('/')
+                                                           .TrimEnd('\\');
+
+                            o.UseSqlite($"Data Source={dataPath}{Path.DirectorySeparatorChar}smartstuffs.db", 
+                                            b => b.MigrationsAssembly("SmartHub.DbMigrator"));
+                            //o.UseMySql(configuration["sql"], ServerVersion.AutoDetect(configuration["sql"]));
                             o.EnableSensitiveDataLogging();
-                            o.LogTo(ShowMe, Logging.LogLevel.Information, DbContextLoggerOptions.SingleLine);
+                            //o.LogTo(ShowMe, Logging.LogLevel.Information, DbContextLoggerOptions.SingleLine);
                         })
 
                         .AddTransient<ActionService>()
@@ -56,22 +78,14 @@ namespace Microsoft.Extensions.DependencyInjection
 
         }
 
-        class Batman : System.Net.Http.DelegatingHandler
+        public class BackUpFunctionConfig
         {
-            protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-            {
-                if (request.Content is JsonContent json)
-                {
-                    var str = await json.ReadAsStringAsync(cancellationToken);
-                }
-                return await base.SendAsync(request, cancellationToken);
-            }
-        }
+            public string BaseUrl { get; set; }
 
-        public  static void ShowMe(string str)
-        {
+            public string Key { get; set; }
 
         }
+
 
     }
 }

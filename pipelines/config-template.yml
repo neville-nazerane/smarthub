@@ -1,0 +1,9 @@
+
+parameters:
+  - name: configs
+    type: object
+    default: 
+      ASPNETCORE_ENVIRONMENT: Production
+      smartthings__PAT: $(PAT)
+      sql: $(sql)
+      web_insights: $(web_insights)
