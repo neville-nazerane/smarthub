@@ -7,6 +7,9 @@ parameters:
     smartthings__PAT: $(PAT)
     sql: $(sql)
     web_insights: $(web_insights)
+    global__dataPath: "home/ubuntu/"
+
+
 
 steps:
 - ${{ each config in parameters.configs }}:
