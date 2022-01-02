@@ -14,13 +14,11 @@ namespace SmartHub.BackgroundWorker
 {
     public class TimeyExecuter
     {
-        private readonly EventLogService _eventLogService;
         private readonly IOptions<GlobalConfig> _globalOptions;
         private readonly AzBackupClient _azBackupClient;
 
-        public TimeyExecuter(EventLogService eventLogService, IOptions<GlobalConfig> globalOptions, AzBackupClient azBackupClient)
+        public TimeyExecuter( IOptions<GlobalConfig> globalOptions, AzBackupClient azBackupClient)
         {
-            _eventLogService = eventLogService;
             _globalOptions = globalOptions;
             _azBackupClient = azBackupClient;
         }
@@ -29,6 +27,9 @@ namespace SmartHub.BackgroundWorker
         {
             //GZipStream.
             //ZipFile.CreateFromDirectory(_globalOptions.Value.DataPath);
+
+            if (!Directory.Exists("temps"))
+                Directory.CreateDirectory("temps");
 
             string fileName = $"temps/{Guid.NewGuid()}.zip";
             ZipFile.CreateFromDirectory(_globalOptions.Value.DataPath, fileName);
@@ -42,7 +43,7 @@ namespace SmartHub.BackgroundWorker
             {
                 File.Delete(fileName);
             }
-            await _eventLogService.ClearLogsAsync(logInterval, cancellationToken);
+            //await _eventLogService.ClearLogsAsync(logInterval, cancellationToken);
         }
 
     }

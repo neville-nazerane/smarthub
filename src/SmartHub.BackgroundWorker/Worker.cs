@@ -33,7 +33,7 @@ namespace SmartHub.BackgroundWorker
                 var service = scope.ServiceProvider.GetService<TimeyExecuter>();
                 await service.RunAsync(logClearInterval, stoppingToken);
 
-                await service.ClearLogsAsync(logClearInterval, stoppingToken);
+                //await service.ClearLogsAsync(logClearInterval, stoppingToken);
 
                 await Task.Delay(logClearInterval, stoppingToken);
             }

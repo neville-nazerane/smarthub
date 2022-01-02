@@ -25,7 +25,7 @@ namespace SmartHub.Logic
 
             //request.Content = new StreamContent(fileStream);
 
-            return _httpClient.PostAsync($"uploadBackup/{DateTime.Now:yy-MM-dd-HH-mm}",
+            return _httpClient.PostAsync($"api/uploadBackup/{DateTime.Now:yy-MM-dd-HH-mm}",
                                          new StreamContent(fileStream),
                                          cancellationToken);
         }
