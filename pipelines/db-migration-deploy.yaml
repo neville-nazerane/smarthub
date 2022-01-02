@@ -11,34 +11,35 @@ trigger:
       - src
 
 parameters:
-  - name: preBuildSteps
-    type: stepList
-    default: []
+- name: preBuildSteps
+  type: stepList
+  default: []
 
-  - name: projectPath
-    type: string
-    default: 'src/SmartHub.BackgroundWorker'
+- name: projectPath
+  type: string
+  default: 'src/SmartHub.DbMigrator'
 
-  - name: projectName
-    type: string
-    default: SmartHub.BackgroundWorker
+- name: projectName
+  type: string
+  default: SmartHub.DbMigrator
 
-  - name: destDirectory
-    type: string 
-    default: /var/www/workerHub
+- name: destDirectory
+  type: string 
+  default: /var/www/db
 
-  - name: service
-    type: object
-    default:
-      description: Web app for hub
-      identifier: workerHub
-      name: kestrel-workerHub
+- name: service
+  type: object
+  default:
+    description: for db migrations
+    identifier: dbMigration
+    name: kestrel-dbMigration
 
 variables:
+  
   - group: smarthub
 
   - name: serviceTemplate
-    value: |
+    value:  |
       [Unit]
       Description=${{ parameters.service.description }}
 
@@ -47,13 +48,12 @@ variables:
 
       [Service]
       WorkingDirectory=${{ parameters.destDirectory }}
-      ExecStart=/usr/bin/dotnet/dotnet ${{ parameters.destDirectory }}/${{ parameters.projectName }}.dll
-      Restart=always
-      # Restart service after 10 seconds if the dotnet service crashes:
-      RestartSec=10
+      ExecStart=/home/ubuntu/dotnet/dotnet ${{ parameters.destDirectory }}/${{ parameters.projectName }}.dll
       KillSignal=SIGINT
       SyslogIdentifier=${{ parameters.service.identifier }}
       User=www-data
+
+
 
 stages:
   - stage: CI
@@ -68,7 +68,7 @@ stages:
             includePreviewVersions: true
             version: 6.0.101
             installationPath: $(Agent.ToolsDirectory)/dotnet
-
+        
         - ${{ each step in parameters.preBuildSteps  }}:
             - ${{ each pair in step }}:
                 ${{ pair.key }}: ${{ pair.value }}
