@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using SmartHub.Logic;
 using SmartHub.Logic.Automations;
 using SmartHub.Logic.Data;
@@ -8,6 +9,7 @@ using SmartHub.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -45,8 +47,17 @@ namespace Microsoft.Extensions.DependencyInjection
 
                         .Configure<GlobalConfig>(configuration.GetSection("global"))
 
-                        .AddDbContext<AppDbContext>(o => {
-                            o.UseMySql(configuration["sql"], ServerVersion.AutoDetect(configuration["sql"]));
+                        .AddDbContext<AppDbContext>((provider, o) => {
+
+                            var options = provider.GetService<IOptions<GlobalConfig>>();
+                            
+                            string dataPath = options.Value.DataPath
+                                                           .TrimEnd('/')
+                                                           .TrimEnd('\\');
+
+                            o.UseSqlite($"Data Source={dataPath}{Path.DirectorySeparatorChar}smartstuffs.db", 
+                                            b => b.MigrationsAssembly("SmartHub.DbMigrator"));
+                            //o.UseMySql(configuration["sql"], ServerVersion.AutoDetect(configuration["sql"]));
                             o.EnableSensitiveDataLogging();
                             //o.LogTo(ShowMe, Logging.LogLevel.Information, DbContextLoggerOptions.SingleLine);
                         })
