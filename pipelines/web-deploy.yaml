@@ -9,6 +9,27 @@ trigger:
   paths:
     include:
       - src
+variables:
+  
+  - group: smarthub
+
+  - name: serviceTemplate
+    value:  |
+      [Unit]
+      Description=${{ parameters.service.description }}
+
+      [Install]
+      WantedBy=multi-user.target
+
+      [Service]
+      WorkingDirectory=${{ parameters.destDirectory }}
+      ExecStart=/home/ubuntu/dotnet/dotnet ${{ parameters.destDirectory }}/${{ parameters.projectName }}.dll --urls ${{ parameters.url }}
+      Restart=always
+      # Restart service after 10 seconds if the dotnet service crashes:
+      RestartSec=10
+      KillSignal=SIGINT
+      SyslogIdentifier=${{ parameters.service.identifier }}
+      User=www-data
 
 
 extends:
@@ -41,105 +62,84 @@ extends:
       identifier: webHub
       name: kestrel-webHub
 
-  variables:
-    
-    - group: smarthub
 
-    - name: serviceTemplate
-      value:  |
-        [Unit]
-        Description=${{ parameters.service.description }}
+stages:
+  - stage: CI
+    jobs:
+      - job: Compile
+        steps:
 
-        [Install]
-        WantedBy=multi-user.target
-
-        [Service]
-        WorkingDirectory=${{ parameters.destDirectory }}
-        ExecStart=/home/ubuntu/dotnet/dotnet ${{ parameters.destDirectory }}/${{ parameters.projectName }}.dll --urls ${{ parameters.url }}
-        Restart=always
-        # Restart service after 10 seconds if the dotnet service crashes:
-        RestartSec=10
-        KillSignal=SIGINT
-        SyslogIdentifier=${{ parameters.service.identifier }}
-        User=www-data
-
-  stages:
-    - stage: CI
-      jobs:
-        - job: Compile
-          steps:
-
-          - task: UseDotNet@2
-            displayName: 'Use .NET Core sdk'
-            inputs:
-              packageType: sdk
-              includePreviewVersions: true
-              version: 6.0.101
-              installationPath: $(Agent.ToolsDirectory)/dotnet
-          
-          - ${{ each step in parameters.preBuildSteps  }}:
-              - ${{ each pair in step }}:
-                  ${{ pair.key }}: ${{ pair.value }}
-
-          - script: dotnet publish ${{ parameters.projectPath }} -c release -o published
-            displayName: Publishing web app
-
-          - task: ArchiveFiles@2
-            displayName: Compress before publish
-            inputs:
-              rootFolderOrFile: published
-              includeRootFolder: false
-              archiveFile: $(Build.ArtifactStagingDirectory)/${{ parameters.projectName }}.zip
-              verbose: true
-
-          - task: PublishBuildArtifacts@1
-            displayName: Prep for release
-            inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-              ArtifactName: 'drop'
-              publishLocation: 'Container'
-
-    - stage: DeployDev
-      displayName: 'Deploy to Development'
-
-      jobs:
-        - deployment: DeployLAN
-          displayName: Deploy to Development VM
-          environment:
-            name: raspberry
-            resourceType: VirtualMachine
-            resourceName: ubuntu
-          strategy:
-            runOnce:
-              deploy:
-                steps:
-
-                  - script: echo "$(serviceTemplate)" > $(Pipeline.Workspace)/drop/linux.service
-                    displayName: Generate service file
-                  
-                  - ${{ each config in parameters.configs }}:
-                    - script: 'echo "Environment=${{ config.key }}=''${{ config.value }}''" >> $(Pipeline.Workspace)/drop/linux.service'
-                      displayName: Adding configuration for ${{ config.key }}
-
-                  - script: |
-                      echo 'showing'
-                      ls
-                      echo 'finished showing'
-
-                      sudo rm -rf ${{ parameters.destDirectory }}
-                      sudo unzip ${{ parameters.projectName }}.zip -d ${{ parameters.destDirectory }}
-
-                      sudo mv linux.service /etc/systemd/system/${{ parameters.service.name }}.service -f
-
-                      sudo systemctl enable ${{ parameters.service.name }}.service 
-                      sudo systemctl stop ${{ parameters.service.name }}.service 
-                      sudo systemctl start ${{ parameters.service.name }}.service
-    
-                      rm -rf *
-                    displayName: Updating website
-                    workingDirectory: $(Pipeline.Workspace)/drop
+        - task: UseDotNet@2
+          displayName: 'Use .NET Core sdk'
+          inputs:
+            packageType: sdk
+            includePreviewVersions: true
+            version: 6.0.101
+            installationPath: $(Agent.ToolsDirectory)/dotnet
         
-                  - task: DeleteFiles@1
-                    displayName: Clean up
-              
+        - ${{ each step in parameters.preBuildSteps  }}:
+            - ${{ each pair in step }}:
+                ${{ pair.key }}: ${{ pair.value }}
+
+        - script: dotnet publish ${{ parameters.projectPath }} -c release -o published
+          displayName: Publishing web app
+
+        - task: ArchiveFiles@2
+          displayName: Compress before publish
+          inputs:
+            rootFolderOrFile: published
+            includeRootFolder: false
+            archiveFile: $(Build.ArtifactStagingDirectory)/${{ parameters.projectName }}.zip
+            verbose: true
+
+        - task: PublishBuildArtifacts@1
+          displayName: Prep for release
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: 'drop'
+            publishLocation: 'Container'
+
+  - stage: DeployDev
+    displayName: 'Deploy to Development'
+
+    jobs:
+      - deployment: DeployLAN
+        displayName: Deploy to Development VM
+        environment:
+          name: raspberry
+          resourceType: VirtualMachine
+          resourceName: ubuntu
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+
+                - script: echo "$(serviceTemplate)" > $(Pipeline.Workspace)/drop/linux.service
+                  displayName: Generate service file
+                
+                - ${{ each config in parameters.configs }}:
+                  - script: 'echo "Environment=${{ config.key }}=''${{ config.value }}''" >> $(Pipeline.Workspace)/drop/linux.service'
+                    displayName: Adding configuration for ${{ config.key }}
+
+                - script: |
+                    echo 'showing'
+                    ls
+                    echo 'finished showing'
+
+                    sudo rm -rf ${{ parameters.destDirectory }}
+                    sudo unzip ${{ parameters.projectName }}.zip -d ${{ parameters.destDirectory }}
+
+                    sudo mv linux.service /etc/systemd/system/${{ parameters.service.name }}.service -f
+
+                    sudo systemctl enable ${{ parameters.service.name }}.service 
+                    sudo systemctl stop ${{ parameters.service.name }}.service 
+                    sudo systemctl start ${{ parameters.service.name }}.service
+  
+                    rm -rf *
+                  displayName: Updating website
+                  workingDirectory: $(Pipeline.Workspace)/drop
       
+                - task: DeleteFiles@1
+                  displayName: Clean up
+            
+    
