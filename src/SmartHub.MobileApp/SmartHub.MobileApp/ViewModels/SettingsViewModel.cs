@@ -63,7 +63,7 @@ namespace SmartHub.MobileApp.ViewModels
         public async Task UpdateSettingsAsync()
         {
             var res = await _raspberryClient.GetSettingsAsync();
-            settings = new ObservableCollection<Setting>(res);
+            Settings = new ObservableCollection<Setting>(res);
         }
 
     }

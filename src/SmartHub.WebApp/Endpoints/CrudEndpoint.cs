@@ -39,6 +39,13 @@ namespace SmartHub.WebApp.Endpoints
                                 await dbContext.SaveChangesAsync(cancellationToken);
                                 break;
                             }
+                        case "PUT":
+                            {
+                                var model = await req.ReadFromJsonAsync<TEntity>(cancellationToken);
+                                dbContext.Update(model);
+                                await dbContext.SaveChangesAsync(cancellationToken);
+                                break;
+                            }
                         case "GET":
                             {
                                 var data = await dbSetFunc(dbContext).ToListAsync(cancellationToken);
@@ -70,15 +77,7 @@ namespace SmartHub.WebApp.Endpoints
                                 await httpContext.Response.WriteAsJsonAsync(data, cancellationToken);
                                 break;
                             }
-                        case "PUT":
-                            {
-                                var model = await req.ReadFromJsonAsync<TEntity>(cancellationToken);
-                                int id = int.Parse(req.RouteValues["id"].ToString());
-                                var data = await dbSetFunc(dbContext).FindAsync(new object[]{ id }, cancellationToken);
-                                dbContext.Update(model);
-                                await dbContext.SaveChangesAsync(cancellationToken);
-                                break;
-                            }
+
                         case "DELETE":
                             {
                                 int id = int.Parse(req.RouteValues["id"].ToString());
