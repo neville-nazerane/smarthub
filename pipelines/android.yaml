@@ -57,6 +57,13 @@ stages:
 
           - task: NuGetToolInstaller@1
 
+          - task: UseDotNet@2
+            displayName: 'Use .NET Core sdk'
+            inputs:
+              packageType: sdk
+              includePreviewVersions: true
+              version: 6.0.101
+              installationPath: $(Agent.ToolsDirectory)/dotnet
           
           - task: NuGetCommand@2
             inputs:
@@ -68,7 +75,7 @@ stages:
               sourcePath: $(projectPath)/Properties/AndroidManifest.xml
               printFile: true
               versionCode: $(Build.BuildId)
-              versionName: 1.0.$(Build.BuildId)
+              versionName: 1.1.$(Build.BuildId)
 
           - task: XamarinAndroid@1
             inputs:
