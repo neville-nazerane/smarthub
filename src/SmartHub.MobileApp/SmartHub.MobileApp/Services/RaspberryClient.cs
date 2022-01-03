@@ -21,6 +21,16 @@ namespace SmartHub.MobileApp.Services
             _client = client;
         }
 
+        #region settings
+
+        public Task<IEnumerable<Setting>> GetSettingsAsync(CancellationToken cancellationToken = default)
+            => _client.GetFromJsonAsync<IEnumerable<Setting>>("settings", cancellationToken);
+
+        public Task UpdateSettingAsync(Setting setting, CancellationToken cancellationToken = default)
+            => _client.PutAsJsonAsync("settings", setting, cancellationToken);
+
+        #endregion
+
         #region scenes
 
         public Task<IEnumerable<SceneItem>> GetScenesAsync()
