@@ -69,6 +69,7 @@ stages:
             inputs:
               command: 'restore'
               restoreSolution: '$(solutionPath)'
+              feedsToUse: 'select'
           
           - task: android-manifest-version@1
             inputs:
