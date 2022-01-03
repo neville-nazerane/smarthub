@@ -8,7 +8,10 @@ trigger:
       - master
   paths:
     include:
-      - src
+      - src/SmartHub.SmartBackgroundWorker
+      - src/SmartHub.Models
+      - src/SmartHub.Logic
+
 
 parameters:
 - name: preBuildSteps

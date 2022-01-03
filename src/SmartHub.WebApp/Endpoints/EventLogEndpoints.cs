@@ -22,8 +22,9 @@ namespace SmartHub.WebApp.Endpoints
                 endpoints.MapGet($"{path}/add/{{event}}", context 
                     => context.GetEventService().RecieveAsync(context.GetRouteString("event"))),
 
-                endpoints.MapGet($"{path}/fetch/{{event}}", context
-                    => context.GetLogService().GetAsync(context.GetRouteString("event"), context.RequestAborted))
+                endpoints.MapGet($"{path}/fetch/{{event}}", async context
+                    => await context.Response.WriteAsJsonAsync(
+                            await context.GetLogService().GetAsync(context.GetRouteString("event"), context.RequestAborted)))
 
             };
 

@@ -30,9 +30,12 @@ namespace SmartHub.Logic
         }
 
         public async Task<IEnumerable<EventLog>> GetAsync(string eventId, CancellationToken cancellationToken = default)
-            => await _context.EventLogs
-                                .Where(l => l.EventId == eventId)
-                                .ToArrayAsync(cancellationToken);
+        {
+            EventLog[] eventLogs = await _context.EventLogs
+                                                       .Where(l => l.EventId == eventId)
+                                                       .ToArrayAsync(cancellationToken);
+            return eventLogs;
+        }
 
         public async Task ClearLogsAsync(TimeSpan timeSpan, CancellationToken cancellationToken = default)
         {
@@ -41,7 +44,7 @@ namespace SmartHub.Logic
             string timeStr = time.ToString("yyyy-MM-dd HH:mm:ss");
 
             await _context.Database.ExecuteSqlRawAsync(
-                            $"DELETE FROM {nameof(_context.EventLogs)} WHERE {nameof(EventLog.TimeStamp)} < '{timeStr}'",                           new object[] { time },
+                            $"DELETE FROM {nameof(_context.EventLogs)} WHERE {nameof(EventLog.TimeStamp)} < '{timeStr}'", new object[] { time },
                             cancellationToken: cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
         }

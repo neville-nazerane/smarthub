@@ -34,14 +34,20 @@ namespace SmartHub.Logic
         {
             var autos = _automations.Get(@event);
 
-            _logger.LogInformation($"Found {autos.Count()} automations for event {@event}");
+            if (autos is null)
+            {
+                _logger.LogWarning("No actions set for events recieved", @event);
+                return;
+            }
+
+            _logger.LogInformation("Found {event} automations for event {count}", @event, autos.Count());
             if (autos is not null)
                 foreach (var auto in autos)
                 {
                     var service = (IAutomation)_serviceProvider.GetService(auto);
                     await service.ExecuteAsync(cancellationToken);
                 }
-            else _logger.LogWarning($"No automations found for {@event} event");
+            else _logger.LogWarning("No automations found for event", @event);
         }
 
     }
