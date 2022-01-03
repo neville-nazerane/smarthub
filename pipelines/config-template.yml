@@ -10,7 +10,7 @@ parameters:
     worker_insights: $(worker_insights)
     global__dataPath: "/home/ubuntu/data"
     backup__key: $(backup_key)
-    backup__baseUrl: ${backup_baseUrl}
+    backup__baseUrl: $(backup_baseUrl)
 
 steps:
 - ${{ each config in parameters.configs }}:

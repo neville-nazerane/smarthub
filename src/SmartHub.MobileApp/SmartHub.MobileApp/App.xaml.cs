@@ -38,7 +38,7 @@ namespace SmartHub.MobileApp
 
             CurrentProvider = this.StartInjecting()
 
-                                    .SetInitialPage<HomePage>()
+                                    .SetInitialPage<SettingsPage>()
 
                                     .AddHttpClient<RaspberryClient>(client => {
                                         client.BaseAddress = new Uri(Config.Endpoint);

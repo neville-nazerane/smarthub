@@ -28,10 +28,10 @@
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.4.0" />
     <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
     <PackageReference Include="Xamarin.FluentInjector" Version="0.0.719-beta" />
-    <PackageReference Include="Xamarin.Forms" Version="5.0.1.2031-nightly" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2291" />
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
     <PackageReference Include="Xamarin.CommunityToolkit" Version="1.3.1" />
-    <PackageReference Include="Xamarin.Forms.Visual.Material" Version="5.0.1.2031-nightly" />
+    <PackageReference Include="Xamarin.Forms.Visual.Material" Version="5.0.0.2291" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,6 +52,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\HomePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\SettingsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
