@@ -16,6 +16,8 @@ namespace SmartHub.Logic.Data
 
         public DbSet<EventLog> EventLogs { get; set; }
 
+        public DbSet<Setting> Settings { get; set; }
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }

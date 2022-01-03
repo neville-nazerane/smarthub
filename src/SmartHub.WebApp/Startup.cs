@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SmartHub.Logic;
 using SmartHub.Logic.Data;
+using SmartHub.Models.Entities;
 using SmartHub.WebApp.Endpoints;
 
 namespace SmartHub.WebApp
@@ -54,14 +55,16 @@ namespace SmartHub.WebApp
                 endpoints.MapActions("/actions");
                 endpoints.MapEventLogs("/logEvents");
 
-                endpoints.MapGet("/front/{speed}", c => c.RequestServices.GetService<SmartThingsClient>()
-                                    .ExecuteDeviceAsync("21b89395-01f3-49b4-b284-6530c0022b61", new Models.SmartThings.DeviceExecuteModel
-                                    {
-                                        Capability = "fanSpeed",
-                                        Component = "main",
-                                        Command = "setFanSpeed",
-                                        Arguments = new object[] { int.Parse(c.Request.RouteValues["speed"].ToString()) }
-                                    }));
+                endpoints.MapCrud("/settings", c => c.Settings);
+
+                //endpoints.MapGet("/front/{speed}", c => c.RequestServices.GetService<SmartThingsClient>()
+                //                    .ExecuteDeviceAsync("21b89395-01f3-49b4-b284-6530c0022b61", new Models.SmartThings.DeviceExecuteModel
+                //                    {
+                //                        Capability = "fanSpeed",
+                //                        Component = "main",
+                //                        Command = "setFanSpeed",
+                //                        Arguments = new object[] { int.Parse(c.Request.RouteValues["speed"].ToString()) }
+                //                    }));
 
             });
         }
