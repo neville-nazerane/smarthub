@@ -5,7 +5,8 @@ trigger:
       - master
   paths:
     include:
-      - src
+      - src/SmartHub.MobileApp
+      - src/SmartHub.Models
 
 pool:
   vmImage: 'windows-latest'
