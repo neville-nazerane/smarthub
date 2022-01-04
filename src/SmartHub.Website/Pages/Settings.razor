@@ -1,0 +1,17 @@
+﻿@page "/settings"
+<h3>Settings</h3>
+
+@if (settings is null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    foreach (var setting in settings)
+    {
+
+    <div>@setting.Name</div>
+    <div>@setting.Value</div>
+
+    }
+}

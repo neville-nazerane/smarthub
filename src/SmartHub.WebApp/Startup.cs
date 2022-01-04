@@ -30,7 +30,8 @@ namespace SmartHub.WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApplicationInsightsTelemetry(Configuration["web_insights"]);
-            services.AddLogic(Configuration);
+            services.AddCors()
+                    .AddLogic(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -42,6 +43,10 @@ namespace SmartHub.WebApp
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(b => b.AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .WithOrigins(Configuration["clientUrl"]));
 
             app.UseRouting();
 
