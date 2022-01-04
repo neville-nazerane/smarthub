@@ -9,9 +9,12 @@ else
 {
     foreach (var setting in settings)
     {
+        <div>
+            <input @bind-value=setting.Name />
+            <input @bind-value=setting.Value />
 
-    <div>@setting.Name</div>
-    <div>@setting.Value</div>
+            <input type="button" value="Save" @onclick=@(async () => await SaveAsync(setting)) />
+        </div>
 
     }
 }

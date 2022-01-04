@@ -17,5 +17,7 @@ namespace SmartHub.Website.Pages
             settings = await HttpClient.GetFromJsonAsync<IEnumerable<Setting>>("settings");
         }
 
+        Task SaveAsync(Setting setting) => HttpClient.PutAsJsonAsync("settings", setting);
+
     }
 }
