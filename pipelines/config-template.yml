@@ -11,7 +11,7 @@ parameters:
     global__dataPath: "/home/ubuntu/data"
     backup__key: $(backup_key)
     backup__baseUrl: $(backup_baseUrl)
-    clientUrl: "http://192.168.1.9"
+    clientUrl: "http://192.168.1.9,http://pi.nevillenazerane.com"
 
 steps:
 - ${{ each config in parameters.configs }}:

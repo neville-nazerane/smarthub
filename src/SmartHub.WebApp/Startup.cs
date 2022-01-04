@@ -46,7 +46,7 @@ namespace SmartHub.WebApp
 
             app.UseCors(b => b.AllowAnyHeader()
                               .AllowAnyMethod()
-                              .WithOrigins(Configuration["clientUrl"]));
+                              .WithOrigins(Configuration["clientUrl"].Split(",")));
 
             app.UseRouting();
 
