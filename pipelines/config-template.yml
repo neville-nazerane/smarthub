@@ -8,6 +8,7 @@ parameters:
     sql: $(sql)
     web_insights: $(web_insights)
     worker_insights: $(worker_insights)
+    smartworker_insights: $(smartworker_insights)
     global__dataPath: "/home/ubuntu/data"
     backup__key: $(backup_key)
     backup__baseUrl: $(backup_baseUrl)

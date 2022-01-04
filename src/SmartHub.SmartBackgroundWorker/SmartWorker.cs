@@ -5,8 +5,6 @@ namespace SmartHub.SmartBackgroundWorker
 {
     public class SmartWorker : BackgroundService
     {
-        private int frontReq = 75;
-
         private readonly ILogger<SmartWorker> _logger;
         private readonly IServiceProvider _serviceProvider;
 
