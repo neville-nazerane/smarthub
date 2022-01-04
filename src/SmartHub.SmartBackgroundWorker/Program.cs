@@ -4,7 +4,8 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
         services.AddHostedService<SmartWorker>();
-        services.AddLogic(hostContext.Configuration);
+        services.AddLogic(hostContext.Configuration)
+                .AddScoped<SmartyPants>();
     })
     .Build();
 
