@@ -6,20 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static SmartHub.Constants.DeviceConstants;
 
 namespace SmartHub.SmartBackgroundWorker
 {
     public class SmartyPants
     {
-        private const string frontTempKey = "front temp";
-        private const string bedTempKey = "bedroom temp";
-
-        private const string frontMonitorId = "5583ad3b-6d21-4826-90bf-be8ba43a48f5";
-        private const string frontFanId = "21b89395-01f3-49b4-b284-6530c0022b61";
-
-        private const string bedMonitorId = "d177e94a-37b6-4f34-90fb-e872139505ee";
-        private const string bedFanId = "bf836338-a339-4e9a-90e6-e147de8ead17";
-
 
 
         private readonly SmartThingsClient _smartThingsClient;
@@ -75,7 +67,7 @@ namespace SmartHub.SmartBackgroundWorker
                                         CancellationToken cancellationToken = default)
         {
 
-            var frontTempData = await _smartThingsClient.GetCapabilityStatusAsync(monitorId,
+            var tempData = await _smartThingsClient.GetCapabilityStatusAsync(monitorId,
                                                                     "main",
                                                                     "temperatureMeasurement",
                                                                     cancellationToken);
@@ -85,7 +77,7 @@ namespace SmartHub.SmartBackgroundWorker
                                                                 "fanSpeed",
                                                                 cancellationToken);
 
-            float currentTemp = frontTempData["temperature"]["value"].GetSingle();
+            float currentTemp = tempData["temperature"]["value"].GetSingle();
             int fanSpeed = fanData["fanSpeed"]["value"].GetInt32();
 
             if (currentTemp < targetTemp)

@@ -14,6 +14,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\SmartHub.Constants\SmartHub.Constants.csproj" />
 		<ProjectReference Include="..\SmartHub.Logic\SmartHub.Logic.csproj" />
 	</ItemGroup>
 </Project>

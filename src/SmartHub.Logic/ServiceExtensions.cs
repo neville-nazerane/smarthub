@@ -74,6 +74,7 @@ namespace Microsoft.Extensions.DependencyInjection
                         .AddTransient<ActionService>()
                         .AddTransient<EventLogService>()
                         .AddScoped<AutomationService>()
+                        .AddScoped<SmartLogic>()
                         .AddTransient<EventService>()
                         
                         //AUTOMATIONS

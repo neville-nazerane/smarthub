@@ -59,6 +59,7 @@ namespace SmartHub.WebApp
                 endpoints.MapDevices("/devices");
                 endpoints.MapActions("/actions");
                 endpoints.MapEventLogs("/logEvents");
+                endpoints.MapTriggers("/trigger");
 
                 endpoints.MapCrud("/settings", c => c.Settings);
 
