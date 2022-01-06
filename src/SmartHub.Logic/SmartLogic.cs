@@ -32,10 +32,6 @@ namespace SmartHub.Logic
             }
             else
             {
-                if (fanSpeed == 0)
-                {
-                    await SwitchFanAsync("on");
-                }
 
                 await IncreaseFanAsync();
             }

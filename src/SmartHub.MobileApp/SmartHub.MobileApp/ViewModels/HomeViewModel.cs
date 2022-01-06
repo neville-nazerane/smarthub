@@ -1,8 +1,8 @@
 ﻿using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using SmartHub.Consumer;
 using SmartHub.MobileApp.Controls;
 using SmartHub.MobileApp.Models;
-using SmartHub.MobileApp.Services;
 using SmartHub.MobileApp.Utils;
 using SmartHub.Models.Entities;
 using SmartHub.Models.Models;

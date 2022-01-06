@@ -1,4 +1,4 @@
-﻿using SmartHub.MobileApp.Services;
+﻿using SmartHub.Consumer;
 using SmartHub.Models.Entities;
 using System;
 using System.Collections.Generic;

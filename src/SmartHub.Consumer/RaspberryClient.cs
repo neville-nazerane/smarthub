@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SmartHub.MobileApp.Services
+namespace SmartHub.Consumer
 {
     public class RaspberryClient
     {
@@ -51,6 +51,9 @@ namespace SmartHub.MobileApp.Services
                                   float version,
                                   CancellationToken cancellationToken = default)
             => _client.GetFromJsonAsync<CapabilityData>($"devices/capabilities/{id}/{version}", cancellationToken);
+
+        public Task<Status> GetDeviceStatusAsync(string deviceId, string componentId, string capabilityId, CancellationToken cancellationToken = default)
+            => _client.GetFromJsonAsync<Status>($"devices/{deviceId}/components/{componentId}/capabilities/{capabilityId}/status");
 
 
         #endregion

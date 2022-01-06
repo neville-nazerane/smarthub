@@ -1,6 +1,6 @@
-﻿using SmartHub.MobileApp.Controls;
+﻿using SmartHub.Consumer;
+using SmartHub.MobileApp.Controls;
 using SmartHub.MobileApp.Models;
-using SmartHub.MobileApp.Services;
 using SmartHub.MobileApp.Utils;
 using SmartHub.Models.Entities;
 using SmartHub.Models.SmartThings;

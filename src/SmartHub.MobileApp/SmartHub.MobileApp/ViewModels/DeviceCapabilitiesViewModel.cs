@@ -1,5 +1,5 @@
-﻿using SmartHub.MobileApp.Pages;
-using SmartHub.MobileApp.Services;
+﻿using SmartHub.Consumer;
+using SmartHub.MobileApp.Pages;
 using SmartHub.Models.SmartThings;
 using System;
 using System.Collections.Generic;

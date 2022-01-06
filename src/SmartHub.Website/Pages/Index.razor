@@ -5,3 +5,10 @@
 <h1>Hello, smart hub!</h1>
 
 Raspberry PI Interface
+
+<label>Front Fan</label>
+<input type="range" min="0" max="3" @onchange=OnFrontSpeedChanged value=@frontSpeed class="slider" />
+
+
+<label>Bedroom Fan</label>
+<input type="range" min="0" max="3" @onchange=OnBedroomSpeedChanged value=@bedroomSpeed class="slider" />

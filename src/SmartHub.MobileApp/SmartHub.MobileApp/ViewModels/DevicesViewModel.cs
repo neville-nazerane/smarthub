@@ -1,4 +1,4 @@
-﻿using SmartHub.MobileApp.Services;
+﻿using SmartHub.Consumer;
 using SmartHub.Models.SmartThings;
 using System.Collections.Generic;
 using System.Threading.Tasks;

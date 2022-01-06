@@ -1,8 +1,8 @@
 ﻿using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using SmartHub.Consumer;
 using SmartHub.MobileApp.Pages;
-using SmartHub.MobileApp.Services;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
