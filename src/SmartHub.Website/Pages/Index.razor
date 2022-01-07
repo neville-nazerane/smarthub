@@ -6,9 +6,13 @@
 
 Raspberry PI Interface
 
-<label>Front Fan</label>
-<input type="range" min="0" max="3" @onchange=OnFrontSpeedChanged value=@frontSpeed class="slider" />
+<div>
+    <label>Front Fan</label>
+    <input type="range" min="0" max="3" @onchange=OnFrontSpeedChanged value=@frontSpeed class="slider" />
+</div>
 
+<div>
+    <label>Bedroom Fan</label>
+    <input type="range" min="0" max="3" @onchange=OnBedroomSpeedChanged value=@bedroomSpeed class="slider" />
+</div>
 
-<label>Bedroom Fan</label>
-<input type="range" min="0" max="3" @onchange=OnBedroomSpeedChanged value=@bedroomSpeed class="slider" />
