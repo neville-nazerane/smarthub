@@ -121,13 +121,14 @@ stages:
 
                     sudo rm -rf ${{ parameters.destDirectory }}
                     sudo unzip ${{ parameters.projectName }}.zip -d ${{ parameters.destDirectory }}
+                    sudo chown www-data /var/www/workerHub
 
                     sudo mv linux.service /etc/systemd/system/${{ parameters.service.name }}.service -f
 
                     sudo systemctl enable ${{ parameters.service.name }}.service 
                     sudo systemctl stop ${{ parameters.service.name }}.service 
                     sudo systemctl start ${{ parameters.service.name }}.service
-  
+
                     rm -rf *
                   displayName: Updating website
                   workingDirectory: $(Pipeline.Workspace)/drop
