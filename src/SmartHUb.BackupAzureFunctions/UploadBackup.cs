@@ -33,7 +33,7 @@ namespace SmartHub.BackupAzureFunctions
 
         [FunctionName("BackupCleanupPolicy")]
         public static async Task AutoCleanup(
-            [TimerTrigger("0 */1 * * * *", RunOnStartup = true)] TimerInfo timer
+            [TimerTrigger("0 0 0 * * *", RunOnStartup = true)] TimerInfo timer
             ,[Blob("backups", FileAccess.Read)]BlobContainerClient blobReader
             ,[Blob("backups", FileAccess.Write)] BlobContainerClient backupClient
             ,[Blob("archives", FileAccess.Write)] BlobContainerClient archiveClient
