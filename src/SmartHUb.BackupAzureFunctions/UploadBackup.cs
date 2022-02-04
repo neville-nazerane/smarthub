@@ -56,7 +56,9 @@ namespace SmartHub.BackupAzureFunctions
             foreach (var blob in blobsToMove)
             {
                 await using var stream = (await blobReader.GetBlobClient(blob.Name).DownloadStreamingAsync()).Value.Content;
-                await archiveClient.UploadBlobAsync($"Weekly-{blob.Name}", stream);
+                string blobName = $"Weekly-{blob.Name}";
+                var newBlob = await archiveClient.UploadBlobAsync(blobName, stream);
+                await archiveClient.GetBlobClient(blobName).SetAccessTierAsync(AccessTier.Archive);
                 await backupClient.DeleteBlobAsync(blob.Name);
             }
 
