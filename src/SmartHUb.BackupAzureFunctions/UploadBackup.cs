@@ -46,7 +46,9 @@ namespace SmartHub.BackupAzureFunctions
             var current = DateTime.Now;
             await foreach (var blob in pages)
             {
-                var date = DateTime.ParseExact(blob.Name, dateFormat, null);
+                var date = DateTime.ParseExact(blob.Name.Replace(".zip", string.Empty),
+                                               dateFormat,
+                                               null);
                 if ((date - current).Days > 7)
                 {
                     blobsToMove.Add(blob);
