@@ -58,6 +58,7 @@ namespace SmartHub.WebApp
                 endpoints.MapScenes("/scenes");
                 endpoints.MapDevices("/devices");
                 endpoints.MapActions("/actions");
+                endpoints.MapHue("/hue");
                 endpoints.MapEventLogs("/logEvents");
                 endpoints.MapTriggers("/trigger");
 

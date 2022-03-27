@@ -34,6 +34,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", smartThings.PAT);
             });
 
+            var hueConfig = new HueConfig();
+            configuration.Bind("hue", hueConfig);
+            services.AddHttpClient<HueClient>(client =>
+            {
+                client.BaseAddress = new Uri(hueConfig.BaseUrl);
+                client.DefaultRequestHeaders.Add("hue-application-key", hueConfig.Key);
+            })
+                .ConfigurePrimaryHttpMessageHandler(() => new HueHandler());
 
             var backup = new BackUpFunctionConfig();
             configuration.Bind("backup", backup);
@@ -85,6 +93,14 @@ namespace Microsoft.Extensions.DependencyInjection
         {
 
             public string PAT { get; set; }
+
+        }
+
+        public class HueConfig
+        {
+            public string Key { get; set; }
+
+            public string BaseUrl { get; set; }
 
         }
 
