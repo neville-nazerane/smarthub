@@ -31,5 +31,13 @@ namespace SmartHub.Logic
             return _httpClient.PutAsJsonAsync($"/clip/v2/resource/light/{id}", model, cancellationToken);
         }
 
+        public async Task<string> StreamEventAsync(CancellationToken cancellationToken = default)
+        {
+            var res = await _httpClient.GetAsync("eventstream/clip/v2");
+            var str = await res.Content.ReadAsStringAsync();
+            return str;
+        }
+
+
     }
 }

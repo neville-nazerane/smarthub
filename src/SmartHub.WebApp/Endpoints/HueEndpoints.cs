@@ -14,8 +14,8 @@ namespace SmartHub.WebApp.Endpoints
         {
             return new MultiEndpointConventionBuilder
             {
-                endpoints.MapGet("/swapme/{state}", StateAction)
-
+                endpoints.MapGet("/swapme/{state}", StateAction),
+                endpoints.MapGet("/hue", StreamAsync)
             };
         }
 
@@ -23,6 +23,9 @@ namespace SmartHub.WebApp.Endpoints
                          HueClient hueClient,
                          CancellationToken cancellationToken = default)
             => hueClient.SwitchLightAsync("404b22ea-8b2f-43ed-93ff-3641f5c478d5", state, cancellationToken);
+
+        static Task<string> StreamAsync(HueClient hueClient, CancellationToken cancellationToken = default)
+            => hueClient.StreamEventAsync(cancellationToken);
 
     }
 }

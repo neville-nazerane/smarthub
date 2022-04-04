@@ -13,7 +13,7 @@ namespace SmartHub.BackgroundWorker
     public class Worker : BackgroundService
     {
 
-        private readonly TimeSpan logClearInterval = TimeSpan.FromHours(1);
+        private readonly TimeSpan _logClearInterval = TimeSpan.FromHours(1);
 
         private readonly ILogger<Worker> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -31,11 +31,11 @@ namespace SmartHub.BackgroundWorker
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 using var scope = _serviceProvider.CreateScope();
                 var service = scope.ServiceProvider.GetService<TimeyExecuter>();
-                await service.RunAsync(logClearInterval, stoppingToken);
-
+                await service.RunAsync(_logClearInterval, stoppingToken);
+                
                 //await service.ClearLogsAsync(logClearInterval, stoppingToken);
 
-                await Task.Delay(logClearInterval, stoppingToken);
+                await Task.Delay(_logClearInterval, stoppingToken);
             }
         }
     }
