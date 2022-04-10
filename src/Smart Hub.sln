@@ -38,9 +38,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cloud", "Cloud", "{05D4705E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHub.Website", "SmartHub.Website\SmartHub.Website.csproj", "{505D2239-02B3-4AB2-8D73-8C20B7741821}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHub.Constants", "SmartHub.Constants\SmartHub.Constants.csproj", "{867F893D-9324-4835-BC0C-9C4B96FEFBAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHub.Constants", "SmartHub.Constants\SmartHub.Constants.csproj", "{867F893D-9324-4835-BC0C-9C4B96FEFBAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHub.Consumer", "SmartHub.Consumer\SmartHub.Consumer.csproj", "{4B5FADEA-706A-4A41-A8CF-B13C38AFE8C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHub.Consumer", "SmartHub.Consumer\SmartHub.Consumer.csproj", "{4B5FADEA-706A-4A41-A8CF-B13C38AFE8C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

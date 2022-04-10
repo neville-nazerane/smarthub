@@ -10,7 +10,7 @@ namespace SmartHub.Logic
 
         public HueHandler()
         {
-            MaxConnectionsPerServer = 1;
+            //MaxConnectionsPerServer = 1;
             ClientCertificateOptions = ClientCertificateOption.Manual;
             ServerCertificateCustomValidationCallback =
                 (httpRequestMessage, cert, cetChain, policyErrors) => true;

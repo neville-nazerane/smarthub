@@ -39,6 +39,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddHttpClient<HueClient>(client =>
             {
                 client.BaseAddress = new Uri(hueConfig.BaseUrl);
+                client.Timeout = Timeout.InfiniteTimeSpan;
                 client.DefaultRequestHeaders.Add("hue-application-key", hueConfig.Key);
             })
                 .ConfigurePrimaryHttpMessageHandler(() => new HueHandler());
@@ -84,6 +85,7 @@ namespace Microsoft.Extensions.DependencyInjection
                         .AddScoped<AutomationService>()
                         .AddScoped<SmartLogic>()
                         .AddTransient<EventService>()
+                        .AddTransient<HueService>()
                         
                         //AUTOMATIONS
                         .AddScoped<TurnOnBedroomAutomation>();

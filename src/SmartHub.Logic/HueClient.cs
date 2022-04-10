@@ -33,8 +33,8 @@ namespace SmartHub.Logic
 
         public async Task<string> StreamEventAsync(CancellationToken cancellationToken = default)
         {
-            var res = await _httpClient.GetAsync("eventstream/clip/v2");
-            var str = await res.Content.ReadAsStringAsync();
+            var res = await _httpClient.GetAsync("eventstream/clip/v2", cancellationToken);
+            var str = await res.Content.ReadAsStringAsync(cancellationToken);
             return str;
         }
 

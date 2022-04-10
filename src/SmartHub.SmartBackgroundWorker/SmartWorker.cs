@@ -16,6 +16,7 @@ namespace SmartHub.SmartBackgroundWorker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            return;
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
