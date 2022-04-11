@@ -1,10 +1,13 @@
 ﻿using SmartHub.Models.Hue;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,11 +34,11 @@ namespace SmartHub.Logic
             return _httpClient.PutAsJsonAsync($"/clip/v2/resource/light/{id}", model, cancellationToken);
         }
 
-        public async Task<string> StreamEventAsync(CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessage> StreamEventAsync(CancellationToken cancellationToken = default)
         {
-            var res = await _httpClient.GetAsync("eventstream/clip/v2", cancellationToken);
-            var str = await res.Content.ReadAsStringAsync(cancellationToken);
-            return str;
+            var streamTime = Stopwatch.StartNew();
+            HttpResponseMessage res = await _httpClient.GetAsync("eventstream/clip/v2", cancellationToken);
+            return res;
         }
 
 

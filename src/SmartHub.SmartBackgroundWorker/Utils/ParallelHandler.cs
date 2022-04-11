@@ -8,13 +8,51 @@ using System.Threading.Tasks;
 
 namespace SmartHub.SmartBackgroundWorker.Utils
 {
-    public class ParallelHandler
+
+    public abstract class CallbackHandler
+    {
+        protected bool keepRunning;
+
+        public async static Task<CallbackHandler> BeginRunningAsync<TResult>
+                                    (Func<Task<TResult>> runFactory, Func<TResult, Task> callBack)
+        {
+            var handler = new CallbackHandlerForTask();
+            await handler.RunAsync(runFactory, callBack);
+            return handler;
+        }
+
+        public async static Task<CallbackHandler> BeginRunningAsync<TResult>
+                            (Func<Task<TResult>> runFactory, Func<TResult, ValueTask> callBack)
+        {
+            var handler = new CallbackHandlerForValueTask();
+            await handler.RunAsync(runFactory, callBack);
+            return handler;
+        }
+
+        class CallbackHandlerForValueTask : CallbackHandler<ValueTask>
+        {
+            protected override async Task AwaitCallback(ValueTask task) => await task;
+        }
+
+        class CallbackHandlerForTask : CallbackHandler<Task>
+        {
+            protected override Task AwaitCallback(Task task) => task;
+
+        }
+
+    }
+
+    public abstract class CallbackHandler<TCallback> : CallbackHandler
     {
 
-        private readonly ConcurrentQueue<Task> _callbacks = new();
-        private bool keepRunning;
+        private readonly ConcurrentQueue<TCallback> _callbacks = new();
 
-        public async Task BeginRunningAsync<TResult>(Func<Task<TResult>> runFactory, Func<TResult, Task> callBack)
+        protected CallbackHandler()
+        {
+
+        }
+
+        public async Task RunAsync<TResult>(Func<Task<TResult>> runFactory, Func<TResult, TCallback> callBack)
         {
             keepRunning = true;
 
@@ -22,11 +60,10 @@ namespace SmartHub.SmartBackgroundWorker.Utils
                 RunTasksAsync(runFactory, callBack),
                 RunCallbacksAsync()
                 );
-
         }
 
         private async Task RunTasksAsync<TResult>(Func<Task<TResult>> runFactory,
-                                                          Func<TResult, Task> callBack)
+                                                          Func<TResult, TCallback> callBack)
         {
             while (keepRunning)
             {
@@ -39,18 +76,14 @@ namespace SmartHub.SmartBackgroundWorker.Utils
         {
             while (keepRunning)
             {
-                if (_callbacks.TryDequeue(out Task task))
-                    await task;
+                if (_callbacks.TryDequeue(out TCallback task))
+                    await AwaitCallback(task);
                 else
                     await Task.Delay(500);
             }
         }
 
-        public void StopRunning()
-        {
-            keepRunning = false;
-        }
-
+        protected abstract Task AwaitCallback(TCallback task);
 
     }
 }

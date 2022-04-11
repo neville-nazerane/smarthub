@@ -19,10 +19,8 @@ namespace SmartHub.SmartBackgroundWorker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var handler = new ParallelHandler();
-
-            await handler.BeginRunningAsync(_hueService.WatchIncomingAsync,
-                                            _hueService.HandleEventAsync);
+            await CallbackHandler.BeginRunningAsync(_hueService.WatchIncomingAsync,
+                                                     _hueService.HandleEventAsync);
 
             //var tasks = Enumerable.Range(1, 3)
             //                      .Select(i => handler.RunAsync(() => _hueService.IncomingAsync()))

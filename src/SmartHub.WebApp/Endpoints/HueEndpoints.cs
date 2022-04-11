@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Routing;
 using SmartHub.Logic;
 using SmartHub.WebApp.Util;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,7 +25,7 @@ namespace SmartHub.WebApp.Endpoints
                          CancellationToken cancellationToken = default)
             => hueClient.SwitchLightAsync("404b22ea-8b2f-43ed-93ff-3641f5c478d5", state, cancellationToken);
 
-        static Task<string> StreamAsync(HueClient hueClient, CancellationToken cancellationToken = default)
+        static Task<HttpResponseMessage> StreamAsync(HueClient hueClient, CancellationToken cancellationToken = default)
             => hueClient.StreamEventAsync(cancellationToken);
 
     }
