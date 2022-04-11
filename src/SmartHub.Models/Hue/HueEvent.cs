@@ -38,8 +38,18 @@ namespace SmartHub.Models.Hue
         [JsonPropertyName("motion")]
         public HueMotion Motion { get; set; }
 
+        [JsonPropertyName("button")]
+        public HueButton Button { get; set; }
+
         [JsonPropertyName("type")]
         public string Type { get; set; }
+    }
+
+    public class HueButton
+    {
+        [JsonPropertyName("last_event")]
+        public string LastEvent { get; set; }
+
     }
 
     public class HueMotion
