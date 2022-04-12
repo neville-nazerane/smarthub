@@ -1,4 +1,5 @@
-﻿using SmartHub.Models.Hue;
+﻿using SmartHub.Logic.InternalModels;
+using SmartHub.Models.Hue;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,6 +34,9 @@ namespace SmartHub.Logic
             };
             return _httpClient.PutAsJsonAsync($"/clip/v2/resource/light/{id}", model, cancellationToken);
         }
+
+        public Task<HueData<LightSwitch>> GetLightInfoAsync(string id, CancellationToken cancellationToken = default)
+            => _httpClient.GetFromJsonAsync<HueData<LightSwitch>>($"/clip/v2/resource/light/{id}", cancellationToken);
 
         public async Task<HttpResponseMessage> StreamEventAsync(CancellationToken cancellationToken = default)
         {

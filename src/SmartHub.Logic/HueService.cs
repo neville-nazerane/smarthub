@@ -3,14 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SmartHub.Logic
 {
     public class HueService
     {
+
+        private const string computerHaloId = "404b22ea-8b2f-43ed-93ff-3641f5c478d5";
+        private const string buttonId = "419bf6d0-02d5-4932-bc03-b761c9ecbb71";
+
         private readonly HueClient _client;
 
         public HueService(HueClient client)
@@ -18,28 +24,35 @@ namespace SmartHub.Logic
             _client = client;
         }
 
-        public async Task<HttpResponseMessage> WatchIncomingAsync()
+        public Task<HttpResponseMessage> WatchIncomingAsync(CancellationToken cancellationToken = default)
+            => _client.StreamEventAsync(cancellationToken);
+
+        public async Task HandleEventAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
         {
-            var res = await _client.StreamEventAsync();
-            Console.WriteLine(res);
-            return res;
+            var data = await response.Content.ReadFromJsonAsync<IEnumerable<HueEvent>>(cancellationToken: cancellationToken);
+            response.Dispose();
+            IEnumerable<HueEventData> events = data.Where(d => d.Type == "update")
+                                                         .SelectMany(d => d.Data)
+                                                         .ToList();
+            await ProcessEventAsync(events, cancellationToken);
         }
 
-        public async Task HandleEventAsync(HttpResponseMessage response)
+        private async Task ProcessEventAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken = default)
         {
+            var buttonEvent = events.SingleOrDefault(s => s.Id == buttonId);
+            Console.WriteLine(buttonEvent?.Button?.LastEvent);
+            if (buttonEvent is not null && buttonEvent.Button.LastEvent == "short_release")
+            {
+                await SwitchComputerHaloAsync(cancellationToken);
+            }
+        }
 
-            string rawData = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(JsonSerializer.Serialize(JsonDocument.Parse(rawData), new JsonSerializerOptions { WriteIndented = true }));
+        private async Task SwitchComputerHaloAsync(CancellationToken cancellationToken = default)
+        {
+            var button = await _client.GetLightInfoAsync(computerHaloId, cancellationToken);
+            var newState = !button.Data.First().On.On;
 
-            var data = JsonSerializer.Deserialize<IEnumerable<HueEvent>>(rawData);
-
-            response.Dispose();
-
-            //Console.WriteLine("\n\n\n\n\n\n\n\nHANDLING");
-            //Console.WriteLine(eve);
-            //await Task.Delay(3000);
-            //Console.WriteLine("\n\nDone handling");
-            //Console.WriteLine(eve);
+            await _client.SwitchLightAsync(computerHaloId, newState, cancellationToken);
         }
 
     }

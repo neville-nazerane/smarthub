@@ -14,7 +14,7 @@ namespace SmartHub.SmartBackgroundWorker.Utils
         protected bool keepRunning;
 
         public async static Task<CallbackHandler> BeginRunningAsync<TResult>
-                                    (Func<Task<TResult>> runFactory, Func<TResult, Task> callBack)
+                                    (Func<CancellationToken, Task<TResult>> runFactory, Func<TResult, CancellationToken, Task> callBack)
         {
             var handler = new CallbackHandlerForTask();
             await handler.RunAsync(runFactory, callBack);
@@ -22,7 +22,7 @@ namespace SmartHub.SmartBackgroundWorker.Utils
         }
 
         public async static Task<CallbackHandler> BeginRunningAsync<TResult>
-                            (Func<Task<TResult>> runFactory, Func<TResult, ValueTask> callBack)
+                            (Func<CancellationToken, Task<TResult>> runFactory, Func<TResult, CancellationToken, ValueTask> callBack)
         {
             var handler = new CallbackHandlerForValueTask();
             await handler.RunAsync(runFactory, callBack);
@@ -52,23 +52,26 @@ namespace SmartHub.SmartBackgroundWorker.Utils
 
         }
 
-        public async Task RunAsync<TResult>(Func<Task<TResult>> runFactory, Func<TResult, TCallback> callBack)
+        public async Task RunAsync<TResult>(Func<CancellationToken, Task<TResult>> runFactory,
+                                            Func<TResult, CancellationToken, TCallback> callBack,
+                                            CancellationToken cancellationToken = default)
         {
             keepRunning = true;
 
             await Task.WhenAll(
-                RunTasksAsync(runFactory, callBack),
+                RunTasksAsync(runFactory, callBack, cancellationToken),
                 RunCallbacksAsync()
                 );
         }
 
-        private async Task RunTasksAsync<TResult>(Func<Task<TResult>> runFactory,
-                                                          Func<TResult, TCallback> callBack)
+        private async Task RunTasksAsync<TResult>(Func<CancellationToken, Task<TResult>> runFactory,
+                                                  Func<TResult, CancellationToken, TCallback> callBack,
+                                                  CancellationToken cancellationToken = default)
         {
             while (keepRunning)
             {
-                var result = await runFactory();
-                _callbacks.Enqueue(callBack(result));
+                var result = await runFactory(cancellationToken);
+                _callbacks.Enqueue(callBack(result, cancellationToken));
             }
         }
 
