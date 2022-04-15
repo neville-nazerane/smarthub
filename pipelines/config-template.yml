@@ -13,6 +13,8 @@ parameters:
     backup__key: $(backup_key)
     backup__baseUrl: $(backup_baseUrl)
     clientUrl: "http://192.168.1.9,http://pi.nevillenazerane.com"
+    hue__baseUrl: $(hue_baseUrl)
+    hue__key: $(hue_key)
 
 steps:
 - ${{ each config in parameters.configs }}:
