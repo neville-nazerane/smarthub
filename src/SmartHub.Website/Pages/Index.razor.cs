@@ -54,8 +54,7 @@ namespace SmartHub.Website.Pages
             {
                 Component = "main",
                 Capability = "mediaPlayback",
-                Command = "play",
-                Arguments = new object[] { }
+                Command = "play"
             });
         }
 
@@ -65,8 +64,7 @@ namespace SmartHub.Website.Pages
             {
                 Component = "main",
                 Capability = "mediaPlayback",
-                Command = "play",
-                Arguments = new object[] { }
+                Command = "pause"
             });
         }
 
