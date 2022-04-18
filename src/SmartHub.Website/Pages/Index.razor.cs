@@ -7,6 +7,7 @@ namespace SmartHub.Website.Pages
     public partial class Index
     {
 
+
         int frontSpeed = 0;
 
         int bedroomSpeed = 0;
@@ -35,17 +36,41 @@ namespace SmartHub.Website.Pages
             await UpdateFanSpeedAsync(DeviceConstants.frontFanId, int.Parse((string)args.Value));
         }
 
-        private async Task UpdateFanSpeedAsync(string fanId, int speed)
+        private Task UpdateFanSpeedAsync(string fanId, int speed)
         {
-            await RaspberryClient.ExecuteDeviceAsync(fanId, new Models.SmartThings.DeviceExecuteModel
+            return RaspberryClient.ExecuteDeviceAsync(fanId, new Models.SmartThings.DeviceExecuteModel
             {
-                Capability = "fanSpeed",
                 Component = "main",
+                Capability = "fanSpeed",
                 Command = "setFanSpeed",
                 Arguments = new object[] { speed }
             });
 
         }
 
+        private Task PlayTvAsync()
+        {
+            return RaspberryClient.ExecuteDeviceAsync(DeviceConstants.tvId, new Models.SmartThings.DeviceExecuteModel
+            {
+                Component = "main",
+                Capability = "mediaPlayback",
+                Command = "play",
+                Arguments = new object[] { }
+            });
+        }
+
+        private Task PauseTvAsync()
+        {
+            return RaspberryClient.ExecuteDeviceAsync(DeviceConstants.tvId, new Models.SmartThings.DeviceExecuteModel
+            {
+                Component = "main",
+                Capability = "mediaPlayback",
+                Command = "play",
+                Arguments = new object[] { }
+            });
+        }
+
     }
+
+
 }

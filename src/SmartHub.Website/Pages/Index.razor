@@ -16,3 +16,7 @@ Raspberry PI Interface
     <input type="range" min="0" max="3" @onchange=OnBedroomSpeedChanged value=@bedroomSpeed class="slider" />
 </div>
 
+<div class="btn-group" role="group" aria-label="Basic example">
+  <button type="button" class="btn btn-primary" @onclick=PlayTvAsync>Play</button>
+  <button type="button" class="btn btn-secondary" @onclick=PauseTvAsync>Pause</button>
+</div>
