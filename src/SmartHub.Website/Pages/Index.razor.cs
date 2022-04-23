@@ -22,7 +22,7 @@ namespace SmartHub.Website.Pages
 
             var bedroomStatus = await RaspberryClient.GetDeviceStatusAsync(DeviceConstants.bedFanId, "main", "fanSpeed");
             bedroomSpeed = bedroomStatus["fanSpeed"]["value"].GetInt32();
-            
+
             await base.OnInitializedAsync();
         }
 
@@ -49,24 +49,37 @@ namespace SmartHub.Website.Pages
         }
 
         private Task PlayTvAsync()
-        {
-            return RaspberryClient.ExecuteDeviceAsync(DeviceConstants.tvId, new Models.SmartThings.DeviceExecuteModel
+            => RaspberryClient.ExecuteDeviceAsync(DeviceConstants.tvId, new Models.SmartThings.DeviceExecuteModel
             {
                 Component = "main",
                 Capability = "mediaPlayback",
                 Command = "play"
             });
-        }
 
         private Task PauseTvAsync()
-        {
-            return RaspberryClient.ExecuteDeviceAsync(DeviceConstants.tvId, new Models.SmartThings.DeviceExecuteModel
+            => RaspberryClient.ExecuteDeviceAsync(DeviceConstants.tvId, new Models.SmartThings.DeviceExecuteModel
             {
                 Component = "main",
                 Capability = "mediaPlayback",
                 Command = "pause"
             });
-        }
+
+        private Task IncraseVolumeAsync()
+            => RaspberryClient.ExecuteDeviceAsync(DeviceConstants.tvId, new Models.SmartThings.DeviceExecuteModel
+            {
+                Component = "main",
+                Capability = "audioVolume",
+                Command = "volumeUp"
+            });
+
+        private Task DecreaseVolumeAsync()
+            => RaspberryClient.ExecuteDeviceAsync(DeviceConstants.tvId, new Models.SmartThings.DeviceExecuteModel
+            {
+                Component = "main",
+                Capability = "audioVolume",
+                Command = "volumeDown"
+            });
+
 
     }
 

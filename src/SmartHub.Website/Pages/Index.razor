@@ -17,6 +17,12 @@ Raspberry PI Interface
 </div>
 
 <div class="btn-group" role="group" aria-label="Basic example">
-  <button type="button" class="btn btn-primary" @onclick=PlayTvAsync>Play</button>
-  <button type="button" class="btn btn-secondary" @onclick=PauseTvAsync>Pause</button>
+  <button type="button" class="btn btn-primary oi oi-media-play" @onclick=PlayTvAsync></button>
+  <button type="button" class="btn btn-secondary oi oi-media-pause" @onclick=PauseTvAsync></button>
+</div>
+
+
+<div class="btn-group" role="group" aria-label="Basic example">
+  <button type="button" class="btn btn-primary oi oi-volume-low" @onclick=IncraseVolumeAsync></button>
+  <button type="button" class="btn btn-secondary oi oi-volume-high" @onclick=DecreaseVolumeAsync></button>
 </div>
