@@ -64,6 +64,22 @@ namespace SmartHub.Website.Pages
                 Command = "pause"
             });
 
+        private Task RewindAsync()
+            => RaspberryClient.ExecuteDeviceAsync(DeviceConstants.tvId, new Models.SmartThings.DeviceExecuteModel
+            {
+                Component = "main",
+                Capability = "mediaPlayback",
+                Command = "rewind"
+            });
+
+        private Task ForwardAsync()
+            => RaspberryClient.ExecuteDeviceAsync(DeviceConstants.tvId, new Models.SmartThings.DeviceExecuteModel
+            {
+                Component = "main",
+                Capability = "mediaPlayback",
+                Command = "fastForward"
+            });
+
         private Task IncraseVolumeAsync()
             => RaspberryClient.ExecuteDeviceAsync(DeviceConstants.tvId, new Models.SmartThings.DeviceExecuteModel
             {

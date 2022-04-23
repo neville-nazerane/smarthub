@@ -16,14 +16,20 @@ Raspberry PI Interface
     <input type="range" min="0" max="3" @onchange=OnBedroomSpeedChanged value=@bedroomSpeed class="slider" />
 </div>
 
-<div class="btn-group" role="group" aria-label="Basic example">
-  <button type="button" class="btn btn-primary oi oi-media-play" @onclick=PlayTvAsync></button>
-  <button type="button" class="btn btn-secondary oi oi-media-pause" @onclick=PauseTvAsync></button>
+<div>
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-primary oi oi-media-play" @onclick=PlayTvAsync></button>
+        <button type="button" class="btn btn-secondary oi oi-media-pause" @onclick=PauseTvAsync></button>
+        <button type="button" class="btn btn-secondary oi oi-media-skip-backward" @onclick=RewindAsync></button>
+        <button type="button" class="btn btn-secondary oi oi-media-skip-forward" @onclick=ForwardAsync></button>
+    </div>
+
 </div>
 
-
-<div class="btn-group" role="group" aria-label="Basic example">
-  <button type="button" class="btn btn-primary oi oi-volume-low" @onclick=DecreaseVolumeAsync></button>
-  <button type="button" class="btn btn-secondary oi oi-volume-off" @onclick=MuteAsync></button>
-  <button type="button" class="btn btn-secondary oi oi-volume-high" @onclick=IncraseVolumeAsync></button>
+<div>
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-primary oi oi-volume-low" @onclick=DecreaseVolumeAsync></button>
+        <button type="button" class="btn btn-secondary oi oi-volume-off" @onclick=MuteAsync></button>
+        <button type="button" class="btn btn-secondary oi oi-volume-high" @onclick=IncraseVolumeAsync></button>
+    </div>
 </div>
