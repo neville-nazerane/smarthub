@@ -80,6 +80,13 @@ namespace SmartHub.Website.Pages
                 Command = "volumeDown"
             });
 
+        private Task MuteAsync()
+            => RaspberryClient.ExecuteDeviceAsync(DeviceConstants.tvId, new Models.SmartThings.DeviceExecuteModel
+            {
+                Component = "main",
+                Capability = "audioMute",
+                Command = "mute"
+            });
 
     }
 
