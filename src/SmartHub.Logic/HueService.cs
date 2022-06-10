@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using SmartHub.Constants;
 
 namespace SmartHub.Logic
 {
@@ -18,10 +19,12 @@ namespace SmartHub.Logic
         private const string buttonId = "419bf6d0-02d5-4932-bc03-b761c9ecbb71";
 
         private readonly HueClient _client;
+        private readonly SmartThingsClient _smartThingsClient;
 
-        public HueService(HueClient client)
+        public HueService(HueClient client, SmartThingsClient smartThingsClient)
         {
             _client = client;
+            _smartThingsClient = smartThingsClient;
         }
 
         public Task<HttpResponseMessage> WatchIncomingAsync(CancellationToken cancellationToken = default)
@@ -34,6 +37,7 @@ namespace SmartHub.Logic
             IEnumerable<HueEventData> events = data.Where(d => d.Type == "update")
                                                          .SelectMany(d => d.Data)
                                                          .ToList();
+            Console.WriteLine(events.FirstOrDefault()?.Button?.LastEvent);
             await ProcessEventAsync(events, cancellationToken);
         }
 
@@ -41,9 +45,28 @@ namespace SmartHub.Logic
         {
             var buttonEvent = events.SingleOrDefault(s => s.Id == buttonId);
             Console.WriteLine(buttonEvent?.Button?.LastEvent);
-            if (buttonEvent is not null && buttonEvent.Button.LastEvent == "short_release")
+            if (buttonEvent is not null)
             {
-                await SwitchComputerHaloAsync(cancellationToken);
+                switch (buttonEvent.Button.LastEvent)
+                {
+                    case "short_release":
+                        await SwitchComputerHaloAsync(cancellationToken);
+                        break;
+                    case "long_release":
+
+                        var stateResult = await _smartThingsClient.GetCapabilityStatusAsync(DeviceConstants.pcSwapId, "main", "switch", cancellationToken);
+                        string state = stateResult["switch"]["value"].GetString();
+                        string newState = state == "on" ? "off" : "on";
+
+                        await _smartThingsClient.ExecuteDeviceAsync(DeviceConstants.pcSwapId, new Models.SmartThings.DeviceExecuteModel
+                        {
+                            Component = "main",
+                            Capability = "switch",
+                            Command = newState
+                        }, cancellationToken);
+
+                        break;
+                }
             }
         }
 

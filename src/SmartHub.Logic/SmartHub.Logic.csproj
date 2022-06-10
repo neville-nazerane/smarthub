@@ -13,6 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\SmartHub.Constants\SmartHub.Constants.csproj" />
 		<ProjectReference Include="..\SmartHub.Models\SmartHub.Models.csproj" />
 	</ItemGroup>
 

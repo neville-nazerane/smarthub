@@ -16,5 +16,7 @@ namespace SmartHub.Constants
 
         public const string tvId = "747dcb76-c483-3194-de4b-3f4f0d30ba17";
 
+        public const string pcSwapId = "876b0600-c29a-4580-8e74-62988ae42e48";
+
     }
 }
