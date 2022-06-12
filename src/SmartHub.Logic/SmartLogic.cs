@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartHub.Constants;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,40 @@ namespace SmartHub.Logic
         public SmartLogic(SmartThingsClient smartThingsClient)
         {
             _smartThingsClient = smartThingsClient;
+        }
+
+        public async Task ExecuteRawAutomation(string @event, CancellationToken cancellationToken = default)
+        {
+            switch (@event)
+            {
+                case "increaseFrontFan":
+                    await UpdateFanSpeedAsync(DeviceConstants.frontFanId, true, cancellationToken);
+                    break;
+                case "decreaseFrontFan":
+                    await UpdateFanSpeedAsync(DeviceConstants.frontFanId, false, cancellationToken);
+                    break;
+                case "increaseBedroomFan":
+                    await UpdateFanSpeedAsync(DeviceConstants.bedFanId, true, cancellationToken);
+                    break;
+                case "decreaseBedroomFan":
+                    await UpdateFanSpeedAsync(DeviceConstants.bedFanId, false, cancellationToken);
+                    break;
+            }
+        }
+
+        private async Task UpdateFanSpeedAsync(string fanId,
+                                               bool isIncreased,
+                                               CancellationToken cancellationToken = default)
+        {
+            var fanData = await _smartThingsClient.GetCapabilityStatusAsync(fanId,
+                                                    "main",
+                                                    "fanSpeed",
+                                                    cancellationToken);
+
+            int fanSpeed = fanData["fanSpeed"]["value"].GetInt32();
+
+            int newSpeed = fanSpeed + (isIncreased ? 1 : -1);
+            await SetFanSpeedAsync(fanId, newSpeed, cancellationToken);
         }
 
         public async Task SetFanSpeedAsync(string fanId, int speed, CancellationToken cancellationToken = default)

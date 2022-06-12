@@ -12,7 +12,7 @@ namespace SmartHub.Logic
     {
         private readonly AutomationService _automationService;
         private readonly EventLogService _eventLogService;
-
+        private readonly SmartLogic _smartLogic;
         static readonly ConcurrentDictionary<string, ConcurrentQueue<TaskCompletionSource>> _lockers;
 
         //static readonly ConcurrentDictionary<string, TaskCompletionSource> _eventLocker;
@@ -23,10 +23,11 @@ namespace SmartHub.Logic
             _lockers = new ConcurrentDictionary<string, ConcurrentQueue<TaskCompletionSource>>();
         }
 
-        public EventService(AutomationService automationService, EventLogService eventLogService)
+        public EventService(AutomationService automationService, EventLogService eventLogService, SmartLogic smartLogic)
         {
             _automationService = automationService;
             _eventLogService = eventLogService;
+            _smartLogic = smartLogic;
         }
 
         public async Task RecieveAsync(string @event, CancellationToken cancellationToken = default)
@@ -34,6 +35,7 @@ namespace SmartHub.Logic
             await WaitForEventAsync(@event);
             try
             {
+                await _smartLogic.ExecuteRawAutomation(@event, cancellationToken);
                 await _eventLogService.LogAsync(@event, cancellationToken);
                 await _automationService.ExecuteForAsync(@event, cancellationToken);
             }

@@ -20,8 +20,8 @@ namespace SmartHub.Logic
 
         static AutomationService()
         {
-            _automations = new AutomationsCollection()
-                                .SetAutomation<TurnOnBedroomAutomation>(EventTypes.BedroomMotion);
+            _automations = new AutomationsCollection();
+                                //.SetAutomation<TurnOnBedroomAutomation>(EventTypes.BedroomMotion);
         }
 
         public AutomationService(IServiceProvider serviceProvider, ILogger<AutomationService> logger)
@@ -32,6 +32,7 @@ namespace SmartHub.Logic
 
         public async Task ExecuteForAsync(string @event, CancellationToken cancellationToken = default)
         {
+
             var autos = _automations.Get(@event);
 
             if (autos is null)
@@ -49,6 +50,8 @@ namespace SmartHub.Logic
                 }
             else _logger.LogWarning("No automations found for event", @event);
         }
+
+
 
     }
 }
