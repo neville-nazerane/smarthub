@@ -11,7 +11,8 @@ definition(
 
 preferences {
 	section(){
-		input "IncreaseFrontFan", "capability.switch"
+		input "IncreaseFan", "capability.switch", title: "increase fan"
+		input "DecreaseFan", "capability.switch", title: "decrease fan"
 	//	input "frontTemp", "capability.temperatureMeasurement"
 	//	input "bedroomMotionSensor", "capability.motionSensor"
     //    input "computerLight", "capability.switch"
@@ -23,11 +24,16 @@ def setup(){
 //	subscribe(bedroomMotionSensor, "motion.inactive", bedroomNoTrigger)
 //	subscribe(computerLight, "switch.on", computerLightTrigger)
 //	subscribe(computerLight, "switch.off", computerLightOffTrigger)
-	subscribe(IncreaseFrontFan, "switch.on", increaseFrontFanTrigger)
+	subscribe(IncreaseFan, "switch.on", increaseFanTrigger)
+	subscribe(DecreaseFan, "switch.on", decreaseFanTrigger)
 }
 
-def increaseFrontFanTrigger(evt) {
-	logEvent(evt, "increaseFrontFan")
+def increaseFanTrigger(evt) {
+	logEvent(evt, "increaseFan")
+}
+
+def decreaseFanTrigger(evt) {
+	logEvent(evt, "decreaseFan")
 }
 
 def computerLightTrigger(evt) {
@@ -68,8 +74,8 @@ def logEvent(evt, name) {
 
 def lanCall(path)
 {
-	def ip = "192.168.1.76:5000"
-    def ip2 = "192.168.1.9:5010"
+	def ip4 = "192.168.1.76:5000"
+    def ip = "192.168.1.9:5010"
     log.debug path
 	sendHubCommand(new physicalgraph.device.HubAction("""GET $path HTTP/1.1\r\nHOST: $ip\r\n\r\n""", physicalgraph.device.Protocol.LAN))
 }

@@ -21,19 +21,37 @@ namespace SmartHub.Logic
         {
             switch (@event)
             {
-                case "increaseFrontFan":
-                    await UpdateFanSpeedAsync(DeviceConstants.frontFanId, true, cancellationToken);
+                case "increaseFan":
+                    await UpdateFanOnAllRoomsAsync(true, cancellationToken);
                     break;
-                case "decreaseFrontFan":
-                    await UpdateFanSpeedAsync(DeviceConstants.frontFanId, false, cancellationToken);
-                    break;
-                case "increaseBedroomFan":
-                    await UpdateFanSpeedAsync(DeviceConstants.bedFanId, true, cancellationToken);
-                    break;
-                case "decreaseBedroomFan":
-                    await UpdateFanSpeedAsync(DeviceConstants.bedFanId, false, cancellationToken);
+                case "decreaseFan":
+                    await UpdateFanOnAllRoomsAsync(false, cancellationToken);
                     break;
             }
+        }
+
+        private async Task UpdateFanOnAllRoomsAsync(bool isIncreased, CancellationToken cancellationToken = default)
+        {
+            await UpdateFanByRoomAsync(DeviceConstants.frontSwitchId,
+                                       DeviceConstants.frontFanId,
+                                       isIncreased,
+                                       cancellationToken);
+
+            await UpdateFanByRoomAsync(DeviceConstants.bedSwitchId,
+                                       DeviceConstants.bedFanId,
+                                       isIncreased,
+                                       cancellationToken);
+
+        }
+
+        private async Task UpdateFanByRoomAsync(string roomId, string fanId, bool isIncreased, CancellationToken cancellationToken = default)
+        {
+            var roomStatusData = await _smartThingsClient.GetCapabilityStatusAsync(roomId,
+                                                                                   "main",
+                                                                                   "switch",
+                                                                                   cancellationToken);
+            if (roomStatusData["switch"]["value"].GetString() == "on")
+                await UpdateFanSpeedAsync(fanId, isIncreased, cancellationToken);
         }
 
         private async Task UpdateFanSpeedAsync(string fanId,

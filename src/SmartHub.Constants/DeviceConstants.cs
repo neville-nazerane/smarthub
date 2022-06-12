@@ -8,6 +8,9 @@ namespace SmartHub.Constants
         public const string frontTempKey = "front temp";
         public const string bedTempKey = "bedroom temp";
 
+        public const string frontSwitchId = "178d5843-4d74-4725-a69d-1b83edafcde9";
+        public const string bedSwitchId = "555921a1-7954-49c1-8ff7-80045051d267";
+
         public const string frontMonitorId = "5583ad3b-6d21-4826-90bf-be8ba43a48f5";
         public const string frontFanId = "21b89395-01f3-49b4-b284-6530c0022b61";
 
