@@ -37,7 +37,7 @@ namespace SmartHub.Logic
                                        isIncreased,
                                        cancellationToken);
 
-            await UpdateFanByRoomAsync(DeviceConstants.bedSwitchId,
+            await UpdateFanByRoomAsync(DeviceConstants.bedGhostId,
                                        DeviceConstants.bedFanId,
                                        isIncreased,
                                        cancellationToken);
