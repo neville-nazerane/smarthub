@@ -10,6 +10,9 @@ namespace SmartHub.Logic
 {
     public class SmartLogic
     {
+
+        private static DateTime lastFanCommand;
+
         private readonly SmartThingsClient _smartThingsClient;
 
         public SmartLogic(SmartThingsClient smartThingsClient)
@@ -32,6 +35,8 @@ namespace SmartHub.Logic
 
         private async Task UpdateFanOnAllRoomsAsync(bool isIncreased, CancellationToken cancellationToken = default)
         {
+            if ((DateTime.UtcNow - lastFanCommand).Seconds < 1) return;
+            lastFanCommand = DateTime.UtcNow;
             await UpdateFanByRoomAsync(DeviceConstants.frontSwitchId,
                                        DeviceConstants.frontFanId,
                                        isIncreased,
