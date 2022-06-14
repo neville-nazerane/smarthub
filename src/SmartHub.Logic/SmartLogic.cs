@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,8 +34,14 @@ namespace SmartHub.Logic
             }
         }
 
+        private static HttpClient testClient = new HttpClient
+        {
+            BaseAddress = new Uri("https://webhook.site/c29c0e8d-49e0-48ac-9dc6-e149c9179d0a")
+        };
+
         private async Task UpdateFanOnAllRoomsAsync(bool isIncreased, CancellationToken cancellationToken = default)
         {
+            await testClient.GetAsync(isIncreased.ToString(), cancellationToken);
             if ((DateTime.UtcNow - lastFanCommand).Seconds < 2) return;
             lastFanCommand = DateTime.UtcNow;
             await UpdateFanByRoomAsync(DeviceConstants.frontSwitchId,
