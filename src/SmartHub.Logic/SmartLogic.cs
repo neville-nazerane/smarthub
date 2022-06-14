@@ -35,7 +35,7 @@ namespace SmartHub.Logic
 
         private async Task UpdateFanOnAllRoomsAsync(bool isIncreased, CancellationToken cancellationToken = default)
         {
-            if ((DateTime.UtcNow - lastFanCommand).Seconds < 1) return;
+            if ((DateTime.UtcNow - lastFanCommand).Seconds < 2) return;
             lastFanCommand = DateTime.UtcNow;
             await UpdateFanByRoomAsync(DeviceConstants.frontSwitchId,
                                        DeviceConstants.frontFanId,
