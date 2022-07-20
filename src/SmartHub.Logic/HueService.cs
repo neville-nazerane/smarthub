@@ -9,14 +9,13 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using SmartHub.Constants;
+using System.Collections.Concurrent;
 
 namespace SmartHub.Logic
 {
     public class HueService
     {
 
-        private const string computerHaloId = "404b22ea-8b2f-43ed-93ff-3641f5c478d5";
-        private const string buttonId = "419bf6d0-02d5-4932-bc03-b761c9ecbb71";
 
         private readonly HueClient _client;
         private readonly SmartThingsClient _smartThingsClient;
@@ -37,14 +36,12 @@ namespace SmartHub.Logic
             IEnumerable<HueEventData> events = data.Where(d => d.Type == "update")
                                                          .SelectMany(d => d.Data)
                                                          .ToList();
-            Console.WriteLine(events.FirstOrDefault()?.Button?.LastEvent);
             await ProcessEventAsync(events, cancellationToken);
         }
 
         private async Task ProcessEventAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken = default)
         {
-            var buttonEvent = events.SingleOrDefault(s => s.Id == buttonId);
-            Console.WriteLine(buttonEvent?.Button?.LastEvent);
+            var buttonEvent = events.SingleOrDefault(s => s.Id == DeviceConstants.buttonId);
             if (buttonEvent is not null)
             {
                 switch (buttonEvent.Button.LastEvent)
@@ -72,10 +69,36 @@ namespace SmartHub.Logic
 
         private async Task SwitchComputerHaloAsync(CancellationToken cancellationToken = default)
         {
-            var button = await _client.GetLightInfoAsync(computerHaloId, cancellationToken);
-            var newState = !button.Data.First().On.On;
+            var dictionary = new ConcurrentDictionary<string, bool>();
 
-            await _client.SwitchLightAsync(computerHaloId, newState, cancellationToken);
+            var tasks = new string[]{ DeviceConstants.computerHaloId, 
+                                  DeviceConstants.computerRightBarId, 
+                                  DeviceConstants.computerLeftBarId }
+                                 .Select(d => Task.Run(async () =>
+                                 {
+                                     try
+                                     {
+                                         var button = await _client.GetLightInfoAsync(d, cancellationToken);
+                                         var newState = !button.Data.First().On.On;
+                                         dictionary.TryAdd(d, newState);
+                                     }
+                                     catch
+                                     {
+
+                                     }
+                                 }))
+                                 .ToList();
+
+            await Task.WhenAll(tasks);
+
+            var exeTasks = dictionary.Select(kv => _client.SwitchLightAsync(kv.Key, kv.Value, cancellationToken));
+
+            await Task.WhenAll(exeTasks);
+
+            //var button = await _client.GetLightInfoAsync(DeviceConstants.computerHaloId, cancellationToken);
+            //var newState = !button.Data.First().On.On;
+
+            //await _client.SwitchLightAsync(DeviceConstants.computerHaloId, newState, cancellationToken);
         }
 
     }

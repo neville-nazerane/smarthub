@@ -23,7 +23,7 @@ namespace SmartHub.WebApp.Endpoints
         static Task StateAction(bool state,
                          HueClient hueClient,
                          CancellationToken cancellationToken = default)
-            => hueClient.SwitchLightAsync("404b22ea-8b2f-43ed-93ff-3641f5c478d5", state, cancellationToken);
+            => hueClient.SwitchLightAsync("14d8fd8b-f454-4dca-87aa-d9164bbe310c", state, cancellationToken);
 
         static Task<HttpResponseMessage> StreamAsync(HueClient hueClient, CancellationToken cancellationToken = default)
             => hueClient.StreamEventAsync(cancellationToken);
