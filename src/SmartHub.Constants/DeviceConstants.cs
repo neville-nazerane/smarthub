@@ -26,6 +26,8 @@ namespace SmartHub.Constants
         public const string computerLeftBarId = "6980ed6c-d4fc-4e52-a2d2-8ff72b7bbb5e";
         public const string computerRightBarId = "14d8fd8b-f454-4dca-87aa-d9164bbe310c";
         public const string buttonId = "419bf6d0-02d5-4932-bc03-b761c9ecbb71";
+        public const string hueCloestMotionId = "c8cc0112-0f5f-4559-9d7e-11a6e01f85b2";
+        public const string closetLightId = "d5a8f6ad-951a-4f48-a937-4cb436100409";
 
     }
 }

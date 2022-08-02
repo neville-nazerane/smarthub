@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartHub.SmartBackgroundWorker
+namespace SmartHub.SmartBackgroundWorker.Utils
 {
     public static class SettingsUtil
     {

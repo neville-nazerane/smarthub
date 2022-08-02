@@ -59,7 +59,7 @@ namespace Microsoft.Extensions.DependencyInjection
                         .AddDbContext<AppDbContext>((provider, o) => {
 
                             var options = provider.GetService<IOptions<GlobalConfig>>();
-                            
+
                             string dataPath = options.Value.DataPath
                                                            .TrimEnd('/')
                                                            .TrimEnd('\\');
@@ -73,7 +73,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
                             if (!File.Exists(file)) File.Create(file);
 
-                            o.UseSqlite($"Data Source={file}", 
+                            o.UseSqlite($"Data Source={file}",
                                             b => b.MigrationsAssembly("SmartHub.DbMigrator"));
                             //o.UseMySql(configuration["sql"], ServerVersion.AutoDetect(configuration["sql"]));
                             o.EnableSensitiveDataLogging();
@@ -85,7 +85,6 @@ namespace Microsoft.Extensions.DependencyInjection
                         .AddScoped<AutomationService>()
                         .AddScoped<SmartLogic>()
                         .AddTransient<EventService>()
-                        .AddTransient<HueService>()
                         
                         //AUTOMATIONS
                         .AddScoped<TurnOnBedroomAutomation>();

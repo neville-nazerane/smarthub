@@ -1,4 +1,4 @@
-﻿using SmartHub.Logic;
+﻿using SmartHub.SmartBackgroundWorker.Services;
 using SmartHub.SmartBackgroundWorker.Utils;
 using System;
 using System.Collections.Generic;
@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartHub.SmartBackgroundWorker
+namespace SmartHub.SmartBackgroundWorker.Workers
 {
     public class HueWorker : BackgroundService
     {
-        private readonly HueService _hueService;
+        private readonly HueProcessor _hueService;
 
-        public HueWorker(HueService hueService)
+        public HueWorker(HueProcessor hueService)
         {
             _hueService = hueService;
         }
@@ -21,14 +21,6 @@ namespace SmartHub.SmartBackgroundWorker
         {
             await CallbackHandler.BeginRunningAsync(_hueService.WatchIncomingAsync,
                                                      _hueService.HandleEventAsync);
-
-            //var tasks = Enumerable.Range(1, 3)
-            //                      .Select(i => handler.RunAsync(() => _hueService.IncomingAsync()))
-            //                      .ToArray();
-
-            //int justInt = tasks.Count();
-
-            //return Task.WhenAll(tasks);
         }
 
 

@@ -1,7 +1,8 @@
 using SmartHub.Logic;
+using SmartHub.SmartBackgroundWorker.Services;
 using System.Text.Json;
 
-namespace SmartHub.SmartBackgroundWorker
+namespace SmartHub.SmartBackgroundWorker.Workers
 {
     public class SmartWorker : BackgroundService
     {
@@ -31,6 +32,6 @@ namespace SmartHub.SmartBackgroundWorker
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }
         }
-        
+
     }
 }

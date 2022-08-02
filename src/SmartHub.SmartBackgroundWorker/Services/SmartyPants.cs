@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartHub.Logic;
 using SmartHub.Logic.Data;
+using SmartHub.SmartBackgroundWorker.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static SmartHub.Constants.DeviceConstants;
 
-namespace SmartHub.SmartBackgroundWorker
+namespace SmartHub.SmartBackgroundWorker.Services
 {
     public class SmartyPants
     {

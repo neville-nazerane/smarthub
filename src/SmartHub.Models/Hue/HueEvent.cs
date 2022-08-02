@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartHub.Models.JsonHandlers;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -41,8 +42,22 @@ namespace SmartHub.Models.Hue
         [JsonPropertyName("button")]
         public HueButton Button { get; set; }
 
+        //[JsonPropertyName("on")]
+        //public HueOn On { get; set; }
+
+        [JsonPropertyName("on")]
+        [JsonConverter(typeof(HueOnJsonHandler))]
+        public bool On { get; set; }
+
         [JsonPropertyName("type")]
         public string Type { get; set; }
+    }
+
+    public class HueOn
+    {
+
+        [JsonPropertyName("on")]
+        public bool On { get; set; }
     }
 
     public class HueButton

@@ -10,20 +10,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using SmartHub.Constants;
 using System.Collections.Concurrent;
+using System.Timers;
+using SmartHub.Logic;
+using SmartHub.SmartBackgroundWorker.Utils;
 
-namespace SmartHub.Logic
+namespace SmartHub.SmartBackgroundWorker.Services
 {
-    public class HueService
+    public class HueProcessor
     {
-
-
+        private const string closetKillerTimer = "closetKiller";
         private readonly HueClient _client;
         private readonly SmartThingsClient _smartThingsClient;
+        private readonly MinuiteProcessor _minuiteProcessor;
 
-        public HueService(HueClient client, SmartThingsClient smartThingsClient)
+        public HueProcessor(HueClient client, SmartThingsClient smartThingsClient, MinuiteProcessor minuiteProcessor)
         {
             _client = client;
             _smartThingsClient = smartThingsClient;
+            _minuiteProcessor = minuiteProcessor;
         }
 
         public Task<HttpResponseMessage> WatchIncomingAsync(CancellationToken cancellationToken = default)
@@ -34,8 +38,8 @@ namespace SmartHub.Logic
             var data = await response.Content.ReadFromJsonAsync<IEnumerable<HueEvent>>(cancellationToken: cancellationToken);
             response.Dispose();
             IEnumerable<HueEventData> events = data.Where(d => d.Type == "update")
-                                                         .SelectMany(d => d.Data)
-                                                         .ToList();
+                                                   .SelectMany(d => d.Data)
+                                                   .ToList();
             await ProcessEventAsync(events, cancellationToken);
         }
 
@@ -65,14 +69,42 @@ namespace SmartHub.Logic
                         break;
                 }
             }
+
+            var closetMotion = events.LastOrDefault(e => e.Id == DeviceConstants.hueCloestMotionId);
+            if (closetMotion is not null)
+            {
+                //if (closetMotion.Motion.Motion)
+                //{
+                //    await _client.SwitchLightAsync(DeviceConstants.closetLightId, true, cancellationToken);
+                //    await _minuiteProcessor.RemoveAsync(closetKillerTimer);
+                //}
+                //else
+                //{
+                    
+                //}
+            }
+
+            var closetLight = events.LastOrDefault(e => e.Id == DeviceConstants.closetLightId);
+            if (closetLight is not null)
+            {
+                if (closetLight.On)
+                {
+                    await _minuiteProcessor.AddAsync(closetKillerTimer, DateTime.Now.AddMinutes(5),
+                                                     () => _client.SwitchLightAsync(DeviceConstants.closetLightId, false, CancellationToken.None));
+                }
+                else
+                {
+                    await _minuiteProcessor.RemoveAsync(closetKillerTimer);
+                }
+            }
         }
 
         private async Task SwitchComputerHaloAsync(CancellationToken cancellationToken = default)
         {
             var dictionary = new ConcurrentDictionary<string, bool>();
 
-            var tasks = new string[]{ DeviceConstants.computerHaloId, 
-                                  DeviceConstants.computerRightBarId, 
+            var tasks = new string[]{ DeviceConstants.computerHaloId,
+                                  DeviceConstants.computerRightBarId,
                                   DeviceConstants.computerLeftBarId }
                                  .Select(d => Task.Run(async () =>
                                  {
