@@ -73,15 +73,15 @@ namespace SmartHub.SmartBackgroundWorker.Services
             var closetMotion = events.LastOrDefault(e => e.Id == DeviceConstants.hueCloestMotionId);
             if (closetMotion is not null)
             {
-                //if (closetMotion.Motion.Motion)
-                //{
-                //    await _client.SwitchLightAsync(DeviceConstants.closetLightId, true, cancellationToken);
-                //    await _minuiteProcessor.RemoveAsync(closetKillerTimer);
-                //}
-                //else
-                //{
-                    
-                //}
+                if (closetMotion.Motion.Motion)
+                {
+                    await _client.SwitchLightAsync(DeviceConstants.closetLightId, true, cancellationToken);
+                    await _minuiteProcessor.RemoveAsync(closetKillerTimer);
+                }
+                else
+                {
+                    await ClosetLightAutoOffAsync();
+                }
             }
 
             var closetLight = events.LastOrDefault(e => e.Id == DeviceConstants.closetLightId);
@@ -89,13 +89,18 @@ namespace SmartHub.SmartBackgroundWorker.Services
             {
                 if (closetLight.On)
                 {
-                    await _minuiteProcessor.AddAsync(closetKillerTimer, DateTime.Now.AddMinutes(5),
-                                                     () => _client.SwitchLightAsync(DeviceConstants.closetLightId, false, CancellationToken.None));
+                    await ClosetLightAutoOffAsync();
                 }
                 else
                 {
                     await _minuiteProcessor.RemoveAsync(closetKillerTimer);
                 }
+            }
+
+            async Task ClosetLightAutoOffAsync()
+            {
+                await _minuiteProcessor.AddAsync(closetKillerTimer, DateTime.Now.AddMinutes(5),
+                                                                     () => _client.SwitchLightAsync(DeviceConstants.closetLightId, false, CancellationToken.None));
             }
         }
 
