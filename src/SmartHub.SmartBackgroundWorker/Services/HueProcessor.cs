@@ -22,12 +22,14 @@ namespace SmartHub.SmartBackgroundWorker.Services
         private readonly HueClient _client;
         private readonly SmartThingsClient _smartThingsClient;
         private readonly MinuiteProcessor _minuiteProcessor;
+        private readonly BondClient _bondClient;
 
-        public HueProcessor(HueClient client, SmartThingsClient smartThingsClient, MinuiteProcessor minuiteProcessor)
+        public HueProcessor(HueClient client, SmartThingsClient smartThingsClient, MinuiteProcessor minuiteProcessor, BondClient bondClient)
         {
             _client = client;
             _smartThingsClient = smartThingsClient;
             _minuiteProcessor = minuiteProcessor;
+            this._bondClient = bondClient;
         }
 
         public Task<HttpResponseMessage> WatchIncomingAsync(CancellationToken cancellationToken = default)
@@ -69,6 +71,14 @@ namespace SmartHub.SmartBackgroundWorker.Services
                         break;
                 }
             }
+
+            var increaseButton = events.SingleOrDefault(s => s.Id == DeviceConstants.hueBedroomIncreaseId);
+            if (increaseButton is not null)
+                await _bondClient.IncreaseFanAsync(DeviceConstants.bondBedFanId);
+
+            var decreaseButton = events.SingleOrDefault(s => s.Id == DeviceConstants.hueBedroomDecreaseId);
+            if (decreaseButton is not null)
+                await _bondClient.DecreaseFanAsync(DeviceConstants.bondBedFanId);
 
             var closetMotion = events.LastOrDefault(e => e.Id == DeviceConstants.hueCloestMotionId);
             if (closetMotion is not null)

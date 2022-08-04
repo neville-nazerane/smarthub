@@ -52,6 +52,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 client.DefaultRequestHeaders.Add("x-functions-key", backup.Key);
             });
 
+            var bondConfig = configuration.GetSection("bond");
+            services.AddHttpClient<BondClient>(client =>
+            {
+                client.BaseAddress = new Uri(bondConfig["baseUrl"]);
+                client.DefaultRequestHeaders.Add("BOND-Token", bondConfig["token"]);
+            });
+
             return services
 
                         .Configure<GlobalConfig>(configuration.GetSection("global"))

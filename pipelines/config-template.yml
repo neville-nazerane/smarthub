@@ -15,6 +15,8 @@ parameters:
     clientUrl: "http://192.168.1.9,http://pi.nevillenazerane.com"
     hue__baseUrl: $(hue_baseUrl)
     hue__key: $(hue_key)
+    bond__baseUrl: $(bond_baseUrl)
+    bond__token: $(bond_token)
 
 steps:
 - ${{ each config in parameters.configs }}:
