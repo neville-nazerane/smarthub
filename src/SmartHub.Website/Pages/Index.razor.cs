@@ -17,11 +17,8 @@ namespace SmartHub.Website.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var frontStatus = await RaspberryClient.GetDeviceStatusAsync(DeviceConstants.frontFanId, "main", "fanSpeed");
-            frontSpeed = frontStatus["fanSpeed"]["value"].GetInt32();
-
-            var bedroomStatus = await RaspberryClient.GetDeviceStatusAsync(DeviceConstants.bedFanId, "main", "fanSpeed");
-            bedroomSpeed = bedroomStatus["fanSpeed"]["value"].GetInt32();
+            frontSpeed = await RaspberryClient.GetBondFanSpeedAsync(DeviceConstants.bondFrontFanId);
+            bedroomSpeed = await RaspberryClient.GetBondFanSpeedAsync(DeviceConstants.bondBedFanId);
 
             await base.OnInitializedAsync();
         }
@@ -32,7 +29,7 @@ namespace SmartHub.Website.Pages
         private async void OnFrontSpeedChanged(ChangeEventArgs args) 
             => await UpdateFanSpeedAsync(DeviceConstants.bondFrontFanId, int.Parse((string)args.Value));
 
-        private Task UpdateFanSpeedAsync(string fanId, int speed) => RaspberryClient.ChangeBondFanSpeedAsync(fanId, speed);
+        private Task UpdateFanSpeedAsync(string fanId, int speed) => RaspberryClient.UpdateBondFanSpeedAsync(fanId, speed);
 
         private Task PlayTvAsync()
             => RaspberryClient.ExecuteDeviceAsync(DeviceConstants.tvId, new Models.SmartThings.DeviceExecuteModel

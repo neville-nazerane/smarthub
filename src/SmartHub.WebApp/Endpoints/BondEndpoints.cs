@@ -13,7 +13,8 @@ namespace SmartHub.WebApp.Endpoints
         {
             return new MultiEndpointConventionBuilder
             {
-                endpoints.MapPut("bond/fanSpeed/{fanId}/{speed}", SetFanSpeedAsync)
+                endpoints.MapPut("bond/fanSpeed/{fanId}/{speed}", SetFanSpeedAsync),
+                endpoints.MapGet("bond/fanSpeed/{fanId}", GetFanSpeedAsync)
             };
         }
 
@@ -28,6 +29,12 @@ namespace SmartHub.WebApp.Endpoints
                 await client.ToggleFanAsync(fanId, true, cancellationToken);
             else if (state.Power == 1 && speed == 0)
                 await client.ToggleFanAsync(fanId, false, cancellationToken);
+        }
+
+        static async Task<int> GetFanSpeedAsync(string fanId, BondClient client, CancellationToken cancellationToken = default)
+        {
+            var status = await client.GetStateAsync(fanId, cancellationToken);
+            return status.Power * status.Speed;
         }
 
     }

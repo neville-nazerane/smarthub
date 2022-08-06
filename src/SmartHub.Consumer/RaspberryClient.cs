@@ -79,8 +79,12 @@ namespace SmartHub.Consumer
 
         #region bond
 
-        public Task ChangeBondFanSpeedAsync(string fanId, int speed, CancellationToken cancellationToken = default)
+        public Task UpdateBondFanSpeedAsync(string fanId, int speed, CancellationToken cancellationToken = default)
             => _client.PutAsync($"bond/fanSpeed/{fanId}/{speed}", null, cancellationToken);
+
+        public Task<int> GetBondFanSpeedAsync(string fanId, CancellationToken cancellationToken = default)
+            => _client.GetFromJsonAsync<int>($"bond/fanSpeed/{fanId}", cancellationToken);
+
 
         #endregion
     }
