@@ -92,7 +92,7 @@ namespace Microsoft.Extensions.DependencyInjection
                         .AddScoped<AutomationService>()
                         .AddScoped<SmartLogic>()
                         .AddTransient<EventService>()
-                        .AddTransient<ScenesRepo>()
+                        .AddTransient<ScenesService>()
                         
                         //AUTOMATIONS
                         .AddScoped<TurnOnBedroomAutomation>();

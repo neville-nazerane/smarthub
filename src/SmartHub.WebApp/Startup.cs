@@ -56,7 +56,7 @@ namespace SmartHub.WebApp
                 //endpoints.MapCrud("/mappedDevices", db => db.MappedDevices);
 
                 endpoints.MapBond();
-                endpoints.MapScenes("/scenes");
+                endpoints.MapScenes();
                 endpoints.MapDevices("/devices");
                 endpoints.MapActions("/actions");
                 endpoints.MapHue("/hue");

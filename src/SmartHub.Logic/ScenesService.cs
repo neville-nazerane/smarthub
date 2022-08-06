@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace SmartHub.Logic
 {
-    public class ScenesRepo
+    public class ScenesService
     {
         private readonly AppDbContext _dbContext;
 
-        public ScenesRepo(AppDbContext dbContext)
+        public ScenesService(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -49,6 +49,11 @@ namespace SmartHub.Logic
             _dbContext.SceneStates.Update(scene);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
+
+        //private Task ExecuteGoodNightAsync(bool isEnabled)
+        //{
+            
+        //}
 
     }
 }

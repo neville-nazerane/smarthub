@@ -23,11 +23,11 @@ namespace SmartHub.WebApp.Endpoints
             
             };
 
-        static Task<IEnumerable<SceneState>> GetScenesAsync(ScenesRepo repo, 
+        static Task<IEnumerable<SceneState>> GetScenesAsync(ScenesService repo, 
                                                             CancellationToken cancellationToken = default)
             => repo.GetAsync(cancellationToken);
 
-        static Task UpdateSceneAsync(ScenesRepo repo,
+        static Task UpdateSceneAsync(ScenesService repo,
                                      SceneState.SceneNames sceneName,
                                      bool isEnabled,
                                      CancellationToken cancellationToken = default)
