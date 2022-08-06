@@ -75,11 +75,15 @@ namespace SmartHub.Logic
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        private Task ExecuteSnoozeAsync(bool isEnabled, CancellationToken cancellationToken = default)
+        private async Task ExecuteSnoozeAsync(bool isEnabled, CancellationToken cancellationToken = default)
         {
+            bool goodNightEnabled = await GetSceneEnabledStateAsync(SceneState.SceneNames.Goodnight, cancellationToken);
+            if (goodNightEnabled)
+                await UpdateAsync(SceneState.SceneNames.Goodnight, false, cancellationToken);
+
             if (isEnabled)
             {
-                return Task.WhenAll(
+                await Task.WhenAll(
                     _hueClient.SwitchLightAsync(DeviceConstants.hueComputerLightId, false, cancellationToken),
                     _bondClient.ToggleLightAsync(DeviceConstants.bedFanId, false, cancellationToken),
                     _smartThingsClient.ExecuteSceneAsync(SceneConstants.CloseFrontRoom, cancellationToken)
@@ -87,7 +91,7 @@ namespace SmartHub.Logic
             }
             else
             {
-                return Task.WhenAll(
+                await Task.WhenAll(
                     _hueClient.SwitchLightAsync(DeviceConstants.hueComputerLightId, true, cancellationToken),
                     _bondClient.ToggleLightAsync(DeviceConstants.bedFanId, true, cancellationToken),
                     _smartThingsClient.ExecuteSceneAsync(SceneConstants.OpenFrontRoom, cancellationToken)
@@ -95,11 +99,15 @@ namespace SmartHub.Logic
             }
         }
 
-        private Task ExecuteGoodNightAsync(bool isEnabled, CancellationToken cancellationToken = default)
+        private async Task ExecuteGoodNightAsync(bool isEnabled, CancellationToken cancellationToken = default)
         {
+            bool snoozeEnabled = await GetSceneEnabledStateAsync(SceneState.SceneNames.Snooze, cancellationToken);
+            if (snoozeEnabled)
+                await UpdateAsync(SceneState.SceneNames.Snooze, false, cancellationToken);
+
             if (isEnabled)
             {
-                return Task.WhenAll(
+                await Task.WhenAll(
                     _hueClient.SwitchLightAsync(DeviceConstants.hueComputerLightId, false, cancellationToken),
                     _bondClient.ToggleLightAsync(DeviceConstants.bondBedFanId, false, cancellationToken),
                     _smartThingsClient.ExecuteSceneAsync(SceneConstants.CloseFrontRoom, cancellationToken)
@@ -107,7 +115,7 @@ namespace SmartHub.Logic
             }
             else
             {
-                return Task.WhenAll(
+                await Task.WhenAll(
                     _hueClient.SwitchLightAsync(DeviceConstants.hueComputerLightId, true, cancellationToken),
                     _bondClient.ToggleLightAsync(DeviceConstants.bondBedFanId, true, cancellationToken),
                     _smartThingsClient.ExecuteSceneAsync(SceneConstants.OpenFrontRoom, cancellationToken)

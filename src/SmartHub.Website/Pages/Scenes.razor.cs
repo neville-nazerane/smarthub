@@ -17,10 +17,10 @@ namespace SmartHub.Website.Pages
             await base.OnInitializedAsync();
         }
 
-        Task SwapAsync(SceneState scene)
+        async Task SwapAsync(SceneState scene)
         {
-            scene.IsEnabled = !scene.IsEnabled;
-            return Client.UpdateSceneAsync(scene.GetNameAsEnum(), scene.IsEnabled);
+            await Client.UpdateSceneAsync(scene.GetNameAsEnum(), scene.IsEnabled);
+            scenes = await Client.GetScenesAsync();
         }
 
     }
