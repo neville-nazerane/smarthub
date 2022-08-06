@@ -87,8 +87,11 @@ namespace SmartHub.SmartBackgroundWorker.Services
                 {
                     case "short_release":
                         return SwitchSceneAsync(SceneState.SceneNames.Snooze, cancellationToken);
-                    case "long_release":
+                    case "repeat":
                         return SwitchSceneAsync(SceneState.SceneNames.Goodnight, cancellationToken);
+                    default:
+
+                        break;
                 }
             }
             return Task.CompletedTask;
@@ -157,7 +160,7 @@ namespace SmartHub.SmartBackgroundWorker.Services
                 {
                     case "short_release":
                         return SwitchComputerHaloAsync(cancellationToken);
-                    case "long_release":
+                    case "repeat":
                         return SwitchPcControlsAsync(cancellationToken);
                 }
             }

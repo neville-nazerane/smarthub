@@ -85,7 +85,7 @@ namespace SmartHub.Logic
             {
                 await Task.WhenAll(
                     _hueClient.SwitchLightAsync(DeviceConstants.hueComputerLightId, false, cancellationToken),
-                    _bondClient.ToggleLightAsync(DeviceConstants.bedFanId, false, cancellationToken),
+                    _bondClient.ToggleLightAsync(DeviceConstants.bondBedFanId, false, cancellationToken),
                     _smartThingsClient.ExecuteSceneAsync(SceneConstants.CloseFrontRoom, cancellationToken)
                 );
             }
@@ -93,7 +93,7 @@ namespace SmartHub.Logic
             {
                 await Task.WhenAll(
                     _hueClient.SwitchLightAsync(DeviceConstants.hueComputerLightId, true, cancellationToken),
-                    _bondClient.ToggleLightAsync(DeviceConstants.bedFanId, true, cancellationToken),
+                    _bondClient.ToggleLightAsync(DeviceConstants.bondBedFanId, true, cancellationToken),
                     _smartThingsClient.ExecuteSceneAsync(SceneConstants.OpenFrontRoom, cancellationToken)
                 );
             }

@@ -1,4 +1,5 @@
-﻿using SmartHub.SmartBackgroundWorker.Services;
+﻿using SmartHub.Logic;
+using SmartHub.SmartBackgroundWorker.Services;
 using SmartHub.SmartBackgroundWorker.Utils;
 using System;
 using System.Collections.Generic;
@@ -10,19 +11,23 @@ namespace SmartHub.SmartBackgroundWorker.Workers
 {
     public class HueWorker : BackgroundService
     {
-        private readonly HueProcessor _hueService;
+        private readonly HueClient _hueClient;
+        private readonly IServiceProvider _serviceProvider;
 
-        public HueWorker(HueProcessor hueService)
+        public HueWorker(HueClient hueClient, IServiceProvider serviceProvider)
         {
-            _hueService = hueService;
+            _hueClient = hueClient;
+            _serviceProvider = serviceProvider;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            await CallbackHandler.BeginRunningAsync(_hueService.WatchIncomingAsync,
-                                                     _hueService.HandleEventAsync);
-        }
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+            => CallbackHandler.BeginRunningAsync(_hueClient.StreamEventAsync, HandleEventAsync);
 
+        Task HandleEventAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
+        {
+            using var scope = _serviceProvider.CreateScope();
+            return scope.ServiceProvider.GetService<HueProcessor>().HandleEventAsync(response, cancellationToken);
+        }
 
     }
 }
