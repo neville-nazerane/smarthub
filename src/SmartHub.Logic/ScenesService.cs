@@ -59,6 +59,8 @@ namespace SmartHub.Logic
                                       bool isEnabled,
                                       CancellationToken cancellationToken = default)
         {
+            bool currentEnabled = await GetSceneEnabledStateAsync(sceneName, cancellationToken);
+            if (currentEnabled == isEnabled) return;
             await UpdateInternalAsync(sceneName, isEnabled, false, cancellationToken);
         }
 
