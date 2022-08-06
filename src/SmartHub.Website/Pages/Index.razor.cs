@@ -26,27 +26,13 @@ namespace SmartHub.Website.Pages
             await base.OnInitializedAsync();
         }
 
-        private async Task OnBedroomSpeedChanged(ChangeEventArgs args)
-        {
-            await UpdateFanSpeedAsync(DeviceConstants.bedFanId, int.Parse((string)args.Value));
-        }
+        private async Task OnBedroomSpeedChanged(ChangeEventArgs args) 
+            => await UpdateFanSpeedAsync(DeviceConstants.bondBedFanId, int.Parse((string)args.Value));
 
-        private async void OnFrontSpeedChanged(ChangeEventArgs args)
-        {
-            await UpdateFanSpeedAsync(DeviceConstants.frontFanId, int.Parse((string)args.Value));
-        }
+        private async void OnFrontSpeedChanged(ChangeEventArgs args) 
+            => await UpdateFanSpeedAsync(DeviceConstants.bondFrontFanId, int.Parse((string)args.Value));
 
-        private Task UpdateFanSpeedAsync(string fanId, int speed)
-        {
-            return RaspberryClient.ExecuteDeviceAsync(fanId, new Models.SmartThings.DeviceExecuteModel
-            {
-                Component = "main",
-                Capability = "fanSpeed",
-                Command = "setFanSpeed",
-                Arguments = new object[] { speed }
-            });
-
-        }
+        private Task UpdateFanSpeedAsync(string fanId, int speed) => RaspberryClient.ChangeBondFanSpeedAsync(fanId, speed);
 
         private Task PlayTvAsync()
             => RaspberryClient.ExecuteDeviceAsync(DeviceConstants.tvId, new Models.SmartThings.DeviceExecuteModel

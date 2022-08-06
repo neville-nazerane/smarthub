@@ -24,6 +24,13 @@ namespace SmartHub.SmartBackgroundWorker.Services
         private readonly MinuiteProcessor _minuiteProcessor;
         private readonly BondClient _bondClient;
 
+        private static readonly IEnumerable<string> extraPcLightIds = new string[]
+        {
+            DeviceConstants.computerRightBarId,
+            DeviceConstants.computerLeftBarId,
+            DeviceConstants.computerHaloId,
+        };
+
         public HueProcessor(HueClient client, SmartThingsClient smartThingsClient, MinuiteProcessor minuiteProcessor, BondClient bondClient)
         {
             _client = client;
@@ -42,44 +49,41 @@ namespace SmartHub.SmartBackgroundWorker.Services
             IEnumerable<HueEventData> events = data.Where(d => d.Type == "update")
                                                    .SelectMany(d => d.Data)
                                                    .ToList();
-            await ProcessEventAsync(events, cancellationToken);
+            try
+            {
+                await ProcessEventAsync(events, cancellationToken);
+            }
+            catch
+            {
+            }
         }
 
         private async Task ProcessEventAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken = default)
         {
-            var buttonEvent = events.SingleOrDefault(s => s.Id == DeviceConstants.buttonId);
-            if (buttonEvent is not null)
+            await VerifyPcButtonAsync(events, cancellationToken);
+
+            await VerifyIncreaseButtonAsync(events);
+            await VerifyDecreaseButtonAsync(events);
+            await VerifyClosetMotionAsync(events, cancellationToken);
+            await VerifyClosetLightAsync(events);
+
+            await VerifyComputerLightAsync(events, cancellationToken);
+        }
+
+        Task VerifyComputerLightAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken)
+        {
+            var light = events.LastOrDefault(e => e.Id == DeviceConstants.hueComputerLightId);
+            if (light is not null)
             {
-                switch (buttonEvent.Button.LastEvent)
-                {
-                    case "short_release":
-                        await SwitchComputerHaloAsync(cancellationToken);
-                        break;
-                    case "long_release":
-
-                        var stateResult = await _smartThingsClient.GetCapabilityStatusAsync(DeviceConstants.pcSwapId, "main", "switch", cancellationToken);
-                        string state = stateResult["switch"]["value"].GetString();
-                        string newState = state == "on" ? "off" : "on";
-
-                        await _smartThingsClient.ExecuteDeviceAsync(DeviceConstants.pcSwapId, new Models.SmartThings.DeviceExecuteModel
-                        {
-                            Component = "main",
-                            Capability = "switch",
-                            Command = newState
-                        }, cancellationToken);
-
-                        break;
-                }
+                return Task.WhenAll(
+                    extraPcLightIds.Select(id => _client.SwitchLightAsync(id, light.On, cancellationToken)).ToList()    
+                );
             }
+            return Task.CompletedTask;
+        }
 
-            var increaseButton = events.SingleOrDefault(s => s.Id == DeviceConstants.hueBedroomIncreaseId);
-            if (increaseButton is not null)
-                await _bondClient.IncreaseFanAsync(DeviceConstants.bondBedFanId);
-
-            var decreaseButton = events.SingleOrDefault(s => s.Id == DeviceConstants.hueBedroomDecreaseId);
-            if (decreaseButton is not null)
-                await _bondClient.DecreaseFanAsync(DeviceConstants.bondBedFanId);
-
+        async Task VerifyClosetMotionAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken)
+        {
             var closetMotion = events.LastOrDefault(e => e.Id == DeviceConstants.hueCloestMotionId);
             if (closetMotion is not null)
             {
@@ -93,25 +97,69 @@ namespace SmartHub.SmartBackgroundWorker.Services
                     await ClosetLightAutoOffAsync();
                 }
             }
+        }
 
+        Task VerifyClosetLightAsync(IEnumerable<HueEventData> events)
+        {
             var closetLight = events.LastOrDefault(e => e.Id == DeviceConstants.closetLightId);
             if (closetLight is not null)
             {
                 if (closetLight.On)
-                {
-                    await ClosetLightAutoOffAsync();
-                }
+                    return ClosetLightAutoOffAsync();
                 else
+                    return _minuiteProcessor.RemoveAsync(closetKillerTimer);
+            }
+            return Task.CompletedTask;
+        }
+
+        Task ClosetLightAutoOffAsync()
+        {
+            return _minuiteProcessor.AddAsync(closetKillerTimer, DateTime.Now.AddMinutes(5),
+                                                                 () => _client.SwitchLightAsync(DeviceConstants.closetLightId, false, CancellationToken.None));
+        }
+
+        private Task VerifyPcButtonAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken)
+        {
+            var buttonEvent = events.SingleOrDefault(s => s.Id == DeviceConstants.buttonId);
+            if (buttonEvent is not null)
+            {
+                switch (buttonEvent.Button.LastEvent)
                 {
-                    await _minuiteProcessor.RemoveAsync(closetKillerTimer);
+                    case "short_release":
+                        return SwitchComputerHaloAsync(cancellationToken);
+                    case "long_release":
+                        return SwitchPcControlsAsync(cancellationToken);
                 }
             }
+            return Task.CompletedTask;
+        }
 
-            async Task ClosetLightAutoOffAsync()
+        private async Task SwitchPcControlsAsync(CancellationToken cancellationToken)
+        {
+            var stateResult = await _smartThingsClient.GetCapabilityStatusAsync(DeviceConstants.pcSwapId, "main", "switch", cancellationToken);
+            string state = stateResult["switch"]["value"].GetString();
+            string newState = state == "on" ? "off" : "on";
+
+            await _smartThingsClient.ExecuteDeviceAsync(DeviceConstants.pcSwapId, new Models.SmartThings.DeviceExecuteModel
             {
-                await _minuiteProcessor.AddAsync(closetKillerTimer, DateTime.Now.AddMinutes(5),
-                                                                     () => _client.SwitchLightAsync(DeviceConstants.closetLightId, false, CancellationToken.None));
-            }
+                Component = "main",
+                Capability = "switch",
+                Command = newState
+            }, cancellationToken);
+        }
+
+        private async Task VerifyDecreaseButtonAsync(IEnumerable<HueEventData> events)
+        {
+            var decreaseButton = events.SingleOrDefault(s => s.Id == DeviceConstants.hueBedroomDecreaseId);
+            if (decreaseButton is not null)
+                await _bondClient.DecreaseFanAsync(DeviceConstants.bondBedFanId);
+        }
+
+        private async Task VerifyIncreaseButtonAsync(IEnumerable<HueEventData> events)
+        {
+            var increaseButton = events.SingleOrDefault(s => s.Id == DeviceConstants.hueBedroomIncreaseId);
+            if (increaseButton is not null)
+                await _bondClient.IncreaseFanAsync(DeviceConstants.bondBedFanId);
         }
 
         private async Task SwitchComputerHaloAsync(CancellationToken cancellationToken = default)
