@@ -53,7 +53,7 @@ namespace SmartHub.Logic
         }
 
         public Task<BondState> GetStateAsync(string fanId, CancellationToken cancellationToken = default)
-            => _httpClient.GetFromJsonAsync<BondState>($"v2/devices/{fanId}/state");
+            => _httpClient.GetFromJsonAsync<BondState>($"v2/devices/{fanId}/state", cancellationToken);
 
         public async Task IncreaseFanAsync(string fanId, CancellationToken cancellationToken = default)
         {

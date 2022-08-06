@@ -13,6 +13,7 @@ using System.Collections.Concurrent;
 using System.Timers;
 using SmartHub.Logic;
 using SmartHub.SmartBackgroundWorker.Utils;
+using SmartHub.Models.Entities;
 
 namespace SmartHub.SmartBackgroundWorker.Services
 {
@@ -22,6 +23,7 @@ namespace SmartHub.SmartBackgroundWorker.Services
         private readonly HueClient _client;
         private readonly SmartThingsClient _smartThingsClient;
         private readonly MinuiteProcessor _minuiteProcessor;
+        private readonly ScenesService _scenesService;
         private readonly BondClient _bondClient;
 
         private static readonly IEnumerable<string> extraPcLightIds = new string[]
@@ -31,12 +33,17 @@ namespace SmartHub.SmartBackgroundWorker.Services
             DeviceConstants.computerHaloId,
         };
 
-        public HueProcessor(HueClient client, SmartThingsClient smartThingsClient, MinuiteProcessor minuiteProcessor, BondClient bondClient)
+        public HueProcessor(HueClient client,
+                            SmartThingsClient smartThingsClient,
+                            MinuiteProcessor minuiteProcessor,
+                            ScenesService scenesService,
+                            BondClient bondClient)
         {
             _client = client;
             _smartThingsClient = smartThingsClient;
             _minuiteProcessor = minuiteProcessor;
-            this._bondClient = bondClient;
+            _scenesService = scenesService;
+            _bondClient = bondClient;
         }
 
         public Task<HttpResponseMessage> WatchIncomingAsync(CancellationToken cancellationToken = default)
@@ -62,12 +69,35 @@ namespace SmartHub.SmartBackgroundWorker.Services
         {
             await VerifyPcButtonAsync(events, cancellationToken);
 
-            await VerifyIncreaseButtonAsync(events);
+            await VerifyIncreaseButtonAsync(events, cancellationToken);
             await VerifyDecreaseButtonAsync(events);
             await VerifyClosetMotionAsync(events, cancellationToken);
             await VerifyClosetLightAsync(events);
 
             await VerifyComputerLightAsync(events, cancellationToken);
+            await VerifyBedroomPowerButtonAsync(events, cancellationToken);
+        }
+
+        Task VerifyBedroomPowerButtonAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken = default)
+        {
+            var button = events.SingleOrDefault(s => s.Id == DeviceConstants.hueBedroomPowerId);
+            if (button is not null)
+            {
+                switch (button.Button.LastEvent)
+                {
+                    case "short_release":
+                        return SwitchSceneAsync(SceneState.SceneNames.Snooze, cancellationToken);
+                    case "long_release":
+                        return SwitchSceneAsync(SceneState.SceneNames.Goodnight, cancellationToken);
+                }
+            }
+            return Task.CompletedTask;
+        }
+
+        async Task SwitchSceneAsync(SceneState.SceneNames scene, CancellationToken cancellationToken = default)
+        {
+            bool isEnabled = await _scenesService.GetSceneEnabledStateAsync(scene, cancellationToken);
+            await _scenesService.UpdateAsync(scene, !isEnabled, cancellationToken);
         }
 
         Task VerifyComputerLightAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken)
@@ -155,11 +185,11 @@ namespace SmartHub.SmartBackgroundWorker.Services
                 await _bondClient.DecreaseFanAsync(DeviceConstants.bondBedFanId);
         }
 
-        private async Task VerifyIncreaseButtonAsync(IEnumerable<HueEventData> events)
+        private async Task VerifyIncreaseButtonAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken = default)
         {
             var increaseButton = events.SingleOrDefault(s => s.Id == DeviceConstants.hueBedroomIncreaseId);
             if (increaseButton is not null)
-                await _bondClient.IncreaseFanAsync(DeviceConstants.bondBedFanId);
+                await _bondClient.IncreaseFanAsync(DeviceConstants.bondBedFanId, cancellationToken);
         }
 
         private async Task SwitchComputerHaloAsync(CancellationToken cancellationToken = default)

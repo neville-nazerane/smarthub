@@ -47,6 +47,14 @@ namespace SmartHub.Logic
             return scenes;
         }
 
+        public Task<bool> GetSceneEnabledStateAsync(SceneState.SceneNames sceneName,
+                                                          CancellationToken cancellationToken = default)
+            => _dbContext.SceneStates
+                         .AsNoTracking()
+                         .Where(s => s.SceneName == sceneName.ToString())
+                         .Select(s => s.IsEnabled)
+                         .SingleOrDefaultAsync(cancellationToken);
+
         public async Task UpdateAsync(SceneState.SceneNames sceneName,
                                       bool isEnabled,
                                       CancellationToken cancellationToken = default)

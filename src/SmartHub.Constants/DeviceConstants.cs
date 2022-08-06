@@ -30,6 +30,7 @@ namespace SmartHub.Constants
         public const string closetLightId = "d5a8f6ad-951a-4f48-a937-4cb436100409";
         public const string hueBedroomIncreaseId = "b2e0d9ac-dc4a-4f4e-aea3-d38edf78b76d";
         public const string hueBedroomDecreaseId = "c3e07c4d-6ecf-4575-9aa9-c18013aa7ffb";
+        public const string hueBedroomPowerId = "0f7ed57c-7df9-41d5-b8bc-aa1ef244ff99";
         public const string hueComputerLightId = "56177214-d8b7-4d05-bb27-119538131e2f";
 
         public const string bondBedFanId = "20e72b75";
