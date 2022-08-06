@@ -16,12 +16,14 @@ namespace SmartHub.Logic
         private readonly AppDbContext _dbContext;
         private readonly HueClient _hueClient;
         private readonly BondClient _bondClient;
+        private readonly SmartThingsClient _smartThingsClient;
 
-        public ScenesService(AppDbContext dbContext, HueClient hueClient, BondClient bondClient)
+        public ScenesService(AppDbContext dbContext, HueClient hueClient, BondClient bondClient, SmartThingsClient smartThingsClient)
         {
             _dbContext = dbContext;
             _hueClient = hueClient;
             _bondClient = bondClient;
+            _smartThingsClient = smartThingsClient;
         }
 
         public async Task<IEnumerable<SceneState>> GetAsync(CancellationToken cancellationToken = default)
@@ -49,18 +51,60 @@ namespace SmartHub.Logic
                                       bool isEnabled,
                                       CancellationToken cancellationToken = default)
         {
+            switch (sceneName)
+            {
+                case SceneState.SceneNames.Goodnight:
+                    await ExecuteGoodNightAsync(isEnabled, cancellationToken);
+                    break;
+                case SceneState.SceneNames.Snooze:
+                    await ExecuteSnoozeAsync(isEnabled, cancellationToken);
+                    break;
+            }
+
             var scene = await _dbContext.SceneStates.SingleAsync(s => s.SceneName == sceneName.ToString(), cancellationToken: cancellationToken);
             scene.IsEnabled = isEnabled;
             _dbContext.SceneStates.Update(scene);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        private Task ExecuteGoodNightAsync(bool isEnabled)
+        private Task ExecuteSnoozeAsync(bool isEnabled, CancellationToken cancellationToken = default)
         {
-            return Task.WhenAll(
-                _hueClient.SwitchLightAsync(DeviceConstants.hueComputerLightId, false),
-                _bondClient.ToggleLightAsync(DeviceConstants.bedFanId, false)
-            );
+            if (isEnabled)
+            {
+                return Task.WhenAll(
+                    _hueClient.SwitchLightAsync(DeviceConstants.hueComputerLightId, false, cancellationToken),
+                    _bondClient.ToggleLightAsync(DeviceConstants.bedFanId, false, cancellationToken),
+                    _smartThingsClient.ExecuteSceneAsync(SceneConstants.CloseFrontRoom, cancellationToken)
+                );
+            }
+            else
+            {
+                return Task.WhenAll(
+                    _hueClient.SwitchLightAsync(DeviceConstants.hueComputerLightId, true, cancellationToken),
+                    _bondClient.ToggleLightAsync(DeviceConstants.bedFanId, true, cancellationToken),
+                    _smartThingsClient.ExecuteSceneAsync(SceneConstants.OpenFrontRoom, cancellationToken)
+                );
+            }
+        }
+
+        private Task ExecuteGoodNightAsync(bool isEnabled, CancellationToken cancellationToken = default)
+        {
+            if (isEnabled)
+            {
+                return Task.WhenAll(
+                    _hueClient.SwitchLightAsync(DeviceConstants.hueComputerLightId, false, cancellationToken),
+                    _bondClient.ToggleLightAsync(DeviceConstants.bedFanId, false, cancellationToken),
+                    _smartThingsClient.ExecuteSceneAsync(SceneConstants.CloseFrontRoom, cancellationToken)
+                );
+            }
+            else
+            {
+                return Task.WhenAll(
+                    _hueClient.SwitchLightAsync(DeviceConstants.hueComputerLightId, true, cancellationToken),
+                    _bondClient.ToggleLightAsync(DeviceConstants.bedFanId, true, cancellationToken),
+                    _smartThingsClient.ExecuteSceneAsync(SceneConstants.OpenFrontRoom, cancellationToken)
+                );
+            }
         }
 
     }

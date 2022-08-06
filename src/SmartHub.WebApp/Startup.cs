@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using SmartHub.Logic;
 using SmartHub.Logic.Data;
 using SmartHub.Models.Entities;
+using SmartHub.Models.SmartThings;
 using SmartHub.WebApp.Endpoints;
 
 namespace SmartHub.WebApp
@@ -36,14 +37,6 @@ namespace SmartHub.WebApp
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
-            //app.Use((c, next) => next());
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
             app.UseCors(b => b.AllowAnyHeader()
                               .AllowAnyMethod()
                               .WithOrigins(Configuration["clientUrl"].Split(",")));
@@ -53,7 +46,6 @@ namespace SmartHub.WebApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGet("/", context => context.Response.WriteAsync("Hello form another Device"));
-                //endpoints.MapCrud("/mappedDevices", db => db.MappedDevices);
 
                 endpoints.MapBond();
                 endpoints.MapScenes();
@@ -65,16 +57,8 @@ namespace SmartHub.WebApp
 
                 endpoints.MapCrud("/settings", c => c.Settings);
 
-                //endpoints.MapGet("/front/{speed}", c => c.RequestServices.GetService<SmartThingsClient>()
-                //                    .ExecuteDeviceAsync("21b89395-01f3-49b4-b284-6530c0022b61", new Models.SmartThings.DeviceExecuteModel
-                //                    {
-                //                        Capability = "fanSpeed",
-                //                        Component = "main",
-                //                        Command = "setFanSpeed",
-                //                        Arguments = new object[] { int.Parse(c.Request.RouteValues["speed"].ToString()) }
-                //                    }));
-
             });
         }
+
     }
 }
