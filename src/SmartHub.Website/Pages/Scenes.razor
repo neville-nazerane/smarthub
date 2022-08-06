@@ -3,11 +3,15 @@
 <h2>Scenes!!</h2>
 
 
-<ul class="list-group">
+@if (scenes == null)
+{
+    <div>LOADING...</div>
+}
+else {
+    <ul class="list-group">
     @foreach (var scene in scenes)
     {
         <li @onclick=@(() => SwapAsync(scene)) class="list-group-item @(scene.IsEnabled ? "active" : string.Empty)">@scene.SceneName</li>
     }
 </ul>
-
-
+}
