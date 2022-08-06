@@ -33,8 +33,13 @@ namespace SmartHub.Consumer
 
         #region scenes
 
-        public Task<IEnumerable<SceneItem>> GetScenesAsync()
-            => _client.GetFromJsonAsync<IEnumerable<SceneItem>>("scenes");
+        public Task<IEnumerable<SceneState>> GetScenesAsync(CancellationToken cancellationToken = default)
+            => _client.GetFromJsonAsync<IEnumerable<SceneState>>("scenes", cancellationToken);
+
+        public Task UpdateSceneAsync(SceneState.SceneNames sceneName,
+                                     bool isEnabled,
+                                     CancellationToken cancellationToken = default)
+            => _client.PutAsync($"scene/{sceneName}/{isEnabled}", null, cancellationToken);
 
         #endregion
 

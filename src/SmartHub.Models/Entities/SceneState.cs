@@ -16,5 +16,12 @@ namespace SmartHub.Models.Entities
         [Required]
         public bool IsEnabled { get; set; }
 
+        public SceneNames GetNameAsEnum() => Enum.Parse<SceneNames>(SceneName, false);
+
+        public enum SceneNames
+        {
+            Goodnight, Snooze
+        }
+
     }
 }
