@@ -21,6 +21,7 @@ namespace SmartHub.Website.Pages
         {
             await Client.UpdateSceneAsync(scene.GetNameAsEnum(), scene.IsEnabled);
             scenes = await Client.GetScenesAsync();
+            StateHasChanged();
         }
 
     }

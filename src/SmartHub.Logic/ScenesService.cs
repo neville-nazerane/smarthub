@@ -59,13 +59,18 @@ namespace SmartHub.Logic
                                       bool isEnabled,
                                       CancellationToken cancellationToken = default)
         {
+            await UpdateInternalAsync(sceneName, isEnabled, false, cancellationToken);
+        }
+
+        private async Task UpdateInternalAsync(SceneState.SceneNames sceneName, bool isEnabled, bool suppressTouchingScenes, CancellationToken cancellationToken)
+        {
             switch (sceneName)
             {
                 case SceneState.SceneNames.Goodnight:
-                    await ExecuteGoodNightAsync(isEnabled, cancellationToken);
+                    await ExecuteGoodNightAsync(isEnabled, suppressTouchingScenes, cancellationToken);
                     break;
                 case SceneState.SceneNames.Snooze:
-                    await ExecuteSnoozeAsync(isEnabled, cancellationToken);
+                    await ExecuteSnoozeAsync(isEnabled, suppressTouchingScenes, cancellationToken);
                     break;
             }
 
@@ -75,11 +80,14 @@ namespace SmartHub.Logic
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        private async Task ExecuteSnoozeAsync(bool isEnabled, CancellationToken cancellationToken = default)
+        private async Task ExecuteSnoozeAsync(bool isEnabled, bool suppressTouchingScenes, CancellationToken cancellationToken = default)
         {
-            bool goodNightEnabled = await GetSceneEnabledStateAsync(SceneState.SceneNames.Goodnight, cancellationToken);
-            if (goodNightEnabled)
-                await UpdateAsync(SceneState.SceneNames.Goodnight, false, cancellationToken);
+            if (!suppressTouchingScenes)
+            {
+                bool goodNightEnabled = await GetSceneEnabledStateAsync(SceneState.SceneNames.Goodnight, cancellationToken);
+                if (goodNightEnabled)
+                    await UpdateInternalAsync(SceneState.SceneNames.Goodnight, false, true, cancellationToken); 
+            }
 
             if (isEnabled)
             {
@@ -99,11 +107,14 @@ namespace SmartHub.Logic
             }
         }
 
-        private async Task ExecuteGoodNightAsync(bool isEnabled, CancellationToken cancellationToken = default)
+        private async Task ExecuteGoodNightAsync(bool isEnabled, bool suppressTouchingScenes, CancellationToken cancellationToken = default)
         {
-            bool snoozeEnabled = await GetSceneEnabledStateAsync(SceneState.SceneNames.Snooze, cancellationToken);
-            if (snoozeEnabled)
-                await UpdateAsync(SceneState.SceneNames.Snooze, false, cancellationToken);
+            if (!suppressTouchingScenes)
+            {
+                bool snoozeEnabled = await GetSceneEnabledStateAsync(SceneState.SceneNames.Snooze, cancellationToken);
+                if (snoozeEnabled)
+                    await UpdateInternalAsync(SceneState.SceneNames.Snooze, false, true, cancellationToken); 
+            }
 
             if (isEnabled)
             {
