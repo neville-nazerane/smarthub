@@ -18,6 +18,8 @@ namespace SmartHub.Logic.Data
 
         public DbSet<Setting> Settings { get; set; }
 
+        public DbSet<SceneState> SceneStates { get; set; }
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
