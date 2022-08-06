@@ -37,10 +37,18 @@ namespace SmartHub.Logic
         public async Task ToggleFanAsync(string fanId, bool on, CancellationToken cancellationToken = default)
         {
             var content = new StringContent("{}", Encoding.UTF8, "application/json");
-
             var path = on ? "TurnOn" : "TurnOff";
 
             var res = await _httpClient.PutAsync($"/v2/devices/{fanId}/actions/{path}", content, cancellationToken);
+            res.EnsureSuccessStatusCode();
+        }
+
+        public async Task ToggleLightAsync(string id, bool on, CancellationToken cancellationToken = default)
+        {
+            var content = new StringContent("{}", Encoding.UTF8, "application/json");
+            var path = on ? "TurnLightOn" : "TurnLightOff";
+
+            var res = await _httpClient.PutAsync($"/v2/devices/{id}/actions/{path}", content, cancellationToken);
             res.EnsureSuccessStatusCode();
         }
 

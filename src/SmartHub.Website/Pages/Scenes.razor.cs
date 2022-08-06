@@ -1,4 +1,5 @@
-﻿using SmartHub.Consumer;
+﻿using Microsoft.AspNetCore.Components;
+using SmartHub.Consumer;
 using SmartHub.Models.Entities;
 
 namespace SmartHub.Website.Pages
@@ -7,6 +8,7 @@ namespace SmartHub.Website.Pages
     {
         private IEnumerable<SceneState> scenes;
 
+        [Inject]
         public RaspberryClient Client { get; set; }
 
         protected override async Task OnInitializedAsync()

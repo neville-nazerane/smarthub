@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SmartHub.Constants;
 using SmartHub.Logic.Data;
 using SmartHub.Models.Entities;
 using System;
@@ -13,10 +14,14 @@ namespace SmartHub.Logic
     public class ScenesService
     {
         private readonly AppDbContext _dbContext;
+        private readonly HueClient _hueClient;
+        private readonly BondClient _bondClient;
 
-        public ScenesService(AppDbContext dbContext)
+        public ScenesService(AppDbContext dbContext, HueClient hueClient, BondClient bondClient)
         {
             _dbContext = dbContext;
+            _hueClient = hueClient;
+            _bondClient = bondClient;
         }
 
         public async Task<IEnumerable<SceneState>> GetAsync(CancellationToken cancellationToken = default)
@@ -50,10 +55,13 @@ namespace SmartHub.Logic
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        //private Task ExecuteGoodNightAsync(bool isEnabled)
-        //{
-            
-        //}
+        private Task ExecuteGoodNightAsync(bool isEnabled)
+        {
+            return Task.WhenAll(
+                _hueClient.SwitchLightAsync(DeviceConstants.hueComputerLightId, false),
+                _bondClient.ToggleLightAsync(DeviceConstants.bedFanId, false)
+            );
+        }
 
     }
 }
