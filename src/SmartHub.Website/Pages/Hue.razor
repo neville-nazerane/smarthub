@@ -1,0 +1,15 @@
+﻿@page "/hue"
+
+
+<div>
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-primary">Computer Switch</button>
+    </div>
+</div>
+<div>
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-@(ClassCheck(leftHaloIsOn))" @onclick=SwitchLeftHaloAsync>Left Halo</button>
+        <button type="button" class="btn btn-@(ClassCheck(leftBarIsOn))" @onclick=SwitchLeftBarAsync>Left bar</button>
+        <button type="button" class="btn btn-@(ClassCheck(rightBarIsOn))" @onclick=SwitchRightBarAsync>right bar</button>
+    </div>
+</div>

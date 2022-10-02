@@ -7,7 +7,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddApplicationInsightsTelemetryWorkerService(hostContext.Configuration["smartworker_insights"]);
         services
-            .AddHostedService<SmartWorker>()
+            //.AddHostedService<SmartWorker>()
             .AddHostedService<MinuteWorker>()
             .AddHostedService<HueWorker>();
         services.AddLogic(hostContext.Configuration)

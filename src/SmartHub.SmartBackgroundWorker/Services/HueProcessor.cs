@@ -30,7 +30,7 @@ namespace SmartHub.SmartBackgroundWorker.Services
         {
             DeviceConstants.computerRightBarId,
             DeviceConstants.computerLeftBarId,
-            DeviceConstants.computerHaloId,
+            DeviceConstants.computerLeftHaloId,
         };
 
         public HueProcessor(HueClient client,
@@ -199,7 +199,7 @@ namespace SmartHub.SmartBackgroundWorker.Services
         {
             var dictionary = new ConcurrentDictionary<string, bool>();
 
-            var tasks = new string[]{ DeviceConstants.computerHaloId,
+            var tasks = new string[]{ DeviceConstants.computerLeftHaloId,
                                   DeviceConstants.computerRightBarId,
                                   DeviceConstants.computerLeftBarId }
                                  .Select(d => Task.Run(async () =>

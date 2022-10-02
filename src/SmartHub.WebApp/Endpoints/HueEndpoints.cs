@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Routing;
 using SmartHub.Constants;
 using SmartHub.Logic;
 using SmartHub.WebApp.Util;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,28 +17,28 @@ namespace SmartHub.WebApp.Endpoints
         {
             return new MultiEndpointConventionBuilder
             {
-                endpoints.MapGet("/swapme/{state}", StateAction),
                 endpoints.MapGet("/hue", StreamAsync),
 
-                endpoints.MapGet("/fans/{up}", SwapFanAsync)
+
+                endpoints.MapGet("/hue/light/{id}", GetLightOnAsync),
+                endpoints.MapPut("/hue/light/{id}/{switchOn}", SwitchLightAsync)
+
             };
         }
 
-        static Task SwapFanAsync(bool up, BondClient bondClient)
-        {
-            if (up)
-                return bondClient.IncreaseFanAsync(DeviceConstants.bondFrontFanId);
-            else
-                return bondClient.DecreaseFanAsync(DeviceConstants.bondFrontFanId);
-        }
-
-        static Task StateAction(bool state,
-                         HueClient hueClient,
-                         CancellationToken cancellationToken = default)
-            => hueClient.SwitchLightAsync("14d8fd8b-f454-4dca-87aa-d9164bbe310c", state, cancellationToken);
-
         static Task<HttpResponseMessage> StreamAsync(HueClient hueClient, CancellationToken cancellationToken = default)
             => hueClient.StreamEventAsync(cancellationToken);
+
+        static async Task<bool> GetLightOnAsync(HueClient hueClient,
+                                    string id,
+                                    CancellationToken cancellationToken = default)
+            => (await hueClient.GetLightInfoAsync(id, cancellationToken)).Data.First().On.On;
+
+        static Task SwitchLightAsync(HueClient hueClient,
+                                    string id,
+                                    bool switchOn,
+                                    CancellationToken cancellationToken = default)
+            => hueClient.SwitchLightAsync(id, switchOn, cancellationToken);
 
     }
 }

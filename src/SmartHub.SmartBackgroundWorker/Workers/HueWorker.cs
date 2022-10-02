@@ -23,14 +23,23 @@ namespace SmartHub.SmartBackgroundWorker.Workers
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             using (var scope = _serviceProvider.CreateScope())
+                // sync scene names
                 await scope.ServiceProvider.GetService<ScenesService>().GetAsync(stoppingToken);
+
             await CallbackHandler.BeginRunningAsync(_hueClient.StreamEventAsync, HandleEventAsync);
         }
 
         Task HandleEventAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
         {
             using var scope = _serviceProvider.CreateScope();
-            return scope.ServiceProvider.GetService<HueProcessor>().HandleEventAsync(response, cancellationToken);
+            try
+            {
+                return scope.ServiceProvider.GetService<HueProcessor>().HandleEventAsync(response, cancellationToken);
+            }
+            catch 
+            {
+                return Task.CompletedTask;
+            }
         }
 
     }

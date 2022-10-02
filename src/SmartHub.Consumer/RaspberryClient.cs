@@ -92,5 +92,16 @@ namespace SmartHub.Consumer
 
 
         #endregion
+
+
+        public Task SetHueLight(string id,
+                            bool switchOn,
+                            CancellationToken cancellationToken = default)
+            => _client.PutAsync($"/hue/light/{id}/{switchOn}", null, cancellationToken);
+
+        public async Task<bool> GetHueLight(string id,
+                            CancellationToken _ = default)
+            => bool.Parse(await _client.GetStringAsync($"/hue/light/{id}"));
+
     }
 }
