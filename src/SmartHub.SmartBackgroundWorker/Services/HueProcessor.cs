@@ -83,11 +83,12 @@ namespace SmartHub.SmartBackgroundWorker.Services
             var button = events.SingleOrDefault(s => s.Id == DeviceConstants.hueBedroomPowerId);
             if (button is not null)
             {
+                Console.WriteLine("BLOCK " + button.Button.LastEvent);
                 switch (button.Button.LastEvent)
                 {
                     case "short_release":
                         return SwitchSceneAsync(SceneState.SceneNames.Snooze, cancellationToken);
-                    case "repeat":
+                    case "long_release":
                         return SwitchSceneAsync(SceneState.SceneNames.Goodnight, cancellationToken);
                     default:
 
