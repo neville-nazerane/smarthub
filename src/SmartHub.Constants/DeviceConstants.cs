@@ -23,6 +23,7 @@ namespace SmartHub.Constants
 
 
         public const string computerLeftHaloId = "d7bf7254-f2d8-4d6f-8b29-1e5cebe3949d";
+        public const string computerRightHaloId = "4bf45461-f3de-4476-ba58-d5c2c31d5816";
         public const string computerLeftBarId = "6980ed6c-d4fc-4e52-a2d2-8ff72b7bbb5e";
         public const string computerRightBarId = "14d8fd8b-f454-4dca-87aa-d9164bbe310c";
         public const string buttonId = "419bf6d0-02d5-4932-bc03-b761c9ecbb71";

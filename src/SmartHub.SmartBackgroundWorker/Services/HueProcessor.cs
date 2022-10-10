@@ -31,6 +31,7 @@ namespace SmartHub.SmartBackgroundWorker.Services
             DeviceConstants.computerRightBarId,
             DeviceConstants.computerLeftBarId,
             DeviceConstants.computerLeftHaloId,
+            DeviceConstants.computerRightHaloId,
         };
 
         public HueProcessor(HueClient client,
@@ -104,16 +105,17 @@ namespace SmartHub.SmartBackgroundWorker.Services
             await _scenesService.UpdateAsync(scene, !isEnabled, cancellationToken);
         }
 
-        Task VerifyComputerLightAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken)
+        async ValueTask VerifyComputerLightAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken)
         {
             var light = events.LastOrDefault(e => e.Id == DeviceConstants.hueComputerLightId);
             if (light is not null)
             {
-                return Task.WhenAll(
-                    extraPcLightIds.Select(id => _client.SwitchLightAsync(id, light.On, cancellationToken)).ToList()    
-                );
+                foreach (var id in extraPcLightIds)
+                    await _client.SwitchLightAsync(id, light.On, cancellationToken);
+                //return Task.WhenAll(
+                //    extraPcLightIds.Select(id => _client.SwitchLightAsync(id, light.On, cancellationToken)).ToList()    
+                //);
             }
-            return Task.CompletedTask;
         }
 
         async Task VerifyClosetMotionAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken)
@@ -200,9 +202,7 @@ namespace SmartHub.SmartBackgroundWorker.Services
         {
             var dictionary = new ConcurrentDictionary<string, bool>();
 
-            var tasks = new string[]{ DeviceConstants.computerLeftHaloId,
-                                  DeviceConstants.computerRightBarId,
-                                  DeviceConstants.computerLeftBarId }
+            var tasks = extraPcLightIds
                                  .Select(d => Task.Run(async () =>
                                  {
                                      try
