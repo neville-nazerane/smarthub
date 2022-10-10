@@ -202,7 +202,10 @@ namespace SmartHub.SmartBackgroundWorker.Services
         {
             var dictionary = new ConcurrentDictionary<string, bool>();
 
-            var tasks = extraPcLightIds
+            var tasks = new string[]
+            {
+                DeviceConstants.hueComputerLightId
+            }
                                  .Select(d => Task.Run(async () =>
                                  {
                                      try
@@ -218,11 +221,15 @@ namespace SmartHub.SmartBackgroundWorker.Services
                                  }))
                                  .ToList();
 
-            await Task.WhenAll(tasks);
+            foreach (var task in tasks)
+                await task;
+            //await Task.WhenAll(tasks);
 
             var exeTasks = dictionary.Select(kv => _client.SwitchLightAsync(kv.Key, kv.Value, cancellationToken));
 
-            await Task.WhenAll(exeTasks);
+            foreach (var exeTask in exeTasks) 
+                await exeTask;
+            //await Task.WhenAll(exeTasks);
 
             //var button = await _client.GetLightInfoAsync(DeviceConstants.computerHaloId, cancellationToken);
             //var newState = !button.Data.First().On.On;
