@@ -107,7 +107,7 @@ namespace SmartHub.SmartBackgroundWorker.Services
 
         async ValueTask VerifyComputerLightAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken)
         {
-            var light = events.LastOrDefault(e => e.Id == DeviceConstants.hueComputerLightId);
+            var light = events.LastOrDefault(e => e.Id == DeviceConstants.hueComputerLightPlugId);
             if (light is not null)
             {
                 foreach (var id in extraPcLightIds)
@@ -204,7 +204,7 @@ namespace SmartHub.SmartBackgroundWorker.Services
 
             var tasks = new string[]
             {
-                DeviceConstants.hueComputerLightId
+                DeviceConstants.hueComputerLightPlugId
             }
                                  .Select(d => Task.Run(async () =>
                                  {

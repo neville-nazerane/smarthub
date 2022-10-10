@@ -13,6 +13,8 @@ namespace SmartHub.Website.Pages
         bool? leftBarIsOn = null;
         bool? rightBarIsOn = null;
         bool? leftHaloIsOn = null;
+        bool? rightHaloIsOn = null;
+        bool? plugIsOn = null;
 
         protected override async Task OnInitializedAsync()
         {
@@ -20,7 +22,9 @@ namespace SmartHub.Website.Pages
             await RunTogetherAsync(
                  async () => leftBarIsOn = await Client.GetHueLight(DeviceConstants.computerLeftBarId),
                  async () => rightBarIsOn = await Client.GetHueLight(DeviceConstants.computerRightBarId),
-                 async () => leftHaloIsOn = await Client.GetHueLight(DeviceConstants.computerLeftHaloId)
+                 async () => leftHaloIsOn = await Client.GetHueLight(DeviceConstants.computerLeftHaloId),
+                 async () => rightHaloIsOn = await Client.GetHueLight(DeviceConstants.computerRightHaloId),
+                 async () => plugIsOn = await Client.GetHueLight(DeviceConstants.hueComputerLightPlugId)
             );
         }
 
@@ -37,6 +41,12 @@ namespace SmartHub.Website.Pages
 
         Task SwitchLeftHaloAsync()
             => SwitchLightAsync(DeviceConstants.computerLeftHaloId, ref leftHaloIsOn);
+
+        Task SwitchRightHaloAsync()
+            => SwitchLightAsync(DeviceConstants.computerRightHaloId, ref rightHaloIsOn);
+
+        Task SwitchPlugAsync()
+            => SwitchLightAsync(DeviceConstants.hueComputerLightPlugId, ref plugIsOn);
 
         Task SwitchLightAsync(string id, ref bool? switcher)
             => Client.SetHueLight(id, (switcher = !switcher.Value).Value);
