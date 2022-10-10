@@ -18,14 +18,11 @@ namespace SmartHub.Website.Pages
 
         protected override async Task OnInitializedAsync()
         {
-
-            await RunTogetherAsync(
-                 async () => leftBarIsOn = await Client.GetHueLight(DeviceConstants.computerLeftBarId),
-                 async () => rightBarIsOn = await Client.GetHueLight(DeviceConstants.computerRightBarId),
-                 async () => leftHaloIsOn = await Client.GetHueLight(DeviceConstants.computerLeftHaloId),
-                 async () => rightHaloIsOn = await Client.GetHueLight(DeviceConstants.computerRightHaloId),
-                 async () => plugIsOn = await Client.GetHueLight(DeviceConstants.hueComputerLightPlugId)
-            );
+            leftBarIsOn = await Client.GetHueLight(DeviceConstants.computerLeftBarId);
+            rightBarIsOn = await Client.GetHueLight(DeviceConstants.computerRightBarId);
+            leftHaloIsOn = await Client.GetHueLight(DeviceConstants.computerLeftHaloId);
+            rightHaloIsOn = await Client.GetHueLight(DeviceConstants.computerRightHaloId);
+            plugIsOn = await Client.GetHueLight(DeviceConstants.hueComputerLightPlugId);
         }
 
         string ClassCheck(bool? status) => status is null ? "secondary" : (status.Value ? "primary" : "danger");
