@@ -90,6 +90,14 @@ namespace SmartHub.Consumer
         public Task<int> GetBondFanSpeedAsync(string fanId, CancellationToken cancellationToken = default)
             => _client.GetFromJsonAsync<int>($"bond/fanSpeed/{fanId}", cancellationToken);
 
+        public Task SwitchBondLightAsync(string lightId, bool on, CancellationToken cancellationToken = default)
+            => _client.PutAsync($"bond/light/{lightId}/{on}", null, cancellationToken);
+        
+        public async Task<bool> GetBondLightAsync(string lightId, CancellationToken cancellationToken = default)
+        {
+            var res = await _client.GetAsync($"bond/light/{lightId}", cancellationToken);
+            return bool.Parse(await res.Content.ReadAsStringAsync());
+        }
 
         #endregion
 

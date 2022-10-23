@@ -15,6 +15,7 @@ namespace SmartHub.Website.Pages
         bool? leftHaloIsOn = null;
         bool? rightHaloIsOn = null;
         bool? plugIsOn = null;
+        bool? mainBedroomOn = null;
 
         protected override async Task OnInitializedAsync()
         {
@@ -23,6 +24,7 @@ namespace SmartHub.Website.Pages
             leftHaloIsOn = await Client.GetHueLight(DeviceConstants.computerLeftHaloId);
             rightHaloIsOn = await Client.GetHueLight(DeviceConstants.computerRightHaloId);
             plugIsOn = await Client.GetHueLight(DeviceConstants.hueComputerLightPlugId);
+            mainBedroomOn = await Client.GetBondLightAsync(DeviceConstants.bondBedFanId);
         }
 
         string ClassCheck(bool? status) => status is null ? "secondary" : (status.Value ? "primary" : "danger");
@@ -44,6 +46,12 @@ namespace SmartHub.Website.Pages
 
         Task SwitchPlugAsync()
             => SwitchLightAsync(DeviceConstants.hueComputerLightPlugId, ref plugIsOn);
+
+        Task SwitchMainAsync()
+            => SwitchBondLightAsync(DeviceConstants.bondBedFanId, ref mainBedroomOn);
+
+        Task SwitchBondLightAsync(string id, ref bool? switcher)
+            => Client.SwitchBondLightAsync(id, (switcher = !switcher.Value).Value);
 
         Task SwitchLightAsync(string id, ref bool? switcher)
             => Client.SetHueLight(id, (switcher = !switcher.Value).Value);

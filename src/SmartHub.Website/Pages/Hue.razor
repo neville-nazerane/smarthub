@@ -1,9 +1,10 @@
-﻿@page "/hue"
+﻿@page "/bedroomLights"
 
 
 <div>
     <div class="btn-group" role="group" aria-label="Basic example">
         <button type="button" class="btn btn-@(ClassCheck(plugIsOn))" @onclick=SwitchPlugAsync>Computer Switch</button>
+        <button type="button" class="btn btn-@(ClassCheck(mainBedroomOn))" @onclick=SwitchMainAsync>Main light</button>
     </div>
 </div>
 <div>
