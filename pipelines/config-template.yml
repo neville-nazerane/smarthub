@@ -17,6 +17,8 @@ parameters:
     hue__key: $(hue_key)
     bond__baseUrl: $(bond_baseUrl)
     bond__token: $(bond_token)
+    hueSync__baseUrl: $(hueSync_baseUrl)
+    hueSync__token: $(hueSync_token)
 
 steps:
 - ${{ each config in parameters.configs }}:
