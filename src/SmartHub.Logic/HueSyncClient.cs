@@ -28,7 +28,6 @@ namespace SmartHub.Logic
         //public Task UpdateExecuteAsync(ExecutionRequest request, CancellationToken cancellationToken = default)
         //    => _httpClient.PutAsJsonAsync("api/v1/execution", request, cancellationToken);
 
-
         public Task UpdateExecuteAsync(ExecutionRequest request, CancellationToken cancellationToken = default)
         {
             string s = JsonSerializer.Serialize(request);
