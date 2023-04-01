@@ -58,12 +58,19 @@ namespace Microsoft.Extensions.DependencyInjection
                 client.BaseAddress = new Uri(bondConfig["baseUrl"]);
                 client.DefaultRequestHeaders.Add("BOND-Token", bondConfig["token"]);
             });
+            var hueSyncConfig = configuration.GetSection("hueSync");
+            services.AddHttpClient<HueSyncClient>(client =>
+            {
+                client.BaseAddress = new Uri(hueSyncConfig["baseUrl"]);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", hueSyncConfig["token"]);
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => CreateSslKiller());
+
 
             return services
-
                         .Configure<GlobalConfig>(configuration.GetSection("global"))
-
-                        .AddDbContext<AppDbContext>((provider, o) => {
+                        .AddDbContext<AppDbContext>((provider, o) =>
+                        {
 
                             var options = provider.GetService<IOptions<GlobalConfig>>();
 
@@ -93,9 +100,18 @@ namespace Microsoft.Extensions.DependencyInjection
                         .AddScoped<SmartLogic>()
                         .AddTransient<EventService>()
                         .AddTransient<ScenesService>()
-                        
+
                         //AUTOMATIONS
                         .AddScoped<TurnOnBedroomAutomation>();
+        }
+
+        private static HttpClientHandler CreateSslKiller()
+        {
+            return new HttpClientHandler
+            {
+                ClientCertificateOptions = ClientCertificateOption.Manual,
+                ServerCertificateCustomValidationCallback = (m, cert, cetChain, err) => true
+            };
         }
 
         public class SmartThingsConfig
