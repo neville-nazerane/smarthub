@@ -9,10 +9,12 @@ IHost host = Host.CreateDefaultBuilder(args)
         services
             //.AddHostedService<SmartWorker>()
             .AddHostedService<MinuteWorker>()
+            .AddHostedService<HueSyncWorker>()
             .AddHostedService<HueWorker>();
         services.AddLogic(hostContext.Configuration)
                 .AddScoped<SmartyPants>()
                 .AddTransient<HueProcessor>()
+                .AddTransient<HueSyncProcess>()
                 .AddSingleton<MinuiteProcessor>();
     })
     .Build();
