@@ -18,18 +18,18 @@ namespace SmartHub.SmartBackgroundWorker.Services
 
         public async Task RunAsync(CancellationToken cancellationToken = default)
         {
-            await _client.UpdateExecuteAsync(new()
-            {
-                SyncActive = true
-            }, cancellationToken);
-            //var result = await _client.GetExecutionAsync(cancellationToken);
-            //if (result.HdmiActive && result.HdmiSource == "input3" && !result.SyncActive)
+            //await _client.UpdateExecuteAsync(new()
             //{
-            //    await _client.UpdateExecuteAsync(new()
-            //    {
-            //        SyncActive = true
-            //    }, cancellationToken);
-            //}
+            //    SyncActive = true
+            //}, cancellationToken);
+            var result = await _client.GetExecutionAsync(cancellationToken);
+            if (result.HdmiActive && result.HdmiSource == "input3" && !result.SyncActive)
+            {
+                await _client.UpdateExecuteAsync(new()
+                {
+                    SyncActive = true
+                }, cancellationToken);
+            }
         }
 
     }
