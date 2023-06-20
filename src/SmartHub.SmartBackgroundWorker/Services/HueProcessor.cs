@@ -68,15 +68,15 @@ namespace SmartHub.SmartBackgroundWorker.Services
 
         private async Task ProcessEventAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken = default)
         {
-            await VerifyPcButtonAsync(events, cancellationToken);
+            //await VerifyPcButtonAsync(events, cancellationToken);
 
-            await VerifyIncreaseButtonAsync(events, cancellationToken);
-            await VerifyDecreaseButtonAsync(events);
-            await VerifyClosetMotionAsync(events, cancellationToken);
-            await VerifyClosetLightAsync(events);
+            //await VerifyIncreaseButtonAsync(events, cancellationToken);
+            //await VerifyDecreaseButtonAsync(events);
+            //await VerifyClosetMotionAsync(events, cancellationToken);
+            //await VerifyClosetLightAsync(events);
 
-            await VerifyComputerLightAsync(events, cancellationToken);
-            await VerifyBedroomPowerButtonAsync(events, cancellationToken);
+            //await VerifyComputerLightAsync(events, cancellationToken);
+            //await VerifyBedroomPowerButtonAsync(events, cancellationToken);
         }
 
         Task VerifyBedroomPowerButtonAsync(IEnumerable<HueEventData> events, CancellationToken cancellationToken = default)
