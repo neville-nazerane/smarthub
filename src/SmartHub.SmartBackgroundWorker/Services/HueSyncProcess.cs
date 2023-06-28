@@ -25,10 +25,10 @@ namespace SmartHub.SmartBackgroundWorker.Services
             var result = await _client.GetExecutionAsync(cancellationToken);
             if (result.HdmiActive && result.HdmiSource == "input3" && !result.SyncActive)
             {
-                await _client.UpdateExecuteAsync(new()
-                {
-                    SyncActive = true
-                }, cancellationToken);
+                //await _client.UpdateExecuteAsync(new()
+                //{
+                //    SyncActive = true
+                //}, cancellationToken);
             }
         }
 
